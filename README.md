@@ -4,7 +4,7 @@ El alcance del proyecto aún se está evaluando, pero la idea inicial es intenta
 
 Se dividirá en diferentes tópicos: Interfaz Gráfica, Funciones, Instrumentos, Base de Datos y Exportación. Luego es esencial agregar un sistema de gestión de los datos para entrenar una IA.
 
-> **Nota:** El "○" se logra con `Alt+9`, aunque parezca una "o minúscula", es un separador.
+> **Nota:** El "○ viñeta" se logra con `Alt+9`, aunque parezca una "o minúscula", es un separador.
 
 ## INTERFAZ GRÁFICA: UI O GUI
 
