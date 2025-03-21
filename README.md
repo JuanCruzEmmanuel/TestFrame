@@ -1,93 +1,96 @@
-:PROYECTO SMVA PYTHON:
+# PROYECTO SMVA EN PYTHON
 
+El alcance del proyecto aún se está evaluando, pero la idea inicial es intentar replicar el funcionamiento que existe en el código de LabVIEW y poder obtener mejoras a largo plazo.
 
-PROYECTO SMVA EN PYTHON
+Se dividirá en diferentes tópicos: Interfaz Gráfica, Funciones, Instrumentos, Base de Datos y Exportación. Luego es esencial agregar un sistema de gestión de los datos para entrenar una IA.
 
-EL ALCANCE DEL PROYECTO AUN SE ESTA EVALUANDO PERO LA IDEA INICIAL ES INTENTAR REPLICAR EL FUNCIONAMIENTO QUE EXISTE EN EL CODIGO DE LABVIEW Y PODER OBTENER MEJORAS A LARGO PLAZO
+> **Nota:** El "○" se logra con `Alt+9`, aunque parezca una "o minúscula", es un separador.
 
-SE DIVIDIRA EN DIFERENTES TOPICOS: INTERFAZ GRAFICA, FUNCIONES, INSTRUMENTOS, BASE DE DATOS Y EXPORTACION. LUEGO ES ESENCIAL AGREGARLE UN SISTEMA DE GESTION DE LOS DATOS PARA ENTRENAR UNA IA
-(EL "○" SE LOGRA ALT+9 AUNQUE PAREZCA UNA "O MINUSCULA" ES UN SEPARADOR)
-INTERFAZ GRAFICA: UI O GUI:
-    ○ PANTALLA DE LOG-IN ✓
-        ○ PERMITE ACCEDER A PARTIR DE LOS USUARIOS YA CREADOS ✓
-    ○ PANTALLA PRINCIPAL ✓
-        ○ TOMAR LOS EQUIPOS QUE SE ENCUENTRAN LOCAL PARA AUMENTAR LA VELOCIDAD ✓
-        ○ POSIBILIDAD DE ACTUALIZAR LOS EQUIPOS LOCALES ✓
-        ○ FILTRAR LOS EQUIPOS POR NOMBRE ✓
-        ○ FILTRAR LOS EQUIPOS POR VIGENTE NO VIGENTE ✓
-        ○ CONEXION CON VENTANA PARA CREACION Y EDICCION DE PROTOCOLOS X
-        ○ VER PROTOCOLOS EJECUTADOS X
-        ○ CREACION DE NUEVOS USUARIOS X
-        ○ SELECCION DE PROTOCOLO, YA SEA FILTRADO O NO, PARA EJECUCION ✓
-    ○ PANTALLA PARA SELECCION DE CONFIGURACION X
-        ○ MOSTRAR CONFIGURACION CREADAS X
-        ○ PERMITIR LA CREACION DE NUEVAS CONFIGURACIONS X
-        ○ PERMITIR ELIMINAR CONFIGURACIONES X
-    ○ PANTALLA SELECCION NUMERO DE SERIE X
-        ○ PERMITIR SELECCIONAR NUMERO DE SERIE YA EXISTENTE X
-        ○ PERMITIR INGRESAR NUEVO NUMERO DE SERIE X
-    ○ PANTALLA EJECUCION DE PROTOCOLO ✓
-        ○ VISOR DE BLOQUES DE PROTOCOLO ✓
-            ○ SE COMPLETE DE FORMA DINAMICA ✓
-            ○ SE COLOREA DE MANERA DINAMICA ✓
-            ○ CONTADOR DE BLOQUE ✓
-        ○ VISOR DE PASOS EN EJECUCION ✓
-            ○ SE COMPLETA DE FORMA DINAMICA ✓
-            ○ SE COLOREA DE MANERA DINAMICA ✓
-            ○ CONTADOR DE PROGRESO X
-            ○ BLOQUE ESTADISTICO ✓
-            ○ BOTON DE ABORTAR ✓
-            ○ BOTON DE DETENER EJECUCION X
-            ○ BOTON DE CONTINUAR EJECUCION X
-            ○ BOTON EXPORTAR X
-            ○ BOTON REPORTE DE ERRORES X
-        ○ INGRESO MANUAL TEXTO ✓
-            ○ VISOR DE INFORMACION TEXTO ✓
-            ○ BOTON AUTO OK ✓
-            ○ COMPLETAR RESPUESTA ✓
-        ○ INGRESO MANUAL NUMERICO ✓
-            ○ VISOR DE INFORMACION TEXTO ✓
-            ○ VISOR DE RANGOS ✓
-            ○ PERMITIR COMPLETAR ✓
-        ○ PANTALLA DE EJECUCION MANUAL X ------> ESENCIAL
-            ○ BOTON DE SALTO X ----> ESENCIAL
-            ○ BOTON AUTOMATICO/MANUAL X
-            ○ BOTON AVANZAR X
+## INTERFAZ GRÁFICA: UI O GUI
 
-○ BASE DE DATOS:
-    ○ ACCEDER A LOS USUARIOS ✓
-        ○ CREAR UNA LISTA LOCAL PARA AUMENTAR LA VELOCIDAD ✓
-        ○ CREAR NUEVOS USUARIOS X
-        ○ PERMISOS X ----> :IMPORTANTE:
-    ○ ACCEDER A LOS PROTOCOLOS MODELOS ✓
-        ○ CREAR UN DICCIONARIO CON TODOS LOS PROTOCOLOS FORMATO JSON PARA ACCEDER DE MANERA INSTANTENEA ✓
-            ○ PODER ACTUALIZAR EL DICCIONARIO SIEMPRE QUE SEA NECESARRIO ✓
-    ○ ACTUALIZAR DATOS EN EJECUCION ✓
-        ○ COPIA Y ACTUALIZA LOS DATOS DE PASOS DE PROTOCOLO ✓
-        ○ SUBIR PROTOCOLO CUANDO REALIZA ALGUNA PAUSA, ABORTADO O FINALIZADO X
+- **Pantalla de Log-In:**
+  - Permite acceder a partir de los usuarios ya creados.
+  
+- **Pantalla Principal:**
+  - Tomar los equipos que se encuentran local para aumentar la velocidad.
+  - Posibilidad de actualizar los equipos locales.
+  - Filtrar los equipos por nombre.
+  - Filtrar los equipos por estado (vigente/no vigente).
+  - Conexión con ventana para creación y edición de protocolos (pendiente).
+  - Ver protocolos ejecutados (pendiente).
+  - Creación de nuevos usuarios (pendiente).
+  - Selección de protocolo para ejecución (filtrado o no).
+  
+- **Pantalla para Selección de Configuración:**
+  - Mostrar configuraciones creadas.
+  - Permitir la creación de nuevas configuraciones.
+  - Permitir eliminar configuraciones.
 
-○ INSTRUMENTOS MIGRADOS:
-    ○ TORRE DE RELE ✓
-    ○ SIMULADOR DE TEMPERATURA CON TORRE RELE ✓
-    ○ MULTIMETROS ✓
-    ○ ESA620 ✓
-    ○ FUENTE PROGRAMABLE ✓
-    ○ CARGA ELECTRICA PROGRAMABLE ✓
-    ○ IMPULSE 7000 ✓ (MUY POCAS FUNCIONES)
-    ○ PROSIM 8 X
-    ○ MEDSIM 300 X
-    ○ IMPEDANCIOMETRO X
-    ○ ALARMAS MULTIPAR/PM9000 ✓
-    ○ OSCILOSCOPIOS ✓
-    ○ MEDICIONES MULTIPARES/PM9000 X
-    .
-    .
-    .
-    ○ ROBOT SZGH T750 X
-    ○ ROBOT PM9000 ✓
+- **Pantalla Selección Número de Serie:**
+  - Permitir seleccionar número de serie ya existente.
+  - Permitir ingresar nuevo número de serie.
 
+- **Pantalla Ejecución de Protocolo:**
+  - Visor de bloques de protocolo:
+    - Se completa de forma dinámica.
+    - Se colorea de manera dinámica.
+    - Contador de bloques.
+  - Visor de pasos en ejecución:
+    - Se completa de forma dinámica.
+    - Se colorea de manera dinámica.
+    - Contador de progreso (pendiente).
+    - Bloque estadístico.
+    - Botón de abortar.
+    - Botón de detener ejecución (pendiente).
+    - Botón de continuar ejecución (pendiente).
+    - Botón exportar (pendiente).
+    - Botón reporte de errores (pendiente).
+  - Ingreso manual (texto):
+    - Visor de información texto.
+    - Botón Auto OK.
+    - Completar respuesta.
+  - Ingreso manual (numérico):
+    - Visor de información texto.
+    - Visor de rangos.
+    - Permitir completar.
+  - **Pantalla de Ejecución Manual (Esencial):**
+    - Botón de salto (Esencial).
+    - Botón automático/manual.
+    - Botón avanzar.
 
+## BASE DE DATOS
 
-:SECCION INTELIGENCIA ARTIFICIAL: 
+- **Acceder a los usuarios:**
+  - Crear una lista local para aumentar la velocidad.
+  - Crear nuevos usuarios (pendiente).
+  - Permisos (pendiente).
 
-EN PROCESO DE PLANIFICACION
+- **Acceder a los protocolos modelos:**
+  - Crear un diccionario con todos los protocolos en formato JSON para acceder de manera instantánea.
+  - Poder actualizar el diccionario siempre que sea necesario.
+
+- **Actualizar datos en ejecución:**
+  - Copia y actualiza los datos de pasos de protocolo.
+  - Subir protocolo cuando se realiza alguna pausa, se aborta o se finaliza (pendiente).
+
+## INSTRUMENTOS MIGRADOS
+
+- Torre de rele.
+- Simulador de temperatura con torre rele.
+- Multímetros.
+- ESA620.
+- Fuente programable.
+- Carga eléctrica programable.
+- Impulse 7000 (muy pocas funciones).
+- ProSim 8 (pendiente).
+- MedSim 300 (pendiente).
+- Impedanciometro (pendiente).
+- Alarmas multipar/PM9000.
+- Osciloscopios.
+- Mediciones multipares/PM9000 (pendiente).
+- Robot SZGH T750 (pendiente).
+- Robot PM9000.
+
+## SECCIÓN INTELIGENCIA ARTIFICIAL
+
+En proceso de planificación.
