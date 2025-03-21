@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>IngresoManual</class>
+ <widget class="QMainWindow" name="IngresoManual">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>426</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Ingreso Manual</string>
+  </property>
+  <property name="iconSize">
+   <size>
+    <width>10</width>
+    <height>10</height>
+   </size>
+  </property>
+  <property name="toolButtonStyle">
+   <enum>Qt::ToolButtonFollowStyle</enum>
+  </property>
+  <property name="tabShape">
+   <enum>QTabWidget::Rounded</enum>
+  </property>
+  <property name="dockNestingEnabled">
+   <bool>true</bool>
+  </property>
+  <property name="dockOptions">
+   <set>QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QFrame" name="Contenedor">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(44, 62, 80);</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QLineEdit" name="InfoPaso">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>10</y>
+         <width>501</width>
+         <height>191</height>
+        </rect>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(255, 255, 255);
+font: 87 11pt &quot;Arial&quot;;
+color: rgb(0, 0, 0);</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="AutoOk">
+       <property name="geometry">
+        <rect>
+         <x>380</x>
+         <y>230</y>
+         <width>141</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">
+background-color: qlineargradient(spread:pad, x1:0.034, y1:0.431818, x2:1, y2:0.477273, stop:0 rgba(106, 187, 243, 255), stop:1 rgba(164, 133, 255, 255));
+
+font: 75 11pt &quot;MS Shell Dlg 2&quot;;
+color: rgb(255, 255, 255);
+
+border : 1px solid black;   
+border-radius : 10px;</string>
+       </property>
+       <property name="text">
+        <string>AUTO OK</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="Respuesta">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>290</y>
+         <width>501</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(255, 255, 255);
+font: 87 11pt &quot;Arial&quot;;
+color: rgb(0, 0, 0);</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="Enviar">
+       <property name="geometry">
+        <rect>
+         <x>380</x>
+         <y>350</y>
+         <width>141</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">
+background-color: qlineargradient(spread:pad, x1:0.034, y1:0.431818, x2:1, y2:0.477273, stop:0 rgba(106, 187, 243, 255), stop:1 rgba(164, 133, 255, 255));
+
+font: 75 11pt &quot;MS Shell Dlg 2&quot;;
+color: rgb(255, 255, 255);
+
+border : 1px solid black;   
+border-radius : 10px;</string>
+       </property>
+       <property name="text">
+        <string>ENVIAR</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="Saltar">
+       <property name="geometry">
+        <rect>
+         <x>580</x>
+         <y>10</y>
+         <width>141</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">
+background-color: qlineargradient(spread:pad, x1:0.034, y1:0.431818, x2:1, y2:0.477273, stop:0 rgba(106, 187, 243, 255), stop:1 rgba(164, 133, 255, 255));
+
+font: 75 11pt &quot;MS Shell Dlg 2&quot;;
+color: rgb(255, 255, 255);
+
+border : 1px solid black;   
+border-radius : 10px;</string>
+       </property>
+       <property name="text">
+        <string>SALTAR</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="Abortar">
+       <property name="geometry">
+        <rect>
+         <x>580</x>
+         <y>170</y>
+         <width>141</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0.142045 rgba(164, 129, 0, 255), stop:1 rgba(255, 255, 70, 255));
+
+font: 87 11pt &quot;Arial&quot;;
+color: rgb(255, 255, 255);
+
+border : 1px solid black;   
+border-radius : 10px;</string>
+       </property>
+       <property name="text">
+        <string>ABORTAR</string>
+       </property>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

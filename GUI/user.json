@@ -1,0 +1,344 @@
+[
+	{
+		"username" : "",
+		"email" : null,
+		"password" : "",
+		"create_time" : "0000-00-00 00:00:00",
+		"iduser" : 0,
+		"Nombre" : "",
+		"Apellido" : ""
+	},
+	{
+		"username" : "dta",
+		"email" : "http://www.dta-sa.com/",
+		"password" : "dta4770044",
+		"create_time" : "0000-00-00 00:00:00",
+		"iduser" : 1,
+		"Nombre" : "Dta",
+		"Apellido" : "Dta"
+	},
+	{
+		"username" : "OperarioFeas",
+		"email" : "---",
+		"password" : "feas1234",
+		"create_time" : "2018-04-17 14:17:42",
+		"iduser" : 2,
+		"Nombre" : "Personal1",
+		"Apellido" : "---"
+	},
+	{
+		"username" : "federicot",
+		"email" : "ftorres@feaselectronica.com.ar",
+		"password" : "motard200",
+		"create_time" : "2018-09-13 17:11:27",
+		"iduser" : 3,
+		"Nombre" : "Federico",
+		"Apellido" : "Torres"
+	},
+	{
+		"username" : "santiago",
+		"email" : "santiago.feaselectronica@gmail.com",
+		"password" : "santiago",
+		"create_time" : "2018-10-17 16:23:26",
+		"iduser" : 4,
+		"Nombre" : "Santiago",
+		"Apellido" : "Graziosi"
+	},
+	{
+		"username" : "demianc",
+		"email" : "",
+		"password" : "demianc",
+		"create_time" : "2018-10-18 10:34:39",
+		"iduser" : 5,
+		"Nombre" : "Demian",
+		"Apellido" : "Cortés"
+	},
+	{
+		"username" : "facundob",
+		"email" : "facundob.feas@gmail.com",
+		"password" : "facundob",
+		"create_time" : "2019-11-01 12:16:37",
+		"iduser" : 7,
+		"Nombre" : "Facundo",
+		"Apellido" : "Bustos"
+	},
+	{
+		"username" : "dcussa",
+		"email" : "dcussa@feaselectronica.com.ar",
+		"password" : "colon5760",
+		"create_time" : "2020-04-16 15:30:32",
+		"iduser" : 8,
+		"Nombre" : "Daniel",
+		"Apellido" : "Cussa"
+	},
+	{
+		"username" : "ontiveros",
+		"email" : "editar",
+		"password" : "ontiveros",
+		"create_time" : "2020-04-24 08:32:21",
+		"iduser" : 10,
+		"Nombre" : "Sebastián",
+		"Apellido" : "Ontiveros"
+	},
+	{
+		"username" : "lmontanari",
+		"email" : "",
+		"password" : "lmontanari",
+		"create_time" : "2020-11-06 17:26:39",
+		"iduser" : 11,
+		"Nombre" : "Lucas",
+		"Apellido" : "Montanari"
+	},
+	{
+		"username" : "marcelo",
+		"email" : "",
+		"password" : "marcelo71",
+		"create_time" : "2020-11-13 13:39:22",
+		"iduser" : 14,
+		"Nombre" : "Marcelo",
+		"Apellido" : "Fabro"
+	},
+	{
+		"username" : "luisgu",
+		"email" : "",
+		"password" : "723",
+		"create_time" : "2020-11-13 13:40:33",
+		"iduser" : 15,
+		"Nombre" : "Luis",
+		"Apellido" : "Gutierrez"
+	},
+	{
+		"username" : "benjaminc",
+		"email" : "",
+		"password" : "benjaminc",
+		"create_time" : "2021-08-17 14:28:09",
+		"iduser" : 16,
+		"Nombre" : "Benjamin",
+		"Apellido" : "Cubi"
+	},
+	{
+		"username" : "fbasilico",
+		"email" : "",
+		"password" : "fbasilico",
+		"create_time" : "2021-11-09 09:25:10",
+		"iduser" : 17,
+		"Nombre" : "Franco",
+		"Apellido" : "Basilico"
+	},
+	{
+		"username" : "melinar",
+		"email" : "",
+		"password" : "33282254",
+		"create_time" : "2021-12-20 17:16:53",
+		"iduser" : 18,
+		"Nombre" : "Melina",
+		"Apellido" : "Ramacciotti"
+	},
+	{
+		"username" : "elvioo",
+		"email" : "",
+		"password" : "elviopppp",
+		"create_time" : "2021-12-20 17:28:40",
+		"iduser" : 19,
+		"Nombre" : "Elvio",
+		"Apellido" : "Olariaga"
+	},
+	{
+		"username" : "jfeas",
+		"email" : "",
+		"password" : "jfeas",
+		"create_time" : "2021-12-21 11:30:23",
+		"iduser" : 20,
+		"Nombre" : "Jorge",
+		"Apellido" : "Feas"
+	},
+	{
+		"username" : "jbrezzo",
+		"email" : "",
+		"password" : "jbrezzo",
+		"create_time" : "2021-12-21 11:31:01",
+		"iduser" : 21,
+		"Nombre" : "Julio",
+		"Apellido" : "Brezzo"
+	},
+	{
+		"username" : "danter",
+		"email" : "",
+		"password" : "danter",
+		"create_time" : "2022-01-07 09:19:37",
+		"iduser" : 22,
+		"Nombre" : "Dante",
+		"Apellido" : "Ruiz"
+	},
+	{
+		"username" : "sacham",
+		"email" : "",
+		"password" : "sacham",
+		"create_time" : "2022-02-17 13:18:29",
+		"iduser" : 23,
+		"Nombre" : "Sacha",
+		"Apellido" : "Morón"
+	},
+	{
+		"username" : "pablor",
+		"email" : "",
+		"password" : "pablor",
+		"create_time" : "2022-03-31 17:11:37",
+		"iduser" : 24,
+		"Nombre" : "Pablo",
+		"Apellido" : "Roldan"
+	},
+	{
+		"username" : "laurar",
+		"email" : "",
+		"password" : "laurar",
+		"create_time" : "2022-04-04 11:30:18",
+		"iduser" : 25,
+		"Nombre" : "Laura",
+		"Apellido" : "Romero Oses"
+	},
+	{
+		"username" : "lucianoc",
+		"email" : "",
+		"password" : "lucianoc",
+		"create_time" : "2022-04-21 13:50:24",
+		"iduser" : 26,
+		"Nombre" : "Luciano",
+		"Apellido" : "Campos"
+	},
+	{
+		"username" : "raymundo",
+		"email" : "",
+		"password" : "raymundo",
+		"create_time" : "2022-07-06 16:48:50",
+		"iduser" : 27,
+		"Nombre" : "Raymundo",
+		"Apellido" : "Salvatierra"
+	},
+	{
+		"username" : "augustog",
+		"email" : "",
+		"password" : "augustog",
+		"create_time" : "2022-10-24 16:02:13",
+		"iduser" : 28,
+		"Nombre" : "",
+		"Apellido" : ""
+	},
+	{
+		"username" : "adriand",
+		"email" : "",
+		"password" : "adriand",
+		"create_time" : "2022-10-28 09:12:55",
+		"iduser" : 29,
+		"Nombre" : "Adrian",
+		"Apellido" : "Dubois"
+	},
+	{
+		"username" : "keving",
+		"email" : "",
+		"password" : "37148kwg",
+		"create_time" : "2023-01-30 09:23:39",
+		"iduser" : 30,
+		"Nombre" : "Kevin",
+		"Apellido" : "G."
+	},
+	{
+		"username" : "eduardo",
+		"email" : "",
+		"password" : "serv2023",
+		"create_time" : "2023-02-10 16:34:35",
+		"iduser" : 31,
+		"Nombre" : "Eduardo",
+		"Apellido" : "Maigua"
+	},
+	{
+		"username" : "tadeot",
+		"email" : " ",
+		"password" : "tadeot",
+		"create_time" : "2023-02-16 10:41:28",
+		"iduser" : 32,
+		"Nombre" : "Tadeo",
+		"Apellido" : "Tito"
+	},
+	{
+		"username" : "pablol",
+		"email" : "",
+		"password" : "cuchacucha",
+		"create_time" : "2023-02-27 17:51:11",
+		"iduser" : 33,
+		"Nombre" : "Pablo",
+		"Apellido" : "L"
+	},
+	{
+		"username" : "jcnoya",
+		"email" : "",
+		"password" : "jcnoya",
+		"create_time" : "2023-08-08 16:22:02",
+		"iduser" : 34,
+		"Nombre" : "Juan Cruz",
+		"Apellido" : "Noya"
+	},
+	{
+		"username" : "daniel",
+		"email" : "",
+		"password" : "colon5760",
+		"create_time" : "2023-08-17 09:25:58",
+		"iduser" : 35,
+		"Nombre" : "Daniel",
+		"Apellido" : "Cussa"
+	},
+	{
+		"username" : "ariels",
+		"email" : "",
+		"password" : "ariels",
+		"create_time" : "2023-09-28 09:48:31",
+		"iduser" : 36,
+		"Nombre" : "Ariel",
+		"Apellido" : "Selenik"
+	},
+	{
+		"username" : "jackyp",
+		"email" : "",
+		"password" : "137950",
+		"create_time" : "2024-02-22 09:41:27",
+		"iduser" : 37,
+		"Nombre" : "Jacky",
+		"Apellido" : "P"
+	},
+	{
+		"username" : "catapanero",
+		"email" : "",
+		"password" : "catapanero",
+		"create_time" : "2024-07-05 14:44:59",
+		"iduser" : 38,
+		"Nombre" : "Catalina",
+		"Apellido" : "Panero"
+	},
+	{
+		"username" : "julianf",
+		"email" : "",
+		"password" : "240501",
+		"create_time" : "2024-10-03 09:30:06",
+		"iduser" : 39,
+		"Nombre" : "Julian",
+		"Apellido" : "Font"
+	},
+	{
+		"username" : "jsalguero",
+		"email" : "",
+		"password" : "jsalguero",
+		"create_time" : "2024-10-21 10:47:24",
+		"iduser" : 40,
+		"Nombre" : "Joaquin",
+		"Apellido" : "Salguero"
+	},
+	{
+		"username" : "dydPEA",
+		"email" : "",
+		"password" : "dydPEA",
+		"create_time" : "2024-12-13 14:50:07",
+		"iduser" : 41,
+		"Nombre" : "PEA",
+		"Apellido" : "GENERICO"
+	}
+]

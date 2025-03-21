@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1341</width>
+    <height>910</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QFrame" name="Contenedor">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(44, 62, 80);</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QFrame" name="frame">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>49</y>
+         <width>901</width>
+         <height>731</height>
+        </rect>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QTableWidget" name="tablaProtocolo">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>0</y>
+          <width>891</width>
+          <height>671</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(33, 48, 62);
+
+font: 87 14pt &quot;Arial&quot;;
+color: rgb(194, 194, 194);
+</string>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::WinPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <property name="showGrid">
+         <bool>true</bool>
+        </property>
+        <property name="gridStyle">
+         <enum>Qt::SolidLine</enum>
+        </property>
+        <property name="sortingEnabled">
+         <bool>false</bool>
+        </property>
+        <column>
+         <property name="text">
+          <string>Id</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Nombre</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Ver</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Tipo</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Vigente</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Comentario</string>
+         </property>
+        </column>
+       </widget>
+       <widget class="QPushButton" name="UpdateBoton">
+        <property name="geometry">
+         <rect>
+          <x>830</x>
+          <y>680</y>
+          <width>60</width>
+          <height>50</height>
+         </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Ignored" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>100</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: qlineargradient(spread:pad, x1:0.034, y1:0.431818, x2:1, y2:0.477273, stop:0 rgba(106, 187, 243, 255), stop:1 rgba(164, 133, 255, 255));
+
+font: 75 9pt &quot;MS Shell Dlg 2&quot;;
+color: rgb(255, 255, 255);
+
+border : 1px solid black;   
+border-radius : 20px;</string>
+        </property>
+        <property name="text">
+         <string>UPDATE</string>
+        </property>
+        <property name="autoDefault">
+         <bool>false</bool>
+        </property>
+        <property name="default">
+         <bool>false</bool>
+        </property>
+        <property name="flat">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QFrame" name="frame_2">
+       <property name="geometry">
+        <rect>
+         <x>920</x>
+         <y>130</y>
+         <width>401</width>
+         <height>181</height>
+        </rect>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QLineEdit" name="visorVigente">
+        <property name="geometry">
+         <rect>
+          <x>12</x>
+          <y>19</y>
+          <width>191</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit {
+background-color: rgb(33, 48, 62);
+	color: rgb(255, 255, 255);
+	
+ border: 2px solid gray;
+border-color: rgb(255, 255, 255);
+ border-radius: 10px;
+
+}
+</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="Vigencia">
+        <property name="geometry">
+         <rect>
+          <x>210</x>
+          <y>20</y>
+          <width>181</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">
+background-color: qlineargradient(spread:pad, x1:0.034, y1:0.431818, x2:1, y2:0.477273, stop:0 rgba(106, 187, 243, 255), stop:1 rgba(164, 133, 255, 255));
+
+font: 75 11pt &quot;MS Shell Dlg 2&quot;;
+color: rgb(255, 255, 255);
+
+border : 1px solid black;   
+border-radius : 10px;</string>
+        </property>
+        <property name="text">
+         <string>Cambiar</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="tipoVigencia">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>90</y>
+          <width>191</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(255, 255, 255);
+font: 75 11pt &quot;MS Shell Dlg 2&quot;;</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Vigente</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>No Vigente</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Mostrar Todo</string>
+         </property>
+        </item>
+       </widget>
+       <widget class="QComboBox" name="tipoItem">
+        <property name="geometry">
+         <rect>
+          <x>210</x>
+          <y>90</y>
+          <width>181</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(255, 255, 255);
+font: 75 11pt &quot;MS Shell Dlg 2&quot;;</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Mostrar Todo</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>PPP</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>PCF</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>PPM</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>PVI</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>PVS</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>PSA</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>PCA</string>
+         </property>
+        </item>
+       </widget>
+       <widget class="QPushButton" name="apFIltro">
+        <property name="geometry">
+         <rect>
+          <x>140</x>
+          <y>140</y>
+          <width>141</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">
+background-color: qlineargradient(spread:pad, x1:0.034, y1:0.431818, x2:1, y2:0.477273, stop:0 rgba(106, 187, 243, 255), stop:1 rgba(164, 133, 255, 255));
+
+font: 75 11pt &quot;MS Shell Dlg 2&quot;;
+color: rgb(255, 255, 255);
+
+border : 1px solid black;   
+border-radius : 10px;</string>
+        </property>
+        <property name="text">
+         <string>Aplicar Filtro</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QFrame" name="frame_3">
+       <property name="geometry">
+        <rect>
+         <x>920</x>
+         <y>320</y>
+         <width>401</width>
+         <height>101</height>
+        </rect>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QPushButton" name="EjecutarBoton">
+        <property name="geometry">
+         <rect>
+          <x>140</x>
+          <y>30</y>
+          <width>141</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">
+background-color: qlineargradient(spread:pad, x1:0.034, y1:0.431818, x2:1, y2:0.477273, stop:0 rgba(106, 187, 243, 255), stop:1 rgba(164, 133, 255, 255));
+
+font: 75 11pt &quot;MS Shell Dlg 2&quot;;
+color: rgb(255, 255, 255);
+
+border : 1px solid black;   
+border-radius : 10px;</string>
+        </property>
+        <property name="text">
+         <string>Ejecutar</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QFrame" name="frame_4">
+       <property name="geometry">
+        <rect>
+         <x>920</x>
+         <y>50</y>
+         <width>391</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QLineEdit" name="nombreFiltro">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>191</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QLineEdit {
+background-color: rgb(33, 48, 62);
+	color: rgb(255, 255, 255);
+	
+ border: 2px solid gray;
+border-color: rgb(255, 255, 255);
+ border-radius: 10px;
+
+}
+</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="apFiltroNombre">
+        <property name="geometry">
+         <rect>
+          <x>210</x>
+          <y>20</y>
+          <width>181</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">
+background-color: qlineargradient(spread:pad, x1:0.034, y1:0.431818, x2:1, y2:0.477273, stop:0 rgba(106, 187, 243, 255), stop:1 rgba(164, 133, 255, 255));
+
+font: 75 11pt &quot;MS Shell Dlg 2&quot;;
+color: rgb(255, 255, 255);
+
+border : 1px solid black;   
+border-radius : 10px;</string>
+        </property>
+        <property name="text">
+         <string>Aplicar Filtro</string>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <tabstops>
+  <tabstop>tablaProtocolo</tabstop>
+  <tabstop>visorVigente</tabstop>
+  <tabstop>Vigencia</tabstop>
+  <tabstop>tipoVigencia</tabstop>
+  <tabstop>tipoItem</tabstop>
+  <tabstop>apFIltro</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
