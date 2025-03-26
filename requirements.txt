@@ -1,0 +1,5 @@
+pyserial==3.5
+PyQt5==5.15.11
+numpy==2.2.4
+pyodbc==5.2.0
+sympy==1.13.3
