@@ -1,5 +1,6 @@
 import json
 from time import sleep
+from datetime import datetime
 import sys
 from PyQt5.QtWidgets import QApplication, QDialog, QTableWidgetItem
 from PyQt5.QtCore import QEventLoop, QThread, pyqtSignal, pyqtSlot
@@ -165,6 +166,8 @@ class WorkerThread(QThread):
         self.listaPasos = []
         self.pausa = False
         self.driverInstrumento = driverInstrumentos()
+
+        self.wait_until_response = False
     def pausarProtocolo(self):
         self.pausa = True
 
@@ -215,7 +218,8 @@ class WorkerThread(QThread):
         else: #Siempre que no se especifique que se debe validar, el self.PASO["Estado"] sera "OK"
             self.PASO["Resultado"]=valor
             self.PASO["Estado"] = "OK"
-
+        #Le agrego el horario de ejecucion
+        self.PASO["TimeStamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S") #Para completar con la hora de la medicion
         with open("_TEMPS_/protocolo_a_ejecutar.json", "w", encoding="utf-8") as file:
             json.dump(self.protocolo,file,indent=4)
             
@@ -228,6 +232,7 @@ class WorkerThread(QThread):
         self.pasosUpdate.emit(self.listaPasos) #manda la de lista
         self.running = True
         self.continuarProtocolo()
+        self.wait_until_response = False #Variable que me va a controlar solo el envio de los datos
 
     def programacionInstrumento(self):
         t = float(self.PASO["Tiempo_Medicion"]) / 1000  # Para pasarlo a segundos
@@ -279,6 +284,7 @@ class WorkerThread(QThread):
             self.bloqueNombre.emit(bloque["Nombre"])
             self.progreso.emit(f"Ejecutando bloque {bloque_idx + 1} de {len(self.protocolo)}")
             for paso in bloque["Pasos"]:
+
                 N = 0
                 while self.pausa:
                     sleep(1)
@@ -291,10 +297,15 @@ class WorkerThread(QThread):
                 self.secuenciaPaso.emit(paso["OrdenDeSecuencia"])
                 self.ejecutarPaso(paso)
                 sleep(0.5)  # Simula el tiempo de ejecución del paso
+        self.wait_until_response =True #Si no pongo una variable, en el ultimo paso sale del loop sin que yo lo permita
 
-        #Cuando termina el ultimo bloque
-        self.database.subir_paso_protocolo_y_protocolo(id_protocolo = self.BLOQUE["ProtocoloID"],resultado_bloque = self.BLOQUE["Resultado"],pasos = self.BLOQUE["Pasos"]) #Se sube el archivo previo
-        self.terminado.emit()
+
+        while self.wait_until_response: #Si no agrego el loop nunca envia porque sale del protoloco
+            if not self.wait_until_response:
+                print("¿Confirmado por chayanne?")
+                self.database.subir_paso_protocolo_y_protocolo(id_protocolo = self.BLOQUE["ProtocoloID"],resultado_bloque = self.BLOQUE["Resultado"],pasos = self.BLOQUE["Pasos"]) #Se sube el archivo previo
+                self.terminado.emit()
+
 
     def stop(self):
         # Detiene la ejecución del hilo

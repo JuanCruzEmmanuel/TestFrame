@@ -170,7 +170,8 @@ class SMVA_DB():
                     "protocolo_protocolos_idProtocolos":paso[15],
                     "mediciones_idmediciones":paso[16],
                     "id_paso":paso[17],
-                    "CriterioPass":""
+                    "CriterioPass":"",
+                    "TimeStamp":""
                 }
                 for paso in pasos
             ]
@@ -192,7 +193,6 @@ class SMVA_DB():
         print(f"Archivo JSON guardado correctamente en '_TEMPS_/protocolo_a_ejecutar.json'.")
 
     def ID_PROTOCOLO_COPIA(self,id="1"):
-
         self.cursor.execute("{CALL selectProtocolosFromId (?)}",(id))
 
         MODELO = self.cursor.fetchall()[0] #Protocolo modelo
@@ -210,7 +210,7 @@ class SMVA_DB():
         self.cursor.execute("{CALL GetprotocoloFromIdProtocolos (?)}",(id))
 
         BLOQUEMODELOS = self.cursor.fetchall() #Obtengo los bloques del protocolo modelo
-
+        print("Ingresa al loop")
         for BLOQUE in BLOQUEMODELOS:
 
             NOMBREBLOQUE = BLOQUE[1]
@@ -249,14 +249,15 @@ class SMVA_DB():
                 pass
             
             #--------------------------------UPDATE CONFIG ----------------------------------------------------------#
-
             self.cursor.execute("{CALL updateConfigEnprotocolo_endisegno (?,?,?)}",(IDCONFIG,int(str(IDCAMBIO[0])),int(str(LASTID[0]))))
             #self.cursor.fetchall()
         #-----------------------------------COPIAR LOS PASOS--------------------------------------------------------#
-
-        self.cursor.execute("{CALL CopiarProtocoloModelo (?,?)}",(id,str(LASTID[0]))) #Recibe el ID del protocolo nuevo, y el id del protocolo modelo
+        ### ESTO ES LO QUE PIERDE TIEEEEEEEMPO SE DEBE ACTUALIZAR URGENTE ESTA
+        print(id,str(LASTID[0]))
+        #self.cursor.execute("{CALL CopiarProtocoloModelo_2 (?,?)}",(id,str(LASTID[0]))) #Recibe el ID del protocolo nuevo, y el id del protocolo modelo
+        self.copiar_protocolo_modelo(val1 = int(id),val2 = int(LASTID[0])) #Replica del metodo anterior
         #self.cursor.fetchall()
-        
+        ### ESTO ES LO QUE PIERDE TIEEEEEEEMPO SE DEBE ACTUALIZAR URGENTE ESTA
         self.cursor.execute("{CALL GetCantPasosyValueMedicion (?)}",(str(LASTID[0])))
         datos = self.cursor.fetchall()[0]
         if datos[0]==datos[1]:
@@ -265,9 +266,7 @@ class SMVA_DB():
             "ERROR_0XXX"
         #self.cursor.execute("{CALL DEBUG_CorreccionValueMediciones (?)}",(int(str(LASTID[0]))))
         #self.cursor.fetchall()
-        
         return str(LASTID[0])
-    
 
     def subir_paso_protocolo_y_protocolo(self,id_protocolo,resultado_bloque,pasos):
         """
@@ -280,18 +279,21 @@ class SMVA_DB():
 
 
         print("Se inicializa la subida de archivos")
+        print(resultado_bloque)
+        print(pasos)
         for paso in pasos:
             id_paso = paso["id_paso"] #El id del paso
             estado_paso = paso["Estado"] #Estado de paso
             resultado_paso = paso["Resultado"] #Resultado de paso
             criterio_paso = paso["CriterioPass"]
             id_mediciones = paso["mediciones_idmediciones"]
-            self.cursor.execute(f"""UPDATE {self._DATABASE}.pasos SET Estado = ?, CriterioPass = ? WHERE idpasos = ?""",(estado_paso,criterio_paso,id_paso)) #Actualizo el paso
+            timestamp = paso["TimeStamp"]
+            self.cursor.execute(f"""UPDATE {self._DATABASE}.pasos SET Estado = ?, CriterioPass = ?, TimeStamp = ? WHERE idpasos = ?""",(estado_paso,criterio_paso,timestamp,id_paso)) #Actualizo el paso
             #Actualizar el valor medido
             #Para ello primero debo pedir el id que relaciona mediciones con su valor (totalmente ineficiente)
             self.cursor.execute(f"""SELECT valuemedicion_idvaluemedicion FROM {self._DATABASE}.mediciones WHERE idmediciones={id_mediciones}""")
             id_value_mediciones = self.cursor.fetchall()[0][0] #ID value mediciones
-            self.cursor.execute(f"""UPDATE {self._DATABASE}.valuemedicion SET ValorMedido = ?, EstadoMedicion = ? WHERE idvaluemedicion = ?""",(resultado_paso,estado_paso,id_value_mediciones)) #Actualizo el paso
+            self.cursor.execute(f"""UPDATE {self._DATABASE}.valuemedicion SET ValorMedido = ?, EstadoMedicion = ?, TimeStamp = ? WHERE idvaluemedicion = ?""",(resultado_paso,estado_paso,timestamp,id_value_mediciones)) #Actualizo el paso
         #Una vez termine esto, se debe actualizar 
         if resultado_bloque=="ABORT":
             _PASADA_ = "INCOMPLETO"
@@ -302,6 +304,178 @@ class SMVA_DB():
         #Tambien se debe guardar info del operador, se debe agregar esa info
         self.cursor.execute(f"""UPDATE {self._DATABASE}.protocolo SET Resultado = ?, Pasadas = ? WHERE idprotocolo = ?""",(resultado_bloque,_PASADA_,id_protocolo))
         print("Se subio")
+
+
+    
+    def copiar_protocolo_modelo(self, val1:int, val2:int):
+        """
+        Replica la lógica del procedimiento almacenado CopiarProtocoloModelo en Python.\n
+        No maneja la conexión a la base de datos, ya que trabaja con el cursor\n
+        Se reduce de 30 segundos a menos de 2 segundos\n
+        :val1: ID del protocolo "MODELO"\n
+        :val2: ID del nuevo protocolo\n
+        """
+        self.cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
+        self.cursor.execute("SET sql_mode = '';")
+        
+        # Realizo la consulta que realiza CopiarProtocoloModelo pero modifico algunos metodos de consulta. Mas abajo voy a enumerar que es cada consulta
+        query = """
+            SELECT idpasos, pasos.Name as Name_Pasos, CriterioPass, Tipo, pasos.Estado as Estado_P, Observacion, 
+                ResultadoTipico, ResultadoMaximo, ResultadoMinimo, pasos.TimeStamp as Tiempo_P, Ajustar, 
+                pasos.Unidad as Unidad_P, Comandos, Saltar, FactorConversion, Imprimible, Habilitado, OrdenDeSecuencia, 
+                Tipo_Item, Titulo, Inicio_Bloque, Validacion, Tipo_Respuesta, Respuesta_Correcta, Offset, 
+                Tiempo_Medicion, Simular, Medir_o_Conectar, idmediciones, mediciones.Name as Name_M, Descripcion, 
+                Escala, mediciones.Unidad as Unidad_M, Rango, SerialNumber, Codigo, Version, listainstrumentos_idListaInstrumentos, 
+                idvaluemedicion, ValorMedido, EstadoMedicion, valuemedicion.TimeStamp as Tiempo_V, idprotocolo, 
+                protocolo.Name as Name_Protocolo, Equipo, Revision, protocolo.Estado as Estado_Protocolo, 
+                Resultado, Aprobador, StartTime, EndTime, Pasadas, protocolos_idProtocolos, 
+                configuracion_idConfiguracion, config_endisegno_idConfig, ordenSecuencia
+            FROM dbfeas_smva_2_0_v1.pasos
+            INNER JOIN dbfeas_smva_2_0_v1.mediciones ON mediciones_idmediciones = idmediciones
+            INNER JOIN dbfeas_smva_2_0_v1.valuemedicion ON valuemedicion_idvaluemedicion = idvaluemedicion
+            INNER JOIN dbfeas_smva_2_0_v1.protocolo ON protocolo_idprotocolo = idprotocolo
+            WHERE protocolo_idprotocolo IN (
+                SELECT idprotocolo FROM dbfeas_smva_2_0_v1.protocolo WHERE protocolos_idProtocolos = ?
+            )
+            ORDER BY CAST(ordenSecuencia AS DECIMAL) ASC, CAST(ordenDeSecuencia AS DECIMAL) ASC;
+        """
+        self.cursor.execute(query, val1)
+        todas_las_tablas = self.cursor.fetchall() #Confirmado por chayanne que funciona
+        """
+        todas_las_tablas contine:
+        0 idpasos
+        1 Name (Name_Pasos)
+        2 Criterio de paso (CriterioPass)
+        3 Tipo
+        4 Estado (Estado_P)
+        5 Observacion
+        6 ResultadoTipico
+        7 ResultadoMaximo
+        8 ResultadoMinimo
+        9 Tiempo timestamp (Tiempo_P)
+        10 Ajustar
+        11 Unidad_P
+        12 Comandos
+        13 Saltar
+        14 FactorConversion
+        15 Imprimible
+        16 Habilitado
+        17 OrdenSecuencia
+        18 Tipo de Item
+        19 Titulo
+        20 Inicio de Bloque
+        21 Validacion
+        22 Tipo de respuesta
+        23 Respuesta Correcta
+        24 Offset
+        25 Tiempo de medicion
+        26 Simular
+        27 Medio o Conectar
+        28 idmediciones
+        29 Name medicion (Name_M)
+        30 Descripcion (supongo que de medicion)
+        31 Escala
+        32 Unidad Medicion
+        33 Rango
+        34 Serial Number
+        35 Codigo
+        36 Version
+        37 listainstrumentos_idListaIntrusmentos
+        38 idvaluemediciones
+        39 ValorMedido
+        40 EstadoMedicion
+        41 Tiempo_V
+        42 idprotocolo
+        43 Name_Protocolo (nombre del bloque)
+        44 Equipo
+        45 Revision
+        46 Estado Protocolo
+        47 Resultado
+        48 Aprobador
+        49 StartTime
+        50 EndTime
+        51 Pasadas
+        52 protocolos_idProtocolos
+        53 configuracion_idConfiguracion
+        54 config_endisegno_idConfig
+        55 ordenSecuencia
+        """
+        #for fila in todas_las_tablas:
+            #print(fila[0])
+        # Contar bloques en Python
+        print("\n")
+        protocolos_unicos = {fila[42] for fila in todas_las_tablas} #42 = idprotocolo
+        cant_bloques = len(protocolos_unicos)
+        print(f"La cantidad de bloques distintos es de {cant_bloques}")
+        for iterador_bloques in range(cant_bloques):
+            print(f"Nos encontramos en el bloque {iterador_bloques}")
+            pasos_bloque = [fila for fila in todas_las_tablas if fila[55] == str(iterador_bloques)] #55 = ordenSecuencia
+            resta_aux = len(pasos_bloque)-1
+            print(resta_aux)
+            #cant_pasos_bloque = len(pasos_bloque)
+            #print(pasos_bloque)
+            # Obtener Aux_protocolo en Python
+            self.cursor.execute(
+                "SELECT idprotocolo FROM dbfeas_smva_2_0_v1.protocolo WHERE protocolos_idProtocolos = ? AND OrdenSecuencia = ?",
+                (val2, iterador_bloques)
+            )
+            aux_protocolo = self.cursor.fetchone()[0] #Obtento el IdProtocolo auxiliar aun no se bien si lo uso en algo.... pero lo vero, tampoco me gusta el nombre que le di
+            print(f"##Se ha obtenido el siguiente idprotocolo {aux_protocolo} de la tabla protocolo##")
+            # Insertar en valuemedicion en lotes
+            valuemedicion_data = [(p[39], p[40], p[41]) for p in pasos_bloque] #39 = ValorMedido, 40=EstadoMedicion y 41 = Tiempo_V
+            self.cursor.executemany(
+                "INSERT INTO dbfeas_smva_2_0_v1.valuemedicion (ValorMedido, EstadoMedicion, TimeStamp) VALUES (?, ?, ?)",
+                valuemedicion_data
+            )
+            self.cursor.execute("SELECT LAST_INSERT_ID()")  # Obtiene el último ID insertado
+            aux_valuemedicion = int(self.cursor.fetchone()[0]) - resta_aux
+            
+            
+            
+            print(f"el primer id de valuemedicion es {aux_valuemedicion}")
+            # Insertar en mediciones en lotes
+            mediciones_data = [
+                (p[29], p[30], p[31], p[32], p[33], p[34], 
+                p[35], p[36], p[37], aux_valuemedicion + i)
+                for i, p in enumerate(pasos_bloque)
+            ]
+            self.cursor.executemany(
+                """
+                INSERT INTO dbfeas_smva_2_0_v1.mediciones (Name, Descripcion, Escala, Unidad, Rango, SerialNumber, Codigo, Version, 
+                                        listainstrumentos_idListaInstrumentos, valuemedicion_idvaluemedicion) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                mediciones_data
+            )
+            self.cursor.execute("SELECT LAST_INSERT_ID()")  # Obtiene el último ID insertado
+            aux_mediciones = int(self.cursor.fetchone()[0])-resta_aux
+            
+            
+            print(f"el primt id de mediciones es {aux_mediciones}")
+            
+            # Insertar en pasos en lotes
+            pasos_data = [
+                (p[1], p[2], p[3], p[4], p[5], p[6],
+                p[7], p[8], p[9], p[10], p[11], p[12],
+                p[13], p[14], p[15], p[16], p[17], 
+                p[18], p[19], p[20], p[21], p[22], 
+                p[23], p[24], p[25], p[26], p[27],
+                aux_protocolo, val2, aux_mediciones + i)
+                for i, p in enumerate(pasos_bloque)
+            ]
+            self.cursor.executemany(
+                """
+                INSERT INTO dbfeas_smva_2_0_v1.pasos (Name, CriterioPass, Tipo, Estado, Observacion, ResultadoTipico, ResultadoMaximo, ResultadoMinimo, 
+                                TimeStamp, Ajustar, Unidad, Comandos, Saltar, FactorConversion, Imprimible, Habilitado, 
+                                OrdenDeSecuencia, Tipo_Item, Titulo, Inicio_Bloque, Validacion, Tipo_Respuesta, Respuesta_Correcta, 
+                                Offset, Tiempo_Medicion, Simular, Medir_o_Conectar, protocolo_idprotocolo, 
+                                protocolo_protocolos_idProtocolos, mediciones_idmediciones) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                pasos_data
+            )
+        
+        self.cursor.execute("SET FOREIGN_KEY_CHECKS=1;")
+
+        print("fin")
 if __name__ == "__main__":
     bd = SMVA_DB()
     with open("_TEMPS_/protocolo_a_ejecutar.json", "r", encoding="utf-8", errors="ignore") as file:
