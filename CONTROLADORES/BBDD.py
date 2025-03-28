@@ -550,6 +550,21 @@ class SMVA_DB():
         self.cursor.execute("SELECT LAST_INSERT_ID()")  # Obtiene el último ID insertado
         LASTID = int(self.cursor.fetchone()[0])
         return LASTID
+    
+
+    def asociarModuloaProtocolo(self,id_protocolo,id_protocolos,LASTID):
+        """
+        Funcion que debe asociar el protocolo a un modulo con NS
+        """
+        self.cursor.execute("SET FOREIGN_KEY_CHECKS=0;") #Seteo las claves externas en 0
+
+        self.cursor.execute(f"INSERT INTO {self._DATABASE}.protocolo_has_modulos (?, ?, ?)",(id_protocolo,id_protocolos,LASTID))
+
+        self.cursor.execute("SELECT LAST_INSERT_ID()")
+        LASTID = int(self.cursor.fetchone()[0])
+        self.cursor.execute("SET FOREIGN_KEY_CHECKS=1;") #Seteo las claves externas en 1
+
+        return LASTID
 if __name__ == "__main__":
     bd = SMVA_DB()
 
