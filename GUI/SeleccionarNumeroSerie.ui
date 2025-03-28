@@ -22,7 +22,7 @@
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QWidget" name="Modulos_en_disegno" native="true">
-           <widget class="QTableWidget" name="TablaNumeroSerieNuevo">
+           <widget class="QTableWidget" name="TablaConfig">
             <property name="geometry">
              <rect>
               <x>0</x>
@@ -86,7 +86,7 @@
          </item>
          <item>
           <widget class="QWidget" name="Modulos_existentes" native="true">
-           <widget class="QTableWidget" name="tableWidget">
+           <widget class="QTableWidget" name="TablaNumeroSerie">
             <property name="geometry">
              <rect>
               <x>0</x>
@@ -133,17 +133,17 @@
             </column>
             <column>
              <property name="text">
-              <string>Orden</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
               <string>Codigo</string>
              </property>
             </column>
             <column>
              <property name="text">
               <string>Serial Number</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Orden</string>
              </property>
             </column>
             <column>
@@ -366,6 +366,32 @@
          </property>
          <property name="text">
           <string>Estado</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_agrSerialNum">
+         <property name="geometry">
+          <rect>
+           <x>820</x>
+           <y>100</y>
+           <width>141</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>AÑADIR SERIAL NUMBER</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_sigPaso">
+         <property name="geometry">
+          <rect>
+           <x>1080</x>
+           <y>100</y>
+           <width>141</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>SIGUIENTE PASO</string>
          </property>
         </widget>
        </widget>

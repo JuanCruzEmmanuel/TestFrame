@@ -476,10 +476,81 @@ class SMVA_DB():
         self.cursor.execute("SET FOREIGN_KEY_CHECKS=1;")
 
         print("fin")
+
+    def getModulosFromCodigo(self,id_protocolo,id_protocolos):
+        """
+        Se va a encargar de llamar las configuraciones asociadas al codigo\n
+        :id_protocolo: ID del primer bloque(supongo) del protocolo\n
+        :id_protocolos: ID del protocolo\n
+        :return: *list* Lista con todos los numeros de serie que aparecen en el codigo
+        """
+
+        codigo = str(self.getModuloFromIds(id_protocolo=id_protocolo,id_protocolos=id_protocolos)[2]) #El elemento 2 es el codigo
+
+        #Utilizo el metodo ya creado en la base de datos aunque nos podriamos independizar de esta
+        """
+        El procedimiento hace lo siguiente:
+        BEGIN
+        SELECT *
+        FROM modulos
+        WHERE Codigo = val1;
+        END
+        Lo que es muy facil de hacer en una simple consulta
+        """
+        self.cursor.execute("{Call GetModulosFromCodigo(?)}",str(codigo))
+
+        values = self.cursor.fetchall()
+
+        return values
+
+
+    def getModuloFromIds(self,id_protocolo,id_protocolos):
+        """
+        Funcion que a partir de los id de los bloques(si raro) y el id del protocolo obtiene la configuracion....\n
+        :id_protocolo: ID del primer bloque(supongo) del protocolo\n
+        :id_protocolos: ID del protocolo\n
+        :return: Datos referidos a partir de los id's
+        """
+
+        #Voy a usar un stored procedures aunque se puede replicar tranquilamente en codigo
+
+        self.cursor.execute("{Call GetModuloFromIdprotocoloAndProtocolo_endisegno(?,?)}",(id_protocolo,id_protocolos))
+        #Esto me devuelve: idmodulos_endisegno,Nombre,Codigo,Codigo,protocolo_protocolos_idProtocolos,modulos_endisegno_idmodulos_endisegno
+        #En la posicion 3 se va a encontrar el codigo.... creo que lo correcto seria usar un fetchone
+        datos_modulo = self.cursor.fetchone()
+
+        return datos_modulo
+    
+
+    def checkIngresadoExiste(self,values):
+        """
+        Chequea lo que se vaya ingresar como numero de serie no se encuentre ya subido. En caso negativo lo sube\n
+        :values: La fila seleccionada, puede modificarse el ns\n
+        :return: True or False
+        """
+        #valeus = #id,categoria,nombre,codigo,ns,orden,Estado
+        print(values[4])
+        self.cursor.execute(f"""SELECT * FROM {self._DATABASE}.modulos WHERE Categoria= ? AND Nombre= ? AND Orden= ? AND Codigo=? AND SerialNumber = ? AND Estado = ? """,(values[1],values[2],values[5],values[3],values[4],values[6]))
+
+        r = self.cursor.fetchall()
+
+        if len(r)>0:
+            return True
+        else:
+            return False
+        
+    def insertNuevoModulo(self,values):
+        """
+        Crea un nuevo modulo con los valores seleccionados\n
+        :values: La fila seleccionada, puede modificarse el ns\n
+        :return: *LastID*
+         """
+        self.cursor.execute(f"""INSERT INTO {self._DATABASE}.modulos (Categoria, Nombre, Orden, Codigo, SerialNumber, Estado) VALUES (?,?,?,?,?,?) """,(values[1],values[2],values[5],values[3],values[4],values[6]))
+
+        self.cursor.execute("SELECT LAST_INSERT_ID()")  # Obtiene el último ID insertado
+        LASTID = int(self.cursor.fetchone()[0])
+        return LASTID
 if __name__ == "__main__":
     bd = SMVA_DB()
-    with open("_TEMPS_/protocolo_a_ejecutar.json", "r", encoding="utf-8", errors="ignore") as file:
-        protocolo = json.load(file)
-    #Esto me simula la ejecucion externa
-    for p in protocolo:
-        bd.subir_paso_protocolo_y_protocolo(id_protocolo = p["ProtocoloID"],resultado_bloque=p["Resultado"],pasos = p["Pasos"])
+
+    print(bd.getModulosFromCodigo(codigo="Todos los codigos tipo CF"))
