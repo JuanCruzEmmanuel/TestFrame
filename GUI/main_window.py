@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QMainWindow, QPushButton,QTableWidget,QTableWidgetIt
 from PyQt5 import uic
 import json
 from GUI.RunProtocolo import run
+from GUI.AsociarConfig import AsociarConfiguracionInstrumento
 from time import sleep
 class MainWindow(QMainWindow):
     def __init__(self,database = None):
@@ -103,7 +104,12 @@ class MainWindow(QMainWindow):
         if valores_fila[4].lower()=="si":
             try:
                 #print(valores_fila[0])
-                
+                print("se ingreso a configurar instrumento")
+                app = AsociarConfiguracionInstrumento(bbdd=self.database,id_protocolos=valores_fila[0])
+                app.exec_()
+
+                print("se salio de configurar instrumentos")
+
                 self.database.bloquePaso(id = valores_fila[0])
                 print("Se ha copiado el Protocolo en un temporal")
                 self.runProtocolo.cargarDatos() #Le cargo los datos al run 

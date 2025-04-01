@@ -565,7 +565,43 @@ class SMVA_DB():
         self.cursor.execute("SET FOREIGN_KEY_CHECKS=1;") #Seteo las claves externas en 1
 
         return LASTID
+    
+
+    def getConfigPuestoaPartirdeIdDelProtocolo(self,id):
+        """
+        Devuelve la configuracion del puesto a partir del id del protocolo, asi diferente versiones pueden mantener la configuracion\n
+
+        :id: Id del protoclo seleccionado
+        :return: Lista con configuraciones asociadas al id + nombre
+        """
+
+        nombre = self.getNameFromId(id=id) #Obtengo el nombre para no crear una nueva configuracion cada vez que se crea una nueva version de prtocolo
+        self.cursor.execute(f'SELECT * FROM {self._DATABASE}.configuracion WHERE idConfiguracion IN (SELECT configuracion_idConfiguracion FROM {self._DATABASE}.protocolo where protocolos_idProtocolos in (SELECT idProtocolos FROM {self._DATABASE}.protocolos where Name = ?))',nombre)
+
+        CONFIG = self.cursor.fetchall()
+        return CONFIG
+    
+
+    def getNameFromId(self,id):
+        """
+        Devuelve el nombre del protoclo a partir del ID\n
+        :ID: id del protocolo
+        :return: Nombre del protocolo
+        """
+
+        self.cursor.execute(f"SELECT Name from {self._DATABASE}.protocolos WHERE idProtocolos = ?",id)
+
+        NAME = self.cursor.fetchone()[0]
+
+        return NAME
+    
+    def setConfigEnProtocolo(self,id_protocolo,id_config):
+        """
+        Setea la configuracion al protoclo que luego se va a copiar
+        """
+        self.cursor.execute("SET FOREIGN_KEY_CHECKS=0;") #Seteo las claves externas en 0
+        self.cursor.execute(f"UPDATE {self._DATABASE}.protocolo SET configuracion_idConfiguracion = ? WHERE protocolos_idProtocolos = ?",(id_config,id_protocolo))
+        self.cursor.execute("SET FOREIGN_KEY_CHECKS=1;") #Seteo las claves externas en 1
+        print("Se Ha seteado la nueva configuracion")
 if __name__ == "__main__":
     bd = SMVA_DB()
-
-    print(bd.getModulosFromCodigo(codigo="Todos los codigos tipo CF"))

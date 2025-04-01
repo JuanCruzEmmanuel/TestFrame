@@ -25,7 +25,7 @@
    <property name="styleSheet">
     <string notr="true"/>
    </property>
-   <widget class="QTableWidget" name="EXISTENTES">
+   <widget class="QTableWidget" name="TablaExistentes">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -40,8 +40,23 @@
     <property name="frameShadow">
      <enum>QFrame::Plain</enum>
     </property>
+    <column>
+     <property name="text">
+      <string>id</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Nombre</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Puesto</string>
+     </property>
+    </column>
    </widget>
-   <widget class="QTableWidget" name="INSTRUMENTOS">
+   <widget class="QTableWidget" name="TablaInstrumentos">
     <property name="geometry">
      <rect>
       <x>510</x>
@@ -143,6 +158,19 @@
       <width>201</width>
       <height>31</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Avanzar">
+    <property name="geometry">
+     <rect>
+      <x>810</x>
+      <y>122</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>CONTINUAR</string>
     </property>
    </widget>
   </widget>
