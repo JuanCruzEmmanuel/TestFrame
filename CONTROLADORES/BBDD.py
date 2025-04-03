@@ -11,6 +11,10 @@ class SMVA_DB():
         self.vigente = "Vigente"
         self.protocoloLista = None
         self.filterName = ""
+        self.ID_MODELO = None
+        self.ID_BLOQUE_MODELO = None
+        self.ID_PROTOCOLO_CREADO = None
+        self.ID_PROTOCOLOS_BLOQUE_CREADO = None
 
     def connect(self,test=True):
         """
@@ -121,7 +125,7 @@ class SMVA_DB():
 
         # Consulta para obtener el protocolo principal
         query = f"""
-                SELECT idprotocolo, Name, ordenSecuencia 
+                SELECT idprotocolo, Name, ordenSecuencia, configuracion_idConfiguracion
                 FROM {self._DATABASE}.protocolo
                 WHERE protocolos_idProtocolos = {id};
                 """
@@ -134,7 +138,7 @@ class SMVA_DB():
 
         # Procesar cada protocolo
         for protocolo in protocolos:
-            protocolo_id, protocolo_name, ordenSecuencia = protocolo
+            protocolo_id, protocolo_name, ordenSecuencia, configuracion_idConfiguracion = protocolo
 
             # Consulta para obtener los pasos del protocolo
             query = f"""
@@ -203,26 +207,39 @@ class SMVA_DB():
         TIPOPROTOCOLO = MODELO[4]
         COMENTARIOPROTOCOLO = MODELO[5]
         RESULTADOPROTOCOLO = "NUEVO"
-
+        #Creo un nuevo protocolo con los datos del modelo, y obtengo su ID
         self.cursor.execute("{CALL insertProtocolosAndLastId_2_0 (?,?,?,?,?,?)}",(NOMBREPROTOCOLO,VERSIONPROTOCOLO,VIGENCIAPROTOCOLO,TIPOPROTOCOLO,COMENTARIOPROTOCOLO,RESULTADOPROTOCOLO))
 
+
+        self.ID_MODELO = id
+        
         LASTID = self.cursor.fetchall()[0] #Hasta este punto ya tengo el nuevo protocolo. Ahora se debe crear los bloques y los pasos
+        self.ID_PROTOCOLO_CREADO = LASTID #Me guardo el ID copiado
         self.cursor.execute("{CALL GetprotocoloFromIdProtocolos (?)}",(id))
 
         BLOQUEMODELOS = self.cursor.fetchall() #Obtengo los bloques del protocolo modelo
-        print("Ingresa al loop")
-        for BLOQUE in BLOQUEMODELOS:
+        
+        #self.cursor.execute("{CALL GetprotocoloFromIdProtocolos (?)}",(LASTID[0])) #Necesito el primer ID bloque del nuevo protocolo
 
+        #self.ID_PROTOCOLOS_BLOQUE_CREADO = self.cursor.fetchall()[0] #Necesito el primer ID bloque del nuevo protocolo
+
+        for index, BLOQUE in enumerate(BLOQUEMODELOS):
             NOMBREBLOQUE = BLOQUE[1]
             EQUIPOBLOQUE = BLOQUE[2]
             REVISIONBLOQUE = BLOQUE[3]
             ESTADOBLOQUE = BLOQUE[4]
             IDBLOQUE = BLOQUE[0] #CON ESTO VAMOS A OBTENER LA INFO DE LOS INSTRUMENTOS "creo"
             #print(IDBLOQUE)
+            if index == 0:
+                self.ID_BLOQUE_MODELO =IDBLOQUE #Obtengo el primer valor del id bloque protocolo
+            CONFIG_IDCONFIG = BLOQUE[11]
             IDCONFIG = BLOQUE[12]
             SECUENCIABLOQUE = BLOQUE[13]
-            self.cursor.execute("{CALL insertprotocoloAndLastId (?,?,?,?,?,?,?,?,?,?,?,?,?)}",(NOMBREBLOQUE,EQUIPOBLOQUE,REVISIONBLOQUE,ESTADOBLOQUE,"","","","","NUEVO",int(str(LASTID[0])),0,0,SECUENCIABLOQUE))
-            IDCAMBIO = self.cursor.fetchall()[0] #Obtengo el idea nuevo
+            self.cursor.execute("{CALL insertprotocoloAndLastId (?,?,?,?,?,?,?,?,?,?,?,?,?)}",(NOMBREBLOQUE,EQUIPOBLOQUE,REVISIONBLOQUE,ESTADOBLOQUE,"","","","","NUEVO",int(str(LASTID[0])),CONFIG_IDCONFIG,0,SECUENCIABLOQUE))
+            
+            IDCAMBIO = self.cursor.fetchall()[0] #Obtengo el id nuevo
+            if index == 0:
+                self.ID_PROTOCOLOS_BLOQUE_CREADO = IDCAMBIO
             #En este punto empiza a hacer varias cosas en paralelo el SMVA voy a intentar replicarlas toda
             #---------------------ASOCIAR EQUIPO Y PROTOCOLO EN DISEÑO-----------------------------------------------#
             self.cursor.execute("{CALL GetEquipoFromIdprotocoloAndProtocolo_endisegno (?,?)}",(IDBLOQUE,id))
@@ -477,8 +494,10 @@ class SMVA_DB():
 
         print("fin")
 
+    ######## Asiciados al numero de serie ###################
     def getModulosFromCodigo(self,id_protocolo,id_protocolos):
         """
+        #CABE DECIR QUE ESTA FUNCIONA PARA EL PROTOCOLO MODELO
         Se va a encargar de llamar las configuraciones asociadas al codigo\n
         :id_protocolo: ID del primer bloque(supongo) del protocolo\n
         :id_protocolos: ID del protocolo\n
@@ -529,7 +548,7 @@ class SMVA_DB():
         :return: True or False
         """
         #valeus = #id,categoria,nombre,codigo,ns,orden,Estado
-        print(values[4])
+        #print(values[4])
         self.cursor.execute(f"""SELECT * FROM {self._DATABASE}.modulos WHERE Categoria= ? AND Nombre= ? AND Orden= ? AND Codigo=? AND SerialNumber = ? AND Estado = ? """,(values[1],values[2],values[5],values[3],values[4],values[6]))
 
         r = self.cursor.fetchall()
@@ -554,18 +573,31 @@ class SMVA_DB():
 
     def asociarModuloaProtocolo(self,id_protocolo,id_protocolos,LASTID):
         """
+        #Hace referencia al nuevo protocolo, ya que inserta una nueva fila
         Funcion que debe asociar el protocolo a un modulo con NS
         """
+        #####SE deben actualizar todoooos los bloques, no solo el primer.....
+        self.cursor.execute("{CALL GetprotocoloFromIdProtocolos (?)}",(id_protocolos))
+        L = len(self.cursor.fetchall())
         self.cursor.execute("SET FOREIGN_KEY_CHECKS=0;") #Seteo las claves externas en 0
+        if L >1:
+            BLOQUES_ID = [id_protocolo+i for i in range(L)]
+            data = [(BLOQUES_ID[i], id_protocolos, LASTID) for i in range(len(BLOQUES_ID))]
+            #Se tiene que crear un arreglo con todos los id, y luego usar un executemany
+            self.cursor.executemany(f"INSERT INTO {self._DATABASE}.protocolo_has_modulos (protocolo_idprotocolo, protocolo_protocolos_idProtocolos, modulos_idModulos) VALUES (?,?,?)",data)
+            self.cursor.execute("SELECT LAST_INSERT_ID()")
+            LASTID = int(self.cursor.fetchone()[0])
+        else:
+            self.cursor.execute(f"INSERT INTO {self._DATABASE}.protocolo_has_modulos (protocolo_idprotocolo, protocolo_protocolos_idProtocolos, modulos_idModulos) VALUES (?,?,?)",(id_protocolo,id_protocolos,LASTID))
 
-        self.cursor.execute(f"INSERT INTO {self._DATABASE}.protocolo_has_modulos (?, ?, ?)",(id_protocolo,id_protocolos,LASTID))
+            self.cursor.execute("SELECT LAST_INSERT_ID()")
+            LASTID = int(self.cursor.fetchone()[0])
 
-        self.cursor.execute("SELECT LAST_INSERT_ID()")
-        LASTID = int(self.cursor.fetchone()[0])
         self.cursor.execute("SET FOREIGN_KEY_CHECKS=1;") #Seteo las claves externas en 1
 
         return LASTID
     
+    #######ASOCIADO A CAMBIAR LA CONFIGURACION##############################
 
     def getConfigPuestoaPartirdeIdDelProtocolo(self,id):
         """
@@ -603,5 +635,7 @@ class SMVA_DB():
         self.cursor.execute(f"UPDATE {self._DATABASE}.protocolo SET configuracion_idConfiguracion = ? WHERE protocolos_idProtocolos = ?",(id_config,id_protocolo))
         self.cursor.execute("SET FOREIGN_KEY_CHECKS=1;") #Seteo las claves externas en 1
         print("Se Ha seteado la nueva configuracion")
+
 if __name__ == "__main__":
     bd = SMVA_DB()
+    bd.asociarModuloaProtocolo(415424,29901,16963)

@@ -4,9 +4,11 @@ from PyQt5 import uic
 import json
 from GUI.RunProtocolo import run
 from GUI.AsociarConfig import AsociarConfiguracionInstrumento
+from GUI.IngresarNumeroSerie import IngresarNumeroSerie
 from time import sleep
+import sys
 class MainWindow(QMainWindow):
-    def __init__(self,database = None):
+    def __init__(self,database = None,version = "0.0.0"):
         super().__init__()
         self.database = database
         uic.loadUi('GUI/MAIN.ui', self)  # Carga el archivo log.ui
@@ -15,7 +17,7 @@ class MainWindow(QMainWindow):
         self.tablaProtocolo = self.findChild(QTableWidget, "tablaProtocolo") #No se si esto es necesario realmente
         self.nombreFiltro = self.findChild(QLineEdit, "nombreFiltro")
         self.apFiltroNombre = self.findChild(QPushButton, "apFiltroNombre")
-
+        self.VERSION.setText(version)
         self.apFiltroNombre.clicked.connect(self.filtrar_tabla_por_nombre)
         self.UpdateBoton.clicked.connect(self.update)
         self.EjecutarBoton.clicked.connect(self.ejecutar_fila_seleccionada)
@@ -101,23 +103,39 @@ class MainWindow(QMainWindow):
 
         #print("ID Del procolo: ", valores_fila[0])
         #print("Nombre del protocolo: ", valores_fila[1])
-        if valores_fila[4].lower()=="si":
+        if valores_fila[4].lower()=="si": #Significa que se encuentra vigente
             try:
                 #print(valores_fila[0])
                 print("se ingreso a configurar instrumento")
                 app = AsociarConfiguracionInstrumento(bbdd=self.database,id_protocolos=valores_fila[0])
                 app.exec_()
-
                 print("se salio de configurar instrumentos")
 
                 self.database.bloquePaso(id = valores_fila[0])
                 print("Se ha copiado el Protocolo en un temporal")
+
+                #######ASOCIAR NUMERO DE SERIE#################
+                #Lo tengo que hacer aca, porque es el lugar donde ya se encuentra el nuevo protocolo creado, debo asociarle un Numero de Serie
+                #Debido a esto, muy posiblemente haya un problema cuando se ingrese el numero de serie
+
+                print(f"El id del protocolo es {self.database.ID_PROTOCOLO_CREADO[0]}")
+                print(f"El primer id de bloque es {self.database.ID_PROTOCOLOS_BLOQUE_CREADO[0]}")
+
+                app_serial = IngresarNumeroSerie(bbdd = self.database,
+                                                 id_protocolo_modelo=valores_fila[0],
+                                                 id_protocolos=str(self.database.ID_PROTOCOLO_CREADO[0]),
+                                                 id_protocolo=str(self.database.ID_PROTOCOLOS_BLOQUE_CREADO[0])
+                                                 )
+                app_serial.exec_()
+
+
                 self.runProtocolo.cargarDatos() #Le cargo los datos al run 
                 #self.runProtocolo.cantidadBloques() #Le cargo la cantidad de bloques del protocolo
-                self.runProtocolo.show() #Muestro la pantalla
+                #self.runProtocolo.show() #Muestro la pantalla
                 self.runProtocolo.mostrar_bloques_protocolo()
                 #self.runProtocolo.loop_ejecucion()
                 self.runProtocolo.iniciarEjecucion() #Inicia la ejecucion del segundo hilo
+                self.runProtocolo.exec_()
             except:
                 raise("NO SE PUDO LEER EL PATH")
         else:

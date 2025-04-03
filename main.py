@@ -92,6 +92,7 @@ from GUI.log import LogWindow
 from CONTROLADORES.BBDD import SMVA_DB
 
 def main():
+    __VERSION__ = "0.9.0"
     database = SMVA_DB() #Cargo la base de datos
     app = QApplication(sys.argv)
 
@@ -100,7 +101,7 @@ def main():
     login_window.show()
 
     # Crear la ventana principal pero no mostrarla aún
-    main_window = MainWindow(database=database)
+    main_window = MainWindow(database=database,version=__VERSION__)
 
     # Conectar el login exitoso con la apertura de la ventana principal
     def open_main_window():

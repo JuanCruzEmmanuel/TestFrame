@@ -9,7 +9,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from CONTROLADORES.BBDD import SMVA_DB
 
 class IngresarNumeroSerie(QDialog):
-    def __init__(self,bbdd=None,id_protocolos=1,id_protocolo=1):
+    def __init__(self,bbdd=None,id_protocolo_modelo=1,id_protocolos=1,id_protocolo=1):
         """
         Abre la UI para ingresar numero de serie
 
@@ -18,6 +18,7 @@ class IngresarNumeroSerie(QDialog):
         uic.loadUi(r'GUI\SeleccionarNumeroSerie.ui', self)  # Carga el archivo log.ui
         self.id_protocolos = id_protocolos
         self.id_protocolo = id_protocolo
+        self.id_protocolo_modelo = id_protocolo_modelo
         self.LASTID = None #Id que se crea
         self.bbdd = bbdd
         self.info_modulo = None #Auxiliar 1
@@ -27,6 +28,14 @@ class IngresarNumeroSerie(QDialog):
         self.TablaConfig.clicked.connect(self.showModulosConNS)
         self.TablaNumeroSerie.clicked.connect(self.updateValues)
         self.NewSerialNumber.clicked.connect(self.updateNumeroSerie)
+        self.Next.clicked.connect(self.asociarNumeroSerie)
+    
+    def asociarNumeroSerie(self):
+
+        if self.LASTID != None:
+            print(self.id_protocolos,self.id_protocolo,self.LASTID)
+            self.bbdd.asociarModuloaProtocolo(id_protocolos = self.id_protocolos,id_protocolo=self.id_protocolo,LASTID=self.LASTID)
+            self.close()  # Cierra la ventana
     def updateNumeroSerie(self):
         """
         Se encarga de actualizar self.info_modulo con el numero de serie para luego subirlo
@@ -51,13 +60,13 @@ class IngresarNumeroSerie(QDialog):
         Muestra los valores de la tabla, con esta luego se seleccionara el codigo referente a los equipos/modulos
         """
         if self.info_modulo ==None:
-            info_modulo = self.bbdd.getModuloFromIds(self.id_protocolos,self.id_protocolo) #Esto me devuelve: idmodulos_endisegno,Nombre,Codigo,protocolo_protocolos_idProtocolos,modulos_endisegno_idmodulos_endisegno
+            #Tengo que usar los valores de protocolo modelo para llamar la funcion
+            info_modulo = self.bbdd.getModuloFromIds(self.bbdd.ID_BLOQUE_MODELO,self.bbdd.ID_MODELO) #Esto me devuelve: idmodulos_endisegno,Nombre,Codigo,protocolo_protocolos_idProtocolos,modulos_endisegno_idmodulos_endisegno
             self.TablaConfig.setRowCount(len(info_modulo))
             self.TablaConfig.setItem(0, 0, QTableWidgetItem(str(info_modulo[0])))
             self.TablaConfig.setItem(0, 1, QTableWidgetItem(str(info_modulo[1])))
             self.TablaConfig.setItem(0, 2, QTableWidgetItem(str(info_modulo[2])))
             self.TablaConfig.setItem(0, 3, QTableWidgetItem(""))
-
             self.info_modulo = info_modulo
         else:
             self.TablaConfig.setRowCount(len(self.info_modulo))
@@ -69,7 +78,7 @@ class IngresarNumeroSerie(QDialog):
     def showModulosConNS(self):
         print(self.info_modulo)
         if self.info_modulo !=None:
-            getInfoNS = self.bbdd.getModulosFromCodigo(self.id_protocolos,self.id_protocolo)
+            getInfoNS = self.bbdd.getModulosFromCodigo(self.bbdd.ID_BLOQUE_MODELO,self.bbdd.ID_MODELO)
             self.TablaNumeroSerie.setRowCount(len(getInfoNS))
             for row, values in enumerate(getInfoNS):
 
@@ -95,11 +104,11 @@ class IngresarNumeroSerie(QDialog):
         self.Nombre.setText(rowValue[2])
         self.Codigo.setText(rowValue[3])
         self.SerialNumber.setText(rowValue[4])
-
+        self.LASTID = rowValue[0] #Selecciono el ID en caso de cargarlo.....
         self.info_modulo_ns = rowValue #id,categoria,nombre,codigo,ns,orden,Estado
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     bd = SMVA_DB()
-    mw = IngresarNumeroSerie(bd,204381,16067)
+    mw = IngresarNumeroSerie(bd,415420,29897) #id_bloque,id_protocolo
     mw.show()
     sys.exit(app.exec_())

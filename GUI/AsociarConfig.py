@@ -5,8 +5,8 @@ from PyQt5.QtWidgets import QMainWindow,QApplication,QDialog,QTableWidgetItem
 from PyQt5.QtCore import pyqtSignal
 import sys
 from PyQt5 import uic
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from CONTROLADORES.BBDD import SMVA_DB
+#sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+#from CONTROLADORES.BBDD import SMVA_DB
 
 class AsociarConfiguracionInstrumento(QDialog):
     def __init__(self,bbdd=None,id_protocolos=1):
@@ -55,13 +55,13 @@ class AsociarConfiguracionInstrumento(QDialog):
         if self.config_seleccionada != None:
             idconfig = self.config_seleccionada[0]
 
-            self.bbdd.setConfigEnProtocolo(idconfig,self.ID_PROTOCOLOS)
+            self.bbdd.setConfigEnProtocolo(id_config=idconfig,id_protocolo=self.ID_PROTOCOLOS)
             self.close()  # Cierra la ventana
         else:
             pass
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    bd = SMVA_DB()
-    mw = AsociarConfiguracionInstrumento(bd,id_protocolos=25017)
-    mw.show()
-    sys.exit(app.exec_())
+    #bd = SMVA_DB()
+    #mw = AsociarConfiguracionInstrumento(bd,id_protocolos=25017)
+    #mw.show()
+    #sys.exit(app.exec_())
