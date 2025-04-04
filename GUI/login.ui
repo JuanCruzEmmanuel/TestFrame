@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>559</width>
-    <height>206</height>
+    <width>545</width>
+    <height>186</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,7 +45,7 @@
         </rect>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(44, 62, 80);</string>
+        <string notr="true">background-color: rgb(238, 238, 238);</string>
        </property>
        <property name="frameShape">
         <enum>QFrame::StyledPanel</enum>
@@ -64,16 +64,14 @@
         </property>
         <property name="styleSheet">
          <string notr="true">QLineEdit {
-background-color: rgb(33, 48, 62);
-	color: rgb(255, 255, 255);
-	
+background-color: rgb(199, 199, 199);
  border: 2px solid gray;
-border-color: rgb(255, 255, 255);
+border-color: rgb(0, 0, 0);
  border-radius: 10px;
 
 }
 
-
+font: 75 11pt &quot;MS Shell Dlg 2&quot;;
 
 </string>
         </property>
@@ -101,15 +99,12 @@ border-color: rgb(255, 255, 255);
         </property>
         <property name="styleSheet">
          <string notr="true">QLineEdit {
-background-color: rgb(33, 48, 62);
-	color: rgb(255, 255, 255);
+background-color: rgb(199, 199, 199);
  border: 2px solid gray;
-	border-color: rgb(255, 255, 255);
+border-color: rgb(0, 0, 0);
  border-radius: 10px;
 
 }
-
-
 
 </string>
         </property>
@@ -120,7 +115,7 @@ background-color: rgb(33, 48, 62);
          <string/>
         </property>
         <property name="echoMode">
-         <enum>QLineEdit::Normal</enum>
+         <enum>QLineEdit::Password</enum>
         </property>
         <property name="cursorMoveStyle">
          <enum>Qt::LogicalMoveStyle</enum>
@@ -135,12 +130,22 @@ background-color: rgb(33, 48, 62);
           <height>31</height>
          </rect>
         </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="contextMenuPolicy">
+         <enum>Qt::NoContextMenu</enum>
+        </property>
         <property name="styleSheet">
-         <string notr="true">
-background-color: qlineargradient(spread:pad, x1:0.034, y1:0.431818, x2:1, y2:0.477273, stop:0 rgba(106, 187, 243, 255), stop:1 rgba(164, 133, 255, 255));
+         <string notr="true">background-color: rgb(212, 212, 212);
 
-font: 75 11pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(255, 255, 255);
+font: 75 15pt &quot;MS Shell Dlg 2&quot;;
+
+
+color: rgb(0, 0, 0);
 
 border : 1px solid black;   
 border-radius : 10px;</string>
@@ -148,11 +153,14 @@ border-radius : 10px;</string>
         <property name="text">
          <string>LOGIN</string>
         </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
         <property name="autoDefault">
          <bool>false</bool>
         </property>
         <property name="default">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="flat">
          <bool>false</bool>
