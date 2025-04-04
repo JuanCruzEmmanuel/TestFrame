@@ -581,7 +581,7 @@ class SMVA_DB():
         L = len(self.cursor.fetchall())
         self.cursor.execute("SET FOREIGN_KEY_CHECKS=0;") #Seteo las claves externas en 0
         if L >1:
-            BLOQUES_ID = [id_protocolo+i for i in range(L)]
+            BLOQUES_ID = [int(id_protocolo) + i for i in range(L)]
             data = [(BLOQUES_ID[i], id_protocolos, LASTID) for i in range(len(BLOQUES_ID))]
             #Se tiene que crear un arreglo con todos los id, y luego usar un executemany
             self.cursor.executemany(f"INSERT INTO {self._DATABASE}.protocolo_has_modulos (protocolo_idprotocolo, protocolo_protocolos_idProtocolos, modulos_idModulos) VALUES (?,?,?)",data)

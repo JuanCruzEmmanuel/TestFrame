@@ -107,7 +107,7 @@ class MainWindow(QMainWindow):
             try:
                 #print(valores_fila[0])
                 print("se ingreso a configurar instrumento")
-                app = AsociarConfiguracionInstrumento(bbdd=self.database,id_protocolos=valores_fila[0])
+                app = AsociarConfiguracionInstrumento(bbdd=self.database,id_protocolos=valores_fila[0]) #pop up de configurar instrumentos
                 app.exec_()
                 print("se salio de configurar instrumentos")
 
@@ -125,7 +125,7 @@ class MainWindow(QMainWindow):
                                                  id_protocolo_modelo=valores_fila[0],
                                                  id_protocolos=str(self.database.ID_PROTOCOLO_CREADO[0]),
                                                  id_protocolo=str(self.database.ID_PROTOCOLOS_BLOQUE_CREADO[0])
-                                                 )
+                                                 ) #pop up de ingreso de n.s.
                 app_serial.exec_()
 
 
@@ -135,7 +135,7 @@ class MainWindow(QMainWindow):
                 self.runProtocolo.mostrar_bloques_protocolo()
                 #self.runProtocolo.loop_ejecucion()
                 self.runProtocolo.iniciarEjecucion() #Inicia la ejecucion del segundo hilo
-                self.runProtocolo.exec_()
+                self.runProtocolo.show()
             except:
                 raise("NO SE PUDO LEER EL PATH")
         else:
