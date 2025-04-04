@@ -23,8 +23,9 @@ Se dividirá en diferentes tópicos: Interfaz Gráfica, Funciones, Instrumentos,
   
 - **Pantalla para Selección de Configuración:**
   - Mostrar configuraciones creadas.
-  - Permitir la creación de nuevas configuraciones.
-  - Permitir eliminar configuraciones.
+  - Seleccionar la configuracion
+  - Permitir la creación de nuevas configuraciones. (Pendiente)
+  - Permitir eliminar configuraciones. (Pendiente)
 
 - **Pantalla Selección Número de Serie:**
   - Permitir seleccionar número de serie ya existente.
@@ -54,9 +55,9 @@ Se dividirá en diferentes tópicos: Interfaz Gráfica, Funciones, Instrumentos,
     - Visor de rangos.
     - Permitir completar.
   - **Pantalla de Ejecución Manual (Esencial):**
-    - Botón de salto (Esencial).
-    - Botón automático/manual.
-    - Botón avanzar.
+    - Botón de salto (Esencial). (Pendiente)
+    - Botón automático/manual. (Pendiente)
+    - Botón avanzar. (Pendiente)
 
 ## BASE DE DATOS
 
