@@ -200,7 +200,7 @@ border-radius : 20px;</string>
         <property name="styleSheet">
          <string notr="true">QLineEdit {
 background-color: rgb(245, 245, 245);
-	color: rgb(255, 255, 255);
+	color: rgb(0, 0, 20);
 	
  border: 2px solid gray;
 border-color: rgb(0, 0, 0);
@@ -208,6 +208,9 @@ border-color: rgb(0, 0, 0);
 
 }
 </string>
+        </property>
+        <property name="text">
+         <string/>
         </property>
        </widget>
        <widget class="QPushButton" name="Vigencia">
@@ -412,7 +415,7 @@ border-radius : 10px;</string>
         <property name="styleSheet">
          <string notr="true">QLineEdit {
 background-color: rgb(245, 245, 245);
-	color: rgb(255, 255, 255);
+	color: rgb(0, 0, 20);
 	
  border: 2px solid gray;
 border-color: rgb(0, 0, 0);
@@ -420,6 +423,9 @@ border-color: rgb(0, 0, 0);
 
 }
 </string>
+        </property>
+        <property name="text">
+         <string/>
         </property>
        </widget>
        <widget class="QPushButton" name="apFiltroNombre">
