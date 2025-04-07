@@ -15,7 +15,7 @@ class SMVA_DB():
         self.ID_BLOQUE_MODELO = None
         self.ID_PROTOCOLO_CREADO = None
         self.ID_PROTOCOLOS_BLOQUE_CREADO = None
-
+        self.saltos_protocolo = {}
     def connect(self,test=True):
         """
         FUNCION QUE SE ENCARGA DE CONECTAR A LA BD y se puede trabajar directamente con CURSORES

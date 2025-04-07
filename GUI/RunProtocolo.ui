@@ -187,7 +187,7 @@
           <enum>QAbstractScrollArea::AdjustIgnored</enum>
          </property>
          <property name="autoScrollMargin">
-          <number>5</number>
+          <number>1</number>
          </property>
          <property name="tabKeyNavigation">
           <bool>false</bool>

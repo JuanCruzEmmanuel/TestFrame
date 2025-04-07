@@ -168,6 +168,7 @@ class WorkerThread(QThread):
         self.driverInstrumento = driverInstrumentos()
 
         self.wait_until_response = False
+        self.VERIFICACION_FLAG = False #bandera para controlar la verificacion
     def pausarProtocolo(self):
         self.pausa = True
 
@@ -257,7 +258,47 @@ class WorkerThread(QThread):
 
     def verificacion(self):
         print("Ingreso a verificación")
-        sleep(1)  # Pausa al ingresar a verificación
+        COMANDO_SPLIT = self.PASO["Comandos"].split("-") #separo por los guiones P.E. ;VERIFICAR:BLOQUE"32"-PASO"2"-"PROSIM8"
+        COMANDO_DIC = {} #Es necesario trabajar los datos de manera eficiente
+        for splited in COMANDO_SPLIT:
+            if "bloque" in splited.lower():
+                valor = splited.split('"')[1]
+                COMANDO_DIC["Bloque"] = int(valor)
+            elif "paso" in splited.lower():
+                valor = splited.split('"')[1]
+                COMANDO_DIC["Paso"] = int(valor)
+            else:
+                if ";" in splited: #aveces viene con una etiqueta, por lo que es necesario eliminarla
+                    splited = splited.split(";")[0]
+                splited_busqueda =splited.split('"')[1]
+                COMANDO_DIC["Valor"] = splited_busqueda
+
+        """
+        Hasta este punto vengo de un str:VERIFICAR:BLOQUE"32"-PASO"2"-"PROSIM8"
+        y lo transformo en el siguiente diccionario:
+        {
+        "Bloque":int->32,
+        "Paso":int->2,
+        "Valor":str->PROSIM8
+        }
+        """
+        #Parte logica de la busqueda, hace una pasada Rapida a todos los pasos del protocolo hasta encontrar las indicaciones.
+        _N_BLOQUE_ = 0
+        for bloque in self.protocolo:
+            if _N_BLOQUE_ == COMANDO_DIC["Bloque"]:
+                _N_PASOS_ = 0
+                for paso in bloque["Pasos"]:
+                    if _N_PASOS_ == COMANDO_DIC["Paso"]:
+                        if paso["Resultado"] == COMANDO_DIC["Valor"]:
+                            self.VERIFICACION_FLAG = True
+                            break
+                        else:
+                            self.VERIFICACION_FLAG = False
+                            break
+                    _N_PASOS_ +=1
+            _N_BLOQUE_ +=1
+                
+        #sleep(1)  # Pausa al ingresar a verificación
 
     def run(self):
         for bloque_idx, bloque in enumerate(self.protocolo):
