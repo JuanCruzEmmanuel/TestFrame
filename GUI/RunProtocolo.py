@@ -165,10 +165,12 @@ class WorkerThread(QThread):
 
         self.listaPasos = []
         self.pausa = False
-        self.driverInstrumento = driverInstrumentos()
+        self.driverInstrumento = driverInstrumentos(BASE_DATO=self.database)
 
         self.wait_until_response = False
         self.VERIFICACION_FLAG = False #bandera para controlar la verificacion
+        self.I_BLOQUE = "NO_SALTO"
+        self.J_BLOQUE = "NO_SALTO"
     def pausarProtocolo(self):
         self.pausa = True
 
@@ -178,7 +180,7 @@ class WorkerThread(QThread):
         self.pausa = False
 
     def ejecutarPaso(self, paso):
-        self.PASO = paso
+        self.PASO = paso #Configuro el self.PASO
         self.paso_ejecucion = paso["Nombre"]
         sleep(1)  # Pausa antes de ejecutar cada paso
         item = self.TIPO_ITEM[paso["Tipo_Item"]]()
@@ -240,14 +242,15 @@ class WorkerThread(QThread):
         sleep(t)
         #print("Ingreso a programación")
         
-        valor = self.driverInstrumento.readComando(CMD=self.PASO["Comandos"])
+        valor,i_bloque,j_pasos = self.driverInstrumento.readComando(CMD=self.PASO["Comandos"],SALTO_CONDICIONAL=self.VERIFICACION_FLAG)
         self.procesarResultado(valor=valor)
-
+        self.I_BLOQUE = i_bloque
+        self.J_BLOQUE = j_pasos
     def medicion(self):
         t = float(self.PASO["Tiempo_Medicion"]) / 1000  # Para pasarlo a segundos
         sleep(t)
         print("Ingreso a medición")
-        valor = self.driverInstrumento.readComando(CMD=self.PASO["Comandos"])
+        valor,i_bloque,j_pasos = self.driverInstrumento.readComando(CMD=self.PASO["Comandos"],SALTO_CONDICIONAL=self.VERIFICACION_FLAG)
         print(valor)
         self.procesarResultado(valor=valor)
         
@@ -340,6 +343,13 @@ class WorkerThread(QThread):
             self.progreso.emit(f"Ejecutando bloque {i + 1} de {len(self.protocolo)}")
             #for paso in self.protocolo[i]["Pasos"]:
             while j < len(self.protocolo[i]["Pasos"]):
+                if self.I_BLOQUE !="NO_SALTO" and self.J_BLOQUE !="NO_SALTO":
+                    i = int(self.I_BLOQUE)
+                    j = int(self.J_BLOQUE)
+                    self.J_BLOQUE = "NO_SALTO"
+                    self.I_BLOQUE = "NO_SALTO"
+                    self.VERIFICACION_FLAG = False # Esto tal vez deba ser un arreglo tupla (False, False)
+
                 N = 0
                 while self.pausa:
                     sleep(1)
