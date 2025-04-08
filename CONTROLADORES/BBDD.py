@@ -16,6 +16,7 @@ class SMVA_DB():
         self.ID_PROTOCOLO_CREADO = None
         self.ID_PROTOCOLOS_BLOQUE_CREADO = None
         self.saltos_protocolo = {}
+        self.SALTOS_CONDICIONALES = {}
     def connect(self,test=True):
         """
         FUNCION QUE SE ENCARGA DE CONECTAR A LA BD y se puede trabajar directamente con CURSORES
@@ -195,6 +196,15 @@ class SMVA_DB():
             json.dump(resultado_json, json_file, ensure_ascii=False, indent=4)
 
         print(f"Archivo JSON guardado correctamente en '_TEMPS_/protocolo_a_ejecutar.json'.")
+        #DECIDI AGREGAR ESTA SECCION PARA QUE LOS SALTOS CONDICIONALES YA ESTEN DISPONIBLES DESDE EL MOMENTO 0
+        for i, bloque in enumerate(resultado_json):
+            for j, paso in enumerate(bloque["Pasos"]):
+                comandos = paso.get("Comandos", "")
+                if "ETIQ" in comandos:
+                    partes = comandos.split('"')
+                    if len(partes) > 1:
+                        etiqueta = partes[1]
+                        self.SALTOS_CONDICIONALES[etiqueta] = {"i": i, "j": j} #VARIABLE QUE CONTROLA LOS SALTOS CONDICIONALES
 
     def ID_PROTOCOLO_COPIA(self,id="1"):
         self.cursor.execute("{CALL selectProtocolosFromId (?)}",(id))
