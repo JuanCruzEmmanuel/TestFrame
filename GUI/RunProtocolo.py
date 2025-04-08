@@ -301,19 +301,33 @@ class WorkerThread(QThread):
         #sleep(1)  # Pausa al ingresar a verificación
 
     def run(self):
-        for bloque_idx, bloque in enumerate(self.protocolo):
-            self.BLOQUE = bloque #Me va a representar el bloque que estoy ejecutando para luego evaluar su estado
+
+        """
+        El run se venia ejecutando mediante un ciclo for, el problema que he notado
+        es que de este modo ejecuciones hacia delante y hacia atras se volverian muy complicadas
+        de trabajar, ya que for es una estructura puramente secuancial.
+        for 0, for 1, for 2, ..... ,for N; en el caso de adelantar secuencia seria "facil"
+        pero el problema existe cuando se quiere saltar de manera manual o se realiza un salto condicional hacia atras
+        por esta razon he decidido cambiar el ciclo por un while controlados por indices "i" y "j"
+        indice i--->Controla los bloques
+        indice j--->Controla los pasos
+        """
+        i = 0 #Indice de bloque
+        #for bloque_idx, bloque in enumerate(self.protocolo):
+        while i < len(self.protocolo):
+            j = 0 #indice de paso
+            self.BLOQUE = self.protocolo[i] #Me va a representar el bloque que estoy ejecutando para luego evaluar su estado
             if self.N_PROTOCOLO_ID == 0:
                 self.N_PROTOCOLO_ID = 1 #para que genere problema
                 #print("DEBUG: INGRESO CON BLOQUE 0")
-                ID_BLOQUE_EJECUCION = bloque["ProtocoloID"] #En el caso que sea 0 toma como referencia el id de ese bloque
+                ID_BLOQUE_EJECUCION = self.protocolo[i]["ProtocoloID"] #En el caso que sea 0 toma como referencia el id de ese bloque
             else:
-                if ID_BLOQUE_EJECUCION == bloque["ProtocoloID"]: #Tengo que comparar si el bloque actual es el mismo
+                if ID_BLOQUE_EJECUCION == self.protocolo[i]["ProtocoloID"]: #Tengo que comparar si el bloque actual es el mismo
                     pass #No hace nada
                 else:#Debe enviarse la señal de la base de datos
-                    aux = self.protocolo[bloque_idx-1]
+                    aux = self.protocolo[i-1]
                     self.database.subir_paso_protocolo_y_protocolo(id_protocolo = aux["ProtocoloID"],resultado_bloque = aux["Resultado"],pasos = aux["Pasos"]) #Se sube el archivo previo
-                    ID_BLOQUE_EJECUCION = bloque["ProtocoloID"] #Debo actualizar el bloque ID ejecucion
+                    ID_BLOQUE_EJECUCION = self.protocolo[i]["ProtocoloID"] #Debo actualizar el bloque ID ejecucion
                     
             self.UpdateTablaBloque.emit()
             while self.pausa:
@@ -321,11 +335,11 @@ class WorkerThread(QThread):
             if not self.running:
                 self.detenido.emit()
                 return
-            self.secuenciaBloque.emit(bloque["ordenSecuencia"])
-            self.bloqueNombre.emit(bloque["Nombre"])
-            self.progreso.emit(f"Ejecutando bloque {bloque_idx + 1} de {len(self.protocolo)}")
-            for paso in bloque["Pasos"]:
-
+            self.secuenciaBloque.emit(self.protocolo[i]["ordenSecuencia"])
+            self.bloqueNombre.emit(self.protocolo[i]["Nombre"])
+            self.progreso.emit(f"Ejecutando bloque {i + 1} de {len(self.protocolo)}")
+            #for paso in self.protocolo[i]["Pasos"]:
+            while j < len(self.protocolo[i]["Pasos"]):
                 N = 0
                 while self.pausa:
                     sleep(1)
@@ -334,10 +348,12 @@ class WorkerThread(QThread):
                     if N == 0:
                         self.detenido.emit()
 
-                self.progreso.emit(f"Ejecutando paso: {paso['Nombre']}")
-                self.secuenciaPaso.emit(paso["OrdenDeSecuencia"])
-                self.ejecutarPaso(paso)
+                self.progreso.emit(f"Ejecutando paso: {self.protocolo[i]["Pasos"][j]['Nombre']}")
+                self.secuenciaPaso.emit(self.protocolo[i]["Pasos"][j]["OrdenDeSecuencia"])
+                self.ejecutarPaso(self.protocolo[i]["Pasos"][j])
+                j+=1 #Incremento el indice
                 sleep(0.5)  # Simula el tiempo de ejecución del paso
+            i+=1 #incremento el indice del bloque
         self.wait_until_response =True #Si no pongo una variable, en el ultimo paso sale del loop sin que yo lo permita
 
 

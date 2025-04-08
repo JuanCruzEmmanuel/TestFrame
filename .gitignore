@@ -6,6 +6,10 @@ __pycache__/
 *.pyd
 *.pyc
 
+
+#CERITIFICADOS
+*.pem
+
 # C extensions
 *.so
 
@@ -16,7 +20,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-
+_TEMPS_/
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints
 
