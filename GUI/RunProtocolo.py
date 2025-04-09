@@ -39,7 +39,7 @@ class run(QDialog):
             self.TablaBloques.setItem(row, 2, QTableWidgetItem(values["Nombre"]))
             self.TablaBloques.setItem(row, 3, QTableWidgetItem(values["Resultado"]))
             self.TablaBloques.setItem(row, 4, QTableWidgetItem(" "))
-
+            
     @pyqtSlot(list)
     def mostrar_pasos_protocolo(self, lista_pasos_ejecutados):
         self.TablaPasos.setRowCount(len(lista_pasos_ejecutados))
@@ -52,7 +52,7 @@ class run(QDialog):
                 item = QTableWidgetItem(str(values[key]))  # Crear el item
                 item.setBackground(QBrush(color))  # Aplicar color
                 self.TablaPasos.setItem(row, col, item)  # Insertar en la tabla
-
+        self.TablaPasos.scrollToBottom()#Creo que esto me mueve hacia abajo el scroll
     def cargarDatos(self):
         with open("_TEMPS_/protocolo_a_ejecutar.json", "r", encoding="utf-8", errors="ignore") as file:
             self.protocolo_a_ejecutar = json.load(file)
@@ -261,7 +261,7 @@ class WorkerThread(QThread):
 
     def calibracion(self):
         print("Ingreso a calibración")
-        sleep(1)  # Pausa al ingresar a calibración
+        #sleep(1)  # Pausa al ingresar a calibración
 
     def verificacion(self):
         print("Ingreso a verificación")
@@ -347,6 +347,7 @@ class WorkerThread(QThread):
             self.progreso.emit(f"Ejecutando bloque {i + 1} de {len(self.protocolo)}")
             #for paso in self.protocolo[i]["Pasos"]:
             while j < len(self.protocolo[i]["Pasos"]):
+
                 if self.I_BLOQUE !="NO_SALTO" and self.J_BLOQUE !="NO_SALTO":
                     i = int(self.I_BLOQUE)
                     j = int(self.J_BLOQUE)
