@@ -57,8 +57,12 @@ class driverInstrumentos:
                     return DRIVER(cmd = CMD[1:]),"NO_SALTO","NO_SALTO"
                 else:
                     try:
-                        print(CMD[4:])
-                        INST = instrumentos[CMD[0:3]](CMD = CMD[4:])
+                        if CMD[3]=="_": #Algunos instrumentos por ejemplo las fuentes no se hicieron con comandos de _, por lo que se debe tener ec onsideracion esto tipo de configuracion
+                            print(CMD[4:])
+                            INST = instrumentos[CMD[0:3]](CMD = CMD[4:])
+                        else:
+                            print(CMD[3:])
+                            INST = instrumentos[CMD[0:3]](CMD = CMD[3:])
                         return INST,"NO_SALTO","NO_SALTO"
                     except:
                         return "OK","NO_SALTO","NO_SALTO"
