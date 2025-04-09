@@ -358,7 +358,7 @@ class WorkerThread(QThread):
                     if N == 0:
                         self.detenido.emit()
 
-                self.progreso.emit(f"Ejecutando paso: {self.protocolo[i]["Pasos"][j]['Nombre']}")
+                self.progreso.emit(f"Ejecutando paso: {self.protocolo[i]['Pasos'][j]['Nombre']}") #Cambie las comillas dobles por comillas simples para evitar errores del f-string
                 self.secuenciaPaso.emit(self.protocolo[i]["Pasos"][j]["OrdenDeSecuencia"])
                 self.ejecutarPaso(self.protocolo[i]["Pasos"][j])
                 j+=1 #Incremento el indice
