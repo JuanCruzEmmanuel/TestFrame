@@ -204,13 +204,17 @@ class WorkerThread(QThread):
             if self.PASO["Tipo_Respuesta"].lower() != "texto": #Es decir es numerico
                 maximo = float(self.PASO["ResultadoMaximo"])
                 minimo = float(self.PASO["ResultadoMinimo"])
-                if float(valor)>=minimo and float(valor) <=maximo: #Si se encuentra en los rangos inclusive
-                    self.PASO["Resultado"]=valor
-                    self.PASO["Estado"] = "OK"
-                else:
-                    self.PASO["Resultado"]=valor
+                try: #En caso que exista un fallo
+                    if float(valor)>=minimo and float(valor) <=maximo: #Si se encuentra en los rangos inclusive
+                        self.PASO["Resultado"]=valor
+                        self.PASO["Estado"] = "OK"
+                    else:
+                        self.PASO["Resultado"]=valor
+                        self.PASO["Estado"] = "NO OK"
+                except: #Respuesta en caso de fallo seguimiento de fallo
                     self.PASO["Estado"] = "NO OK"
-            else:
+                    self.PASO["Resultado"] = -101 #Se envia respuesta texto a un resultado numerico
+            else:#Esto significa que la respuesta es tipo texto
                 if valor == self.PASO["Respuesta_Correcta"]:
                     self.PASO["Resultado"]=valor
                     self.PASO["Estado"] = "OK"
