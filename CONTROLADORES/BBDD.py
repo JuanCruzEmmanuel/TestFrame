@@ -200,11 +200,16 @@ class SMVA_DB():
         for i, bloque in enumerate(resultado_json):
             for j, paso in enumerate(bloque["Pasos"]):
                 comandos = paso.get("Comandos", "")
-                if "ETIQ" in comandos:
+                if "ETIQ:" in comandos:
                     partes = comandos.split('ETIQ:') #cAMBIO ESTA SINTAXIS PARA SER MAS EFICIENTE
                     if len(partes) > 1:
                         etiqueta = partes[1]
-                        etiqueta = etiqueta.split('"')[1] #aGREGO QUE LUEGO DEL ETIQ BUSQUE LO SIGUIENTE A LAS COMILLAS
+                        if ";" in etiqueta:
+                            etiqueta = etiqueta.split(";")[0]
+                        try:
+                            etiqueta = etiqueta.split('"')[1] #aGREGO QUE LUEGO DEL ETIQ BUSQUE LO SIGUIENTE A LAS COMILLAS
+                        except:
+                            pass
                         self.SALTOS_CONDICIONALES[etiqueta] = {"i": i, "j": j} #VARIABLE QUE CONTROLA LOS SALTOS CONDICIONALES
 
     def ID_PROTOCOLO_COPIA(self,id="1"):
