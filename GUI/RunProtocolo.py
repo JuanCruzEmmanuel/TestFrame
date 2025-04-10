@@ -352,7 +352,7 @@ class WorkerThread(QThread):
                     if int(self.I_BLOQUE)>i:
                         #Aca debo actualizar y agregar NC y OK a los pasos en caso que se salte hacia delante
                         #Puedo tener una funcion que se encargue solo de hacer eso
-                        self.completarConNC(i=i,j=j)
+                        self.completarConNC(i=i,j=j) #Funcion que se encarga de completarlo solo
                     i = int(self.I_BLOQUE)
                     j = int(self.J_BLOQUE)
                     self.J_BLOQUE = "NO_SALTO"
@@ -391,6 +391,7 @@ class WorkerThread(QThread):
         n=0 #Indica inicio
         while i <=self.I_BLOQUE: #Tengo que recorrer desde el i ingresado hasta I_BLOQUE de salto
             """Esto quiere decir que si estoy en el bloque 6 y tengo que ir hasta el bloque 7, va a recorrer inclusive hasta ese valor"""
+            self.bloqueNombre.emit(self.protocolo[i]["Nombre"]) #Para que muestre el nombre del bloque actual
             if n!=0:
                 j=0 #Reincio la variable
             while j < len(self.protocolo[i]["Pasos"]):
@@ -399,7 +400,12 @@ class WorkerThread(QThread):
                 self.protocolo[i]["Pasos"][j]["TimeStamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S") #Para completar con la hora de la medicion
                 self.listaPasos.append(self.protocolo[i]["Pasos"][j]) #Esto puede salir muy mal, voy a updatear este paso
                 self.pasosUpdate.emit(self.listaPasos) #para que se grafique
+                if self.protocolo[i]["Resultado"]=="":
+                    self.protocolo[i]["Resultado"]="PASA"
+                sleep(0.1)
                 j+=1#Incremento indice paso
+            self.UpdateTablaBloque.emit()
+            self.database.subir_paso_protocolo_y_protocolo(id_protocolo = self.protocolo[i]["ProtocoloID"],resultado_bloque = self.protocolo[i]["Resultado"],pasos = self.protocolo[i]["Pasos"]) #Se sube el archivo previo
             i+=1#Incremento indice bloque
         with open("_TEMPS_/protocolo_a_ejecutar.json", "w", encoding="utf-8") as file:
             json.dump(self.protocolo,file,indent=4)
