@@ -349,6 +349,10 @@ class WorkerThread(QThread):
             while j < len(self.protocolo[i]["Pasos"]):
 
                 if self.I_BLOQUE !="NO_SALTO" and self.J_BLOQUE !="NO_SALTO":
+                    if int(self.I_BLOQUE)>i:
+                        #Aca debo actualizar y agregar NC y OK a los pasos en caso que se salte hacia delante
+                        #Puedo tener una funcion que se encargue solo de hacer eso
+                        self.completarConNC(i=i,j=j)
                     i = int(self.I_BLOQUE)
                     j = int(self.J_BLOQUE)
                     self.J_BLOQUE = "NO_SALTO"
@@ -378,6 +382,27 @@ class WorkerThread(QThread):
                 self.database.subir_paso_protocolo_y_protocolo(id_protocolo = self.BLOQUE["ProtocoloID"],resultado_bloque = self.BLOQUE["Resultado"],pasos = self.BLOQUE["Pasos"]) #Se sube el archivo previo
                 self.terminado.emit()
 
+    def completarConNC(self,i,j):
+        """
+        Se encarga de completar el protocolo local con NC y OK\n
+        :i: Indice de bloque\n
+        :j: Indice de paso
+        """
+        n=0 #Indica inicio
+        while i <=self.I_BLOQUE: #Tengo que recorrer desde el i ingresado hasta I_BLOQUE de salto
+            """Esto quiere decir que si estoy en el bloque 6 y tengo que ir hasta el bloque 7, va a recorrer inclusive hasta ese valor"""
+            if n!=0:
+                j=0 #Reincio la variable
+            while j < len(self.protocolo[i]["Pasos"]):
+                self.protocolo[i]["Pasos"][j]["Resultado"]="NC"
+                self.protocolo[i]["Pasos"][j]["Estado"]="OK"
+                self.protocolo[i]["Pasos"][j]["TimeStamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S") #Para completar con la hora de la medicion
+                self.listaPasos.append(self.protocolo[i]["Pasos"][j]) #Esto puede salir muy mal, voy a updatear este paso
+                self.pasosUpdate.emit(self.listaPasos) #para que se grafique
+                j+=1#Incremento indice paso
+            i+=1#Incremento indice bloque
+        with open("_TEMPS_/protocolo_a_ejecutar.json", "w", encoding="utf-8") as file:
+            json.dump(self.protocolo,file,indent=4)
 
     def stop(self):
         # Detiene la ejecución del hilo
