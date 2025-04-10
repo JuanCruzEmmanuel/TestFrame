@@ -201,9 +201,10 @@ class SMVA_DB():
             for j, paso in enumerate(bloque["Pasos"]):
                 comandos = paso.get("Comandos", "")
                 if "ETIQ" in comandos:
-                    partes = comandos.split('"')
+                    partes = comandos.split('ETIQ:') #cAMBIO ESTA SINTAXIS PARA SER MAS EFICIENTE
                     if len(partes) > 1:
                         etiqueta = partes[1]
+                        etiqueta = etiqueta.split('"')[1] #aGREGO QUE LUEGO DEL ETIQ BUSQUE LO SIGUIENTE A LAS COMILLAS
                         self.SALTOS_CONDICIONALES[etiqueta] = {"i": i, "j": j} #VARIABLE QUE CONTROLA LOS SALTOS CONDICIONALES
 
     def ID_PROTOCOLO_COPIA(self,id="1"):
@@ -346,7 +347,7 @@ class SMVA_DB():
         self.cursor.execute("SET sql_mode = '';")
         
         # Realizo la consulta que realiza CopiarProtocoloModelo pero modifico algunos metodos de consulta. Mas abajo voy a enumerar que es cada consulta
-        query = """
+        query = f"""
             SELECT idpasos, pasos.Name as Name_Pasos, CriterioPass, Tipo, pasos.Estado as Estado_P, Observacion, 
                 ResultadoTipico, ResultadoMaximo, ResultadoMinimo, pasos.TimeStamp as Tiempo_P, Ajustar, 
                 pasos.Unidad as Unidad_P, Comandos, Saltar, FactorConversion, Imprimible, Habilitado, OrdenDeSecuencia, 
@@ -357,12 +358,12 @@ class SMVA_DB():
                 protocolo.Name as Name_Protocolo, Equipo, Revision, protocolo.Estado as Estado_Protocolo, 
                 Resultado, Aprobador, StartTime, EndTime, Pasadas, protocolos_idProtocolos, 
                 configuracion_idConfiguracion, config_endisegno_idConfig, ordenSecuencia
-            FROM dbfeas_smva_2_0_v1.pasos
-            INNER JOIN dbfeas_smva_2_0_v1.mediciones ON mediciones_idmediciones = idmediciones
-            INNER JOIN dbfeas_smva_2_0_v1.valuemedicion ON valuemedicion_idvaluemedicion = idvaluemedicion
-            INNER JOIN dbfeas_smva_2_0_v1.protocolo ON protocolo_idprotocolo = idprotocolo
+            FROM {self._DATABASE}.pasos
+            INNER JOIN {self._DATABASE}.mediciones ON mediciones_idmediciones = idmediciones
+            INNER JOIN {self._DATABASE}.valuemedicion ON valuemedicion_idvaluemedicion = idvaluemedicion
+            INNER JOIN {self._DATABASE}.protocolo ON protocolo_idprotocolo = idprotocolo
             WHERE protocolo_idprotocolo IN (
-                SELECT idprotocolo FROM dbfeas_smva_2_0_v1.protocolo WHERE protocolos_idProtocolos = ?
+                SELECT idprotocolo FROM {self._DATABASE}.protocolo WHERE protocolos_idProtocolos = ?
             )
             ORDER BY CAST(ordenSecuencia AS DECIMAL) ASC, CAST(ordenDeSecuencia AS DECIMAL) ASC;
         """
@@ -443,7 +444,7 @@ class SMVA_DB():
             #print(pasos_bloque)
             # Obtener Aux_protocolo en Python
             self.cursor.execute(
-                "SELECT idprotocolo FROM dbfeas_smva_2_0_v1.protocolo WHERE protocolos_idProtocolos = ? AND OrdenSecuencia = ?",
+                f"SELECT idprotocolo FROM {self._DATABASE}.protocolo WHERE protocolos_idProtocolos = ? AND OrdenSecuencia = ?",
                 (val2, iterador_bloques)
             )
             aux_protocolo = self.cursor.fetchone()[0] #Obtento el IdProtocolo auxiliar aun no se bien si lo uso en algo.... pero lo vero, tampoco me gusta el nombre que le di
@@ -451,7 +452,7 @@ class SMVA_DB():
             # Insertar en valuemedicion en lotes
             valuemedicion_data = [(p[39], p[40], p[41]) for p in pasos_bloque] #39 = ValorMedido, 40=EstadoMedicion y 41 = Tiempo_V
             self.cursor.executemany(
-                "INSERT INTO dbfeas_smva_2_0_v1.valuemedicion (ValorMedido, EstadoMedicion, TimeStamp) VALUES (?, ?, ?)",
+                f"INSERT INTO {self._DATABASE}.valuemedicion (ValorMedido, EstadoMedicion, TimeStamp) VALUES (?, ?, ?)",
                 valuemedicion_data
             )
             self.cursor.execute("SELECT LAST_INSERT_ID()")  # Obtiene el último ID insertado
@@ -467,8 +468,8 @@ class SMVA_DB():
                 for i, p in enumerate(pasos_bloque)
             ]
             self.cursor.executemany(
-                """
-                INSERT INTO dbfeas_smva_2_0_v1.mediciones (Name, Descripcion, Escala, Unidad, Rango, SerialNumber, Codigo, Version, 
+                f"""
+                INSERT INTO {self._DATABASE}.mediciones (Name, Descripcion, Escala, Unidad, Rango, SerialNumber, Codigo, Version, 
                                         listainstrumentos_idListaInstrumentos, valuemedicion_idvaluemedicion) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                 mediciones_data
@@ -490,8 +491,8 @@ class SMVA_DB():
                 for i, p in enumerate(pasos_bloque)
             ]
             self.cursor.executemany(
-                """
-                INSERT INTO dbfeas_smva_2_0_v1.pasos (Name, CriterioPass, Tipo, Estado, Observacion, ResultadoTipico, ResultadoMaximo, ResultadoMinimo, 
+                f"""
+                INSERT INTO {self._DATABASE}.pasos (Name, CriterioPass, Tipo, Estado, Observacion, ResultadoTipico, ResultadoMaximo, ResultadoMinimo, 
                                 TimeStamp, Ajustar, Unidad, Comandos, Saltar, FactorConversion, Imprimible, Habilitado, 
                                 OrdenDeSecuencia, Tipo_Item, Titulo, Inicio_Bloque, Validacion, Tipo_Respuesta, Respuesta_Correcta, 
                                 Offset, Tiempo_Medicion, Simular, Medir_o_Conectar, protocolo_idprotocolo, 
