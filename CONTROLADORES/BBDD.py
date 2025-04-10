@@ -210,7 +210,7 @@ class SMVA_DB():
                             etiqueta = etiqueta.split('"')[1] #aGREGO QUE LUEGO DEL ETIQ BUSQUE LO SIGUIENTE A LAS COMILLAS
                         except:
                             pass
-                        self.SALTOS_CONDICIONALES[etiqueta] = {"i": i, "j": j} #VARIABLE QUE CONTROLA LOS SALTOS CONDICIONALES
+                        self.SALTOS_CONDICIONALES[etiqueta.strip()] = {"i": i, "j": j} #VARIABLE QUE CONTROLA LOS SALTOS CONDICIONALES
 
     def ID_PROTOCOLO_COPIA(self,id="1"):
         self.cursor.execute("{CALL selectProtocolosFromId (?)}",(id))

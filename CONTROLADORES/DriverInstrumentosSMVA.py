@@ -28,30 +28,39 @@ class driverInstrumentos:
         """
         i="NO_SALTO"
         j = "NO_SALTO"
-        if ";" in CMD: #hay ciertos comandos donde el ; se encuentra primero despues segundo, o pueden existir multiples EJEMPLO ;SALTARSI_FALSO:"ETIQUETA3"
+        FLAG_INGRESO = False
+        if ";" in str(CMD): #hay ciertos comandos donde el ; se encuentra primero despues segundo, o pueden existir multiples EJEMPLO ;SALTARSI_FALSO:"ETIQUETA3"
+
+            FLAG_INGRESO = True 
             CMD_SPLITED = CMD.split(";")
             if len(CMD_SPLITED)==2: #Significa que hubo un solo comando
                 #Como el comando que me interesa va a aparecer a la derecha del ";" tengo que evaluar si el valor a la izquierda es NO NULL
-                if CMD_SPLITED[0]!="":
+                if CMD_SPLITED[0]!=" " and CMD_SPLITED[0]!="":
                     CMD = CMD_SPLITED[0]
+                else:
+                    CMD = " "
                 COMANDO = CMD_SPLITED[1]
                 if "SALTARSI_FALSO" in COMANDO:
-                    ETIQ = COMANDO.split('"')[1]
+                    ETIQ = COMANDO.split('"')[1].strip() #Evito los espacios
                     if SALTO_CONDICIONAL == False:
-                        i = self.BASE_DATO[ETIQ]["i"]
-                        j = self.BASE_DATO[ETIQ]["j"]
+                        print(self.BASE_DATO.SALTOS_CONDICIONALES)
+                        i = self.BASE_DATO.SALTOS_CONDICIONALES[ETIQ]["i"]
+                        j = self.BASE_DATO.SALTOS_CONDICIONALES[ETIQ]["j"]
                     else:
                         i = "NO_SALTO"
                         j = "NO_SALTO"
                 elif "SALTARSI_VERDADERO" in COMANDO:
                     ETIQ = COMANDO.split('"')[1]
                     if SALTO_CONDICIONAL == True:
-                        i = self.BASE_DATO[ETIQ]["i"]
-                        j = self.BASE_DATO[ETIQ]["j"]
+                        print(self.BASE_DATO.SALTOS_CONDICIONALES)
+                        i = self.BASE_DATO.SALTOS_CONDICIONALES[ETIQ]["i"]
+                        j = self.BASE_DATO.SALTOS_CONDICIONALES[ETIQ]["j"]
                     else:
                         i = "NO_SALTO"
                         j = "NO_SALTO"
-        if CMD !="": #En el caso que el comando siga, se debera analizar
+
+        print(CMD)
+        if CMD !="" and CMD !=" ": #En el caso que el comando siga, se debera analizar
             if i == "NO_SALTO": #Lo que me devuelva esto, debe ser coherente, por eso debe devolver la misma longitud
                 if CMD[0]=="*":
                     return DRIVER(cmd = CMD[1:]),"NO_SALTO","NO_SALTO"
@@ -71,10 +80,17 @@ class driverInstrumentos:
                     return DRIVER(cmd = CMD[1:]),i,j
                 else:
                     try:
-                        print(CMD[4:])
-                        INST = instrumentos[CMD[0:3]](CMD = CMD[4:])
+                        if CMD[3]=="_": #Algunos instrumentos por ejemplo las f.,uentes no se hicieron con comandos de _, por lo que se debe tener ec onsideracion esto tipo de configuracion
+                            print(CMD[4:])
+                            INST = instrumentos[CMD[0:3]](CMD = CMD[4:])
+                        else:
+                            print(CMD[3:])
+                            INST = instrumentos[CMD[0:3]](CMD = CMD[3:])
                         return INST,i,j
                     except:
                         return "OK",i,j
         else: #En caso que no haya comando de CMD
-            return "OK",i,j
+            if FLAG_INGRESO: #Ya que puede haber vacios en comandos de medicion de tiempo por ejemplo.
+                return "OK",i,j
+            else:
+                return "Ok","NO_SALTO","NO_SALTO"
