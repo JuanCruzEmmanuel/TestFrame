@@ -16,13 +16,16 @@
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <widget class="QFrame" name="Contenedor">
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(238, 238, 238);</string>
+     </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <widget class="QLineEdit" name="InfoPaso">
+     <widget class="QLineEdit" name="InfoPaso_2">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -59,7 +62,11 @@
        <bool>false</bool>
       </property>
       <property name="autoFillBackground">
-       <bool>true</bool>
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(252, 252, 252);
+font: 26pt &quot;Arial&quot;;</string>
       </property>
       <property name="text">
        <string/>
@@ -89,6 +96,15 @@
         <height>41</height>
        </rect>
       </property>
+      <property name="styleSheet">
+       <string notr="true">
+background-color: rgb(220, 220, 220);
+font: 75 13pt &quot;MS Shell Dlg 2&quot;;
+color: rgb(0, 0, 0);
+
+border : 2px solid black;   
+border-radius : 10px;</string>
+      </property>
       <property name="text">
        <string>SALTAR</string>
       </property>
@@ -101,6 +117,15 @@
         <width>111</width>
         <height>41</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">
+background-color: rgb(220, 220, 220);
+font: 75 13pt &quot;MS Shell Dlg 2&quot;;
+color: rgb(0, 0, 0);
+
+border : 2px solid black;   
+border-radius : 10px;</string>
       </property>
       <property name="text">
        <string>ABORTAR</string>
@@ -148,7 +173,8 @@
        <bool>false</bool>
       </property>
       <property name="styleSheet">
-       <string notr="true">font: 26pt &quot;Arial&quot;;</string>
+       <string notr="true">background-color: rgb(252, 252, 252);
+font: 26pt &quot;Arial&quot;;</string>
       </property>
       <property name="text">
        <string/>
@@ -176,7 +202,8 @@
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">font: 26pt &quot;Arial&quot;;</string>
+       <string notr="true">background-color: rgb(252, 252, 252);
+font: 26pt &quot;Arial&quot;;</string>
       </property>
       <property name="text">
        <string/>
@@ -192,7 +219,8 @@
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">font: 26pt &quot;Arial&quot;;</string>
+       <string notr="true">background-color: rgb(252, 252, 252);
+font: 26pt &quot;Arial&quot;;</string>
       </property>
       <property name="text">
        <string/>
@@ -287,8 +315,32 @@
         <height>41</height>
        </rect>
       </property>
+      <property name="styleSheet">
+       <string notr="true">
+background-color: rgb(220, 220, 220);
+font: 75 13pt &quot;MS Shell Dlg 2&quot;;
+color: rgb(0, 0, 0);
+
+border : 2px solid black;   
+border-radius : 10px;</string>
+      </property>
       <property name="text">
        <string>ENVIAR</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="InfoPaso">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>431</width>
+        <height>161</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 255);
+font: 87 11pt &quot;Arial&quot;;
+color: rgb(0, 0, 0);</string>
       </property>
      </widget>
     </widget>
