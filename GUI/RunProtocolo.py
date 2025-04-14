@@ -2,6 +2,7 @@ import json
 from time import sleep
 from datetime import datetime
 import sys
+import os
 from PyQt5.QtWidgets import QApplication, QDialog, QTableWidgetItem
 from PyQt5.QtCore import QEventLoop, QThread, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QColor, QBrush
@@ -253,8 +254,24 @@ class WorkerThread(QThread):
     def medicion(self):
         t = float(self.PASO["Tiempo_Medicion"]) / 1000  # Para pasarlo a segundos
         sleep(t)
+        variable_flag = False
         print("Ingreso a medición")
-        valor,i_bloque,j_pasos = self.driverInstrumento.readComando(CMD=self.PASO["Comandos"],SALTO_CONDICIONAL=self.VERIFICACION_FLAG)
+        if "<<" in self.PASO["Comandos"]:
+            variable_flag = True
+            #Tiene que guardar el dato en un xml
+            CMD = self.PASO["Comandos"].split("<<")
+            varieble_nombre = CMD[0]
+            CMD = CMD[1]
+        else:
+            CMD = self.PASO["Comandos"]
+        valor,i_bloque,j_pasos = self.driverInstrumento.readComando(CMD=CMD,SALTO_CONDICIONAL=self.VERIFICACION_FLAG)
+
+        if variable_flag:
+            #Aca debemos agregar el control del nonmbre de variable
+            if os.path.exists(r"_TEMPS_\variables.json"): #Se debe preguntar si el arhcivo existe
+                with open(r"_TEMPS_\variables.json","r") as file:
+                    pass #A completar
+            
         print(valor)
         self.procesarResultado(valor=valor)
         
