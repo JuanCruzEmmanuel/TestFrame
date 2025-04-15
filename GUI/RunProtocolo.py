@@ -254,7 +254,7 @@ class WorkerThread(QThread):
     def medicion(self):
         t = float(self.PASO["Tiempo_Medicion"]) / 1000  # Para pasarlo a segundos
         sleep(t)
-        variable_flag = False
+        variable_flag = False #Variable para controlar si entron una variable *mister obvio*
         print("Ingreso a medición")
         if "<<" in self.PASO["Comandos"]:
             variable_flag = True
@@ -267,11 +267,17 @@ class WorkerThread(QThread):
         valor,i_bloque,j_pasos = self.driverInstrumento.readComando(CMD=CMD,SALTO_CONDICIONAL=self.VERIFICACION_FLAG)
 
         if variable_flag:
-            #Aca debemos agregar el control del nonmbre de variable
-            if os.path.exists(r"_TEMPS_\variables.json"): #Se debe preguntar si el arhcivo existe
+            #Aca debemos agregar el control del nombre de variable
+            if os.path.exists(r"_TEMPS_\variables.json"): #Se debe preguntar si el arhcivo existe, esto con el fin de facilitar la logica futura
                 with open(r"_TEMPS_\variables.json","r") as file:
-                    pass #A completar
-            
+                    VARIABLES = json.load(file) #Cargo el json con todas las variables locales
+            else:
+                VARIABLES = {} #Si no existe entonces debo crear un dic vacio como le gusta a eia
+
+            VARIABLES[varieble_nombre]=valor #par cable-valor (key-value)
+            with open(r"_TEMPS_\variables.json","w") as file:
+                json.dump(VARIABLES,file,indent=4)
+                
         print(valor)
         self.procesarResultado(valor=valor)
         
