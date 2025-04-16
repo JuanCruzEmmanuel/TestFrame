@@ -4,8 +4,12 @@ en python. Luego se debera adaptar todas las librerias realizadas para labview p
 
 """
 import json
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from CONTROLADORES.ReleDriver import TorreRele
 from CONTROLADORES.driver import DRIVER
+from CONTROLADORES.controlVariables import equation
 
 class driverInstrumentos:
     def __init__(self,BASE_DATO = None):
@@ -20,7 +24,9 @@ class driverInstrumentos:
         :return: instrumeno, indice de bloque, indice de filas
         """
         instrumentos = {
-            "TOR":self.torreRele.readComando
+            "TOR":self.torreRele.readComando,
+            "ADD":self.agregarValorVariable,
+            "EQU":equation,
         }
 
         """
@@ -43,7 +49,7 @@ class driverInstrumentos:
                 if "SALTARSI_FALSO" in COMANDO:
                     ETIQ = COMANDO.split('"')[1].strip() #Evito los espacios
                     if SALTO_CONDICIONAL == False:
-                        print(self.BASE_DATO.SALTOS_CONDICIONALES)
+                        #print(self.BASE_DATO.SALTOS_CONDICIONALES)
                         i = self.BASE_DATO.SALTOS_CONDICIONALES[ETIQ]["i"]
                         j = self.BASE_DATO.SALTOS_CONDICIONALES[ETIQ]["j"]
                     else:
@@ -52,14 +58,14 @@ class driverInstrumentos:
                 elif "SALTARSI_VERDADERO" in COMANDO:
                     ETIQ = COMANDO.split('"')[1]
                     if SALTO_CONDICIONAL == True:
-                        print(self.BASE_DATO.SALTOS_CONDICIONALES)
+                        #print(self.BASE_DATO.SALTOS_CONDICIONALES)
                         i = self.BASE_DATO.SALTOS_CONDICIONALES[ETIQ]["i"]
                         j = self.BASE_DATO.SALTOS_CONDICIONALES[ETIQ]["j"]
                     else:
                         i = "NO_SALTO"
                         j = "NO_SALTO"
 
-        print(CMD)
+        #print("el comando es: ",CMD)
         if CMD !="" and CMD !=" ": #En el caso que el comando siga, se debera analizar
             if i == "NO_SALTO": #Lo que me devuelva esto, debe ser coherente, por eso debe devolver la misma longitud
                 if CMD[0]=="*":
@@ -67,10 +73,13 @@ class driverInstrumentos:
                 else:
                     try:
                         if CMD[3]=="_": #Algunos instrumentos por ejemplo las fuentes no se hicieron con comandos de _, por lo que se debe tener ec onsideracion esto tipo de configuracion
-                            print(CMD[4:])
+                            #print(CMD[4:])
+                            INST = instrumentos[CMD[0:3]](CMD = CMD[4:])
+                        elif CMD[3]==":":#Algunos instrumentos por ejemplo las fuentes no se hicieron con comandos de :, por lo que se debe tener ec onsideracion esto tipo de configuracion
+                            #print(CMD[4:])
                             INST = instrumentos[CMD[0:3]](CMD = CMD[4:])
                         else:
-                            print(CMD[3:])
+                            #print(CMD[3:])
                             INST = instrumentos[CMD[0:3]](CMD = CMD[3:])
                         return INST,"NO_SALTO","NO_SALTO"
                     except:
@@ -81,10 +90,13 @@ class driverInstrumentos:
                 else:
                     try:
                         if CMD[3]=="_": #Algunos instrumentos por ejemplo las f.,uentes no se hicieron con comandos de _, por lo que se debe tener ec onsideracion esto tipo de configuracion
-                            print(CMD[4:])
+                            #print(CMD[4:])
                             INST = instrumentos[CMD[0:3]](CMD = CMD[4:])
+                        elif CMD[3]==":":#Algunos instrumentos por ejemplo las fuentes no se hicieron con comandos de :, por lo que se debe tener ec onsideracion esto tipo de configuracion
+                            #print(CMD[4:])
+                            INST = instrumentos[CMD[0:3]](CMD = CMD[4:])  
                         else:
-                            print(CMD[3:])
+                            #print(CMD[3:])
                             INST = instrumentos[CMD[0:3]](CMD = CMD[3:])
                         return INST,i,j
                     except:
@@ -94,3 +106,16 @@ class driverInstrumentos:
                 return "OK",i,j
             else:
                 return "Ok","NO_SALTO","NO_SALTO"
+            
+    def agregarValorVariable(self,CMD):
+        if "(" in CMD:
+            VAL = CMD.split("(")[1]
+            if ")" in VAL:
+                VAL = VAL.split(")")[0]
+
+        else:
+            VAL = 0
+
+        #VAL = float(VAL)
+
+        return VAL
