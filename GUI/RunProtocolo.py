@@ -274,7 +274,7 @@ class WorkerThread(QThread):
             else:
                 VARIABLES = {} #Si no existe entonces debo crear un dic vacio como le gusta a eia
 
-            VARIABLES[varieble_nombre]=valor #par cable-valor (key-value)
+            VARIABLES[varieble_nombre]=str(valor) #par cable-valor (key-value), no me gusta solo admitir str, pero bueno por el momento
             with open(r"_TEMPS_\variables.json","w") as file:
                 json.dump(VARIABLES,file,indent=4)
                 
@@ -319,7 +319,7 @@ class WorkerThread(QThread):
                 _N_PASOS_ = 0
                 for paso in bloque["Pasos"]:
                     if _N_PASOS_ == COMANDO_DIC["Paso"]:
-                        if paso["Resultado"] == COMANDO_DIC["Valor"]:
+                        if str(paso["Resultado"]) == str(COMANDO_DIC["Valor"]):
                             self.VERIFICACION_FLAG = True
                             break
                         else:
