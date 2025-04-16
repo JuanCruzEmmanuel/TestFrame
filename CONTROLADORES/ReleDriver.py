@@ -199,9 +199,9 @@ class TorreRele:
                 else:
                     pass
 
-                self.conect()
-                self.write()
-                return "OK"
+            self.conect()
+            self.write()
+            return "OK"
         elif "ATRPXGXRX" in CMD:
             for i in range(16):#No toma el 16
                 _placa = self.RELES.getPlacaInfo(placa =f"P{i}") #Con estro traigo la informacion de la placa
