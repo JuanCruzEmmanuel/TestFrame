@@ -342,7 +342,7 @@
          <string>Automatico</string>
         </property>
        </widget>
-       <widget class="QRadioButton" name="Automatico_2">
+       <widget class="QRadioButton" name="Manual">
         <property name="geometry">
          <rect>
           <x>120</x>

@@ -10,12 +10,15 @@ from PyQt5 import uic
 from GUI.IngresoManual import ingresoManual
 from GUI.IngresoManualNumerico import IngresoManualNumerico
 from CONTROLADORES.DriverInstrumentosSMVA import driverInstrumentos
+from GUI.VentanaManual import Ventana_Manual
 
 class run(QDialog):
 
     def __init__(self, database=None):
         super().__init__()
         uic.loadUi(r'GUI\RunProtocolo.ui', self)
+        self.Automatico.setCheckable(True)
+        self.Manual.setCheckable(False)
         self.database = database
         self.protocolo_a_ejecutar = None
         self._cantidadBloques = None
@@ -27,7 +30,15 @@ class run(QDialog):
         self.abortar.clicked.connect(self.detenerEjecucion)
         self.manual_window = None #Creo variable por las dudas de errores
         self.manual_window_numerico = None #Creo variables por la duda de errores
-        
+        self.Manual.clicked.connect(self.cambiar_manual)
+    def cambiar_manual(self):
+        self.worker.pausarProtocolo() #Pausa la ejecucion
+        app = Ventana_Manual(protocolo=self.protocolo_a_ejecutar)
+        app.exec_()
+        print(app.i,app.j)
+
+    def cambiar_automatico(self):
+        pass
 
     @pyqtSlot()
     def mostrar_bloques_protocolo(self):

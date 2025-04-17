@@ -7,7 +7,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 class Ventana_Manual(QtWidgets.QDialog):
     def __init__(self,protocolo = None):
         super().__init__()
-        uic.loadUi("manual.ui", self)  # Reemplaza con el nombre real del archivo .ui
+        uic.loadUi("GUI/Manual.ui", self)  # Reemplaza con el nombre real del archivo .ui
         self.protocolo = protocolo
         #self.avanzar_paso_flag = False
         # Establecer la página inicial (por índice o nombre)
