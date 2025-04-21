@@ -21,6 +21,14 @@ class LogWindow(QMainWindow):
     def login(self,debug =False):
         User = self.User.text()  # Se lee el usuario
         Pass = self.Pass.text() #Se lee la constraseña
+        if Pass[0] =="*":
+            if Pass[-1]=="*":
+                self.BD.set_test() #Agrego modo test
+                Pass = Pass[1:-1]
+            else:
+                pass
+        else:
+            pass
         try:
             if debug:
                 if self.datos[User]["password"] == Pass:

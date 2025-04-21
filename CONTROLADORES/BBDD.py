@@ -17,12 +17,13 @@ class SMVA_DB():
         self.ID_PROTOCOLOS_BLOQUE_CREADO = None
         self.saltos_protocolo = {}
         self.SALTOS_CONDICIONALES = {}
-    def connect(self,test=True):
+        self.test =False
+    def connect(self):
         """
         FUNCION QUE SE ENCARGA DE CONECTAR A LA BD y se puede trabajar directamente con CURSORES
         :RETURN cursor: Cursor de manejo BD
         """
-        if test:
+        if self.test:
             IP = "192.168.0.141"
         else:
             IP = "192.168.0.4"
@@ -39,7 +40,13 @@ class SMVA_DB():
         cursor = cnxn.cursor()
 
         return cursor
-    
+
+    def set_test(self):
+        """
+        Inicia el modo testeo
+        """
+        self.test=True
+
     def userQuery(self):
 
         query = f"""
