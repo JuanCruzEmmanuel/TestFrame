@@ -67,9 +67,15 @@ class run(QDialog):
         self.TablaPasos.scrollToBottom()#Creo que esto me mueve hacia abajo el scroll
     def cargarDatos(self):
         with open("_TEMPS_/protocolo_a_ejecutar.json", "r", encoding="utf-8", errors="ignore") as file:
-            self.protocolo_a_ejecutar = json.load(file)
-            self._cantidadBloques = len(self.protocolo_a_ejecutar)
-            self.mostrar_bloques_protocolo()
+            N = 0 #He visto que en la PC endurancia existe un error "raro" y creo que esta podria solucionar ese error
+            while N==0:
+                try:
+                    self.protocolo_a_ejecutar = json.load(file)
+                    self._cantidadBloques = len(self.protocolo_a_ejecutar)
+                    self.mostrar_bloques_protocolo()
+                    N+=1
+                except:
+                    N=0
 
 
     def getProtocoloEjecutar(self):
