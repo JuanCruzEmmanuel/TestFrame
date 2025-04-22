@@ -38,10 +38,12 @@ class run(QDialog):
         self.shortcut_manual = QShortcut(QKeySequence("space"), self).activated.connect(self.cambiar_manual)
     def cambiar_manual(self):
         self.worker.pausarProtocolo() #Pausa la ejecucion
+        self.worker.pausaSuperior()
         app = Ventana_Manual(protocolo=self.protocolo_a_ejecutar)
+
         app.exec_()
         print(app.i,app.j)
-
+        self.worker.continuarSuperior()
     def cambiar_automatico(self):
         pass
 
@@ -187,6 +189,7 @@ class WorkerThread(QThread):
         }
 
         self.listaPasos = []
+        self.PAUSE_SUPERIOR = False
         self.pausa = False
         self.driverInstrumento = driverInstrumentos(BASE_DATO=self.database)
 
@@ -197,6 +200,17 @@ class WorkerThread(QThread):
     def pausarProtocolo(self):
         self.pausa = True
 
+    def pausaSuperior(self):
+        """
+        Pausa un nivel superior el protocolo
+        """
+        self.PAUSE_SUPERIOR = True
+
+    def continuarSuperior(self):
+        """
+        Continua el protocolo
+        """
+        self.PAUSE_SUPERIOR = False
 
     def continuarProtocolo(self):
         # Continúa la ejecución del protocolo
@@ -367,6 +381,10 @@ class WorkerThread(QThread):
         i = 0 #Indice de bloque
         #for bloque_idx, bloque in enumerate(self.protocolo):
         while i < len(self.protocolo):
+            while self.PAUSE_SUPERIOR:
+                sleep(1)
+            while self.pausa:
+                sleep(1)
             j = 0 #indice de paso
             self.BLOQUE = self.protocolo[i] #Me va a representar el bloque que estoy ejecutando para luego evaluar su estado
             if self.N_PROTOCOLO_ID == 0:
@@ -383,6 +401,7 @@ class WorkerThread(QThread):
                     
             self.UpdateTablaBloque.emit()
             while self.pausa:
+                print("Debo ingresar¡?")
                 sleep(1)
             if not self.running:
                 self.detenido.emit()
@@ -392,6 +411,8 @@ class WorkerThread(QThread):
             self.progreso.emit(f"Ejecutando bloque {i + 1} de {len(self.protocolo)}")
             #for paso in self.protocolo[i]["Pasos"]:
             while j < len(self.protocolo[i]["Pasos"]):
+                while self.PAUSE_SUPERIOR:
+                    sleep(1)
                 while self.pausa:
                     sleep(1)
                 if self.I_BLOQUE !="NO_SALTO" and self.J_BLOQUE !="NO_SALTO":
@@ -407,6 +428,7 @@ class WorkerThread(QThread):
 
                 N = 0
                 while self.pausa:
+                    print("INGRESEEE")
                     sleep(1)
 
                 while not self.running:
