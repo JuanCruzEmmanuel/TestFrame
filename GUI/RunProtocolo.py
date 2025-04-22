@@ -11,7 +11,8 @@ from GUI.IngresoManual import ingresoManual
 from GUI.IngresoManualNumerico import IngresoManualNumerico
 from CONTROLADORES.DriverInstrumentosSMVA import driverInstrumentos
 from GUI.VentanaManual import Ventana_Manual
-
+from PyQt5.QtGui import QKeySequence
+from PyQt5.QtWidgets import QShortcut
 class run(QDialog):
 
     def __init__(self, database=None):
@@ -31,6 +32,10 @@ class run(QDialog):
         self.manual_window = None #Creo variable por las dudas de errores
         self.manual_window_numerico = None #Creo variables por la duda de errores
         self.Manual.clicked.connect(self.cambiar_manual)
+
+        #Atajos de teclado se utiliza el metodo QKeySequence y QShortcut
+
+        self.shortcut_manual = QShortcut(QKeySequence("space"), self).activated.connect(self.cambiar_manual)
     def cambiar_manual(self):
         self.worker.pausarProtocolo() #Pausa la ejecucion
         app = Ventana_Manual(protocolo=self.protocolo_a_ejecutar)
@@ -387,7 +392,8 @@ class WorkerThread(QThread):
             self.progreso.emit(f"Ejecutando bloque {i + 1} de {len(self.protocolo)}")
             #for paso in self.protocolo[i]["Pasos"]:
             while j < len(self.protocolo[i]["Pasos"]):
-
+                while self.pausa:
+                    sleep(1)
                 if self.I_BLOQUE !="NO_SALTO" and self.J_BLOQUE !="NO_SALTO":
                     if int(self.I_BLOQUE)>i:
                         #Aca debo actualizar y agregar NC y OK a los pasos en caso que se salte hacia delante
