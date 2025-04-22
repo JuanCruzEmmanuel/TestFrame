@@ -1,4 +1,5 @@
 pyserial==3.5
+pyvisa
 PyQt5==5.15.11
 numpy==2.2.4
 pyodbc==5.2.0
