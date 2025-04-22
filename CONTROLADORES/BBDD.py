@@ -6,7 +6,6 @@ class SMVA_DB():
     _DATABASE = "dbfeas_smva_2_0_v1"
     def __init__(self):
         
-        self.cursor = self.connect()
         self.user = None
         self.vigente = "Vigente"
         self.protocoloLista = None
@@ -17,7 +16,12 @@ class SMVA_DB():
         self.ID_PROTOCOLOS_BLOQUE_CREADO = None
         self.saltos_protocolo = {}
         self.SALTOS_CONDICIONALES = {}
-        self.test =False
+        self.test = True
+        self.cursor = self.connect()
+        
+    def close(self):
+        self.cursor.close()
+
     def connect(self):
         """
         FUNCION QUE SE ENCARGA DE CONECTAR A LA BD y se puede trabajar directamente con CURSORES
@@ -298,8 +302,9 @@ class SMVA_DB():
         self.copiar_protocolo_modelo(val1 = int(id),val2 = int(LASTID[0])) #Replica del metodo anterior
         #self.cursor.fetchall()
         ### ESTO ES LO QUE PIERDE TIEEEEEEEMPO SE DEBE ACTUALIZAR URGENTE ESTA
-        self.cursor.execute("{CALL GetCantPasosyValueMedicion (?)}",(str(LASTID[0])))
-        datos = self.cursor.fetchall()[0]
+        #self.cursor.execute("{CALL GetCantPasosyValueMedicion (?)}",(str(LASTID[0])))
+        #datos = self.cursor.fetchall()[0]
+        datos = self.getCantidadPasos(id=str(LASTID[0]))
         if datos[0]==datos[1]:
             pass
         else:
@@ -659,6 +664,40 @@ class SMVA_DB():
         self.cursor.execute("SET FOREIGN_KEY_CHECKS=1;") #Seteo las claves externas en 1
         print("Se Ha seteado la nueva configuracion")
 
+
+    def getCantidadPasos(self,id):
+        """
+        Funcion que simula el metodo almacenado en la base de datos para consultar pasos y mediciones.\n
+        :id: ID protocolo creado
+        """
+        query_pasos = """
+            SELECT count(*) 
+            FROM dbfeas_smva_2_0_v1.pasos 
+            WHERE protocolo_idprotocolo IN (
+                SELECT idprotocolo 
+                FROM dbfeas_smva_2_0_v1.protocolo 
+                WHERE protocolos_idProtocolos = ?
+            )
+        """
+        query_mediciones = """
+            SELECT count(valuemedicion_idvaluemedicion) 
+            FROM dbfeas_smva_2_0_v1.mediciones 
+            WHERE idmediciones IN (
+                SELECT mediciones_idmediciones 
+                FROM dbfeas_smva_2_0_v1.pasos 
+                WHERE protocolo_idprotocolo IN (
+                    SELECT idprotocolo 
+                    FROM dbfeas_smva_2_0_v1.protocolo 
+                    WHERE protocolos_idProtocolos = ?
+                )
+            )
+        """
+
+        self.cursor.execute(query_pasos, (id,))
+        pasos_count = self.cursor.fetchone()[0]
+        self.cursor.execute(query_mediciones, (id,))
+        mediciones_count = self.cursor.fetchone()[0]
+        return pasos_count, mediciones_count
 if __name__ == "__main__":
     bd = SMVA_DB()
     bd.asociarModuloaProtocolo(415424,29901,16963)
