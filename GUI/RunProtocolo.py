@@ -42,7 +42,8 @@ class run(QDialog):
         app = Ventana_Manual(protocolo=self.protocolo_a_ejecutar)
 
         app.exec_()
-        print(app.i,app.j)
+        #print(app.i,app.j)
+        self.worker.setBloquePasoManual(i = app.i, j= app.j)
         self.worker.continuarSuperior()
     def cambiar_automatico(self):
         pass
@@ -197,6 +198,8 @@ class WorkerThread(QThread):
         self.VERIFICACION_FLAG = False #bandera para controlar la verificacion
         self.I_BLOQUE = "NO_SALTO"
         self.J_BLOQUE = "NO_SALTO"
+        self.I_MANUAL = None
+        self.J_MANUAL = None
     def pausarProtocolo(self):
         self.pausa = True
 
@@ -212,6 +215,16 @@ class WorkerThread(QThread):
         """
         self.PAUSE_SUPERIOR = False
 
+
+    def setBloquePasoManual(self,i,j):
+        """
+        Setea la posicion de trabajo\n
+        :i: Indice de bloque\n
+        :j: Indice de fila\n
+        :return: Posicion deseada
+        """
+        self.I_MANUAL = i
+        self.J_MANUAL = j
     def continuarProtocolo(self):
         # Continúa la ejecución del protocolo
         self.pausa = False
@@ -382,7 +395,12 @@ class WorkerThread(QThread):
         #for bloque_idx, bloque in enumerate(self.protocolo):
         while i < len(self.protocolo):
             while self.PAUSE_SUPERIOR:
+                if self.I_MANUAL !=None:
+                    i = self.I_MANUAL
+                    j = self.J_MANUAL
                 sleep(1)
+            self.I_MANUAL = None
+            self.J_MANUAL = None
             while self.pausa:
                 sleep(1)
             j = 0 #indice de paso
@@ -412,7 +430,13 @@ class WorkerThread(QThread):
             #for paso in self.protocolo[i]["Pasos"]:
             while j < len(self.protocolo[i]["Pasos"]):
                 while self.PAUSE_SUPERIOR:
-                    sleep(1)
+                    if self.I_MANUAL !=None:
+                        i = self.I_MANUAL
+                        j = self.J_MANUAL
+                        sleep(1)
+
+                self.I_MANUAL = None
+                self.J_MANUAL = None  
                 while self.pausa:
                     sleep(1)
                 if self.I_BLOQUE !="NO_SALTO" and self.J_BLOQUE !="NO_SALTO":
