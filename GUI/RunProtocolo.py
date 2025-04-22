@@ -34,7 +34,7 @@ class run(QDialog):
         self.Manual.clicked.connect(self.cambiar_manual)
 
         #Atajos de teclado se utiliza el metodo QKeySequence y QShortcut
-
+        #prueba
         self.shortcut_manual = QShortcut(QKeySequence("space"), self).activated.connect(self.cambiar_manual)
     def cambiar_manual(self):
         self.worker.pausarProtocolo() #Pausa la ejecucion
