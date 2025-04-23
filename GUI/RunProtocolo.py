@@ -193,9 +193,11 @@ class WorkerThread(QThread):
         self.PAUSE_SUPERIOR = False
         self.pausa = False
         self.driverInstrumento = driverInstrumentos(BASE_DATO=self.database)
-
+        #FLAG GLOBALES Y AUXILIARES
         self.wait_until_response = False
         self.VERIFICACION_FLAG = False #bandera para controlar la verificacion
+        self.FLAG_MANUAL_SALTO = False #Flag que controla el cambio de posiciones en caso de de estar en manual y elegir la opcion saltar
+        #POSICIONES AUXILIARES
         self.I_BLOQUE = "NO_SALTO"
         self.J_BLOQUE = "NO_SALTO"
         self.I_MANUAL = None
@@ -236,13 +238,37 @@ class WorkerThread(QThread):
         item = self.TIPO_ITEM[paso["Tipo_Item"]]()
 
     def ingresoManual(self):
+        FLAG_PAUSA_SUPERIOR = False
         #print("INGRESO A MANUAL")
         # Emitir señal para abrir el popup en el hilo principal
-        if self.PASO["Tipo_Item"]=="IngresoManual":
-            if self.PASO["Tipo_Respuesta"]!="NUMERICO":
-                self.abrirPopup.emit(self.paso_ejecucion)
-            else:
-                self.abrirPopupNumerico.emit([self.PASO["Nombre"],self.PASO["ResultadoMinimo"],self.PASO["ResultadoMaximo"]]) #Emito esta señal para ingreso numerico
+        if not self.PAUSE_SUPERIOR: 
+            if self.PASO["Tipo_Item"]=="IngresoManual":
+                if self.PASO["Tipo_Respuesta"]!="NUMERICO":
+                    self.abrirPopup.emit(self.paso_ejecucion)
+                else:
+                    self.abrirPopupNumerico.emit([self.PASO["Nombre"],self.PASO["ResultadoMinimo"],self.PASO["ResultadoMaximo"]]) #Emito esta señal para ingreso numerico
+        else: #En caso que si exista la pausa superior
+            FLAG_PAUSA_SUPERIOR=True
+            while FLAG_PAUSA_SUPERIOR: #Mientra este activo, se va a mantener aca
+                if not self.PAUSE_SUPERIOR: #Pero no quiero que muestre nada hasta que se salga de la seleccion
+                    if self.I_MANUAL == None: #Solo me interesa evaluar si se ha seleccionado algun valor distinto de None
+                        print("Ingrese aca bitches")
+                        if self.PASO["Tipo_Item"]=="IngresoManual":
+                            if self.PASO["Tipo_Respuesta"]!="NUMERICO":
+                                self.abrirPopup.emit(self.paso_ejecucion)
+                                FLAG_PAUSA_SUPERIOR =False
+                            else:
+                                self.abrirPopupNumerico.emit([self.PASO["Nombre"],self.PASO["ResultadoMinimo"],self.PASO["ResultadoMaximo"]]) #Emito esta señal para ingreso numerico
+                                FLAG_PAUSA_SUPERIOR=False
+                    else: #Se ha seleccionado saltar.....
+                        FLAG_PAUSA_SUPERIOR=False
+                        self.FLAG_MANUAL_SALTO = True #Activa esta variable de estado para poder avisarle al run que existe un salto obligado
+                        
+                else:
+                    print("Reposo")
+                    sleep(1) #Descanso 1 segundo para no consumir recursos innecesariamente.
+
+                                       
 
     def manejarResultado(self, valor):
         #print(f"Resultado recibido en hilo secundario: {valor}")
@@ -394,6 +420,11 @@ class WorkerThread(QThread):
         i = 0 #Indice de bloque
         #for bloque_idx, bloque in enumerate(self.protocolo):
         while i < len(self.protocolo):
+
+            if self.FLAG_MANUAL_SALTO:#Se ha activado la variable de estado desde manual
+                i = self.I_MANUAL
+                j = self.J_MANUAL
+                #self.FLAG_MANUAL_SALTO = False #Desactivo, esto tal vez no es lo mejor aca
             while self.PAUSE_SUPERIOR:
                 if self.I_MANUAL !=None:
                     i = self.I_MANUAL
@@ -429,6 +460,12 @@ class WorkerThread(QThread):
             self.progreso.emit(f"Ejecutando bloque {i + 1} de {len(self.protocolo)}")
             #for paso in self.protocolo[i]["Pasos"]:
             while j < len(self.protocolo[i]["Pasos"]):
+
+                if self.FLAG_MANUAL_SALTO:#Se ha activado la variable de estado desde manual
+                    i = self.I_MANUAL
+                    j = self.J_MANUAL
+                    self.FLAG_MANUAL_SALTO = False #desactivo la variable para que el protocolo continue de manera normal
+
                 while self.PAUSE_SUPERIOR:
                     if self.I_MANUAL !=None:
                         i = self.I_MANUAL
