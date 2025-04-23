@@ -215,7 +215,7 @@ class WorkerThread(QThread):
         """
         self.PAUSE_SUPERIOR = False
 
-
+        self.pausa = False #agrego para que no se quede en loop infinito
     def setBloquePasoManual(self,i,j):
         """
         Setea la posicion de trabajo\n
