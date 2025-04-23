@@ -4,7 +4,7 @@ from datetime import datetime
 import sys
 import os
 from PyQt5.QtWidgets import QApplication, QDialog, QTableWidgetItem
-from PyQt5.QtCore import QEventLoop, QThread, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import QEventLoop, QThread, pyqtSignal, pyqtSlot,Qt
 from PyQt5.QtGui import QColor, QBrush
 from PyQt5 import uic
 from GUI.IngresoManual import ingresoManual
@@ -48,6 +48,13 @@ class run(QDialog):
     def cambiar_automatico(self):
         pass
 
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Escape:
+            # Ignorar la tecla Escape
+            event.ignore()
+        else:
+            # Procesar otras teclas normalmente
+            super().keyPressEvent(event)
     @pyqtSlot()
     def mostrar_bloques_protocolo(self):
         self.TablaBloques.setRowCount(len(self.protocolo_a_ejecutar))
