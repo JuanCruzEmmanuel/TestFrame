@@ -36,6 +36,9 @@ class run(QDialog):
         #Atajos de teclado se utiliza el metodo QKeySequence y QShortcut
         #prueba
         self.shortcut_manual = QShortcut(QKeySequence("space"), self).activated.connect(self.cambiar_manual)
+
+        self.temp_msg = None
+        self.FLAG_MANUAL_SALTO = False
     def cambiar_manual(self):
         self.worker.pausarProtocolo() #Pausa la ejecucion
         self.worker.pausaSuperior()
@@ -43,8 +46,13 @@ class run(QDialog):
 
         app.exec_()
         #print(app.i,app.j)
-        self.worker.setBloquePasoManual(i = app.i, j= app.j)
-        self.worker.continuarSuperior()
+        if self.FLAG_MANUAL_SALTO:
+            if app.i == None:
+                self.mostrarPopup(mensaje=self.temp_msg)
+            self.FLAG_MANUAL_SALTO=False #Debo desactivar la bandera
+        else:
+            self.worker.setBloquePasoManual(i = app.i, j= app.j)
+            self.worker.continuarSuperior()
     def cambiar_automatico(self):
         pass
 
@@ -55,6 +63,10 @@ class run(QDialog):
         else:
             # Procesar otras teclas normalmente
             super().keyPressEvent(event)
+
+    def condicional_manual(self):
+        self.FLAG_MANUAL_SALTO = True
+        self.cambiar_manual()
     @pyqtSlot()
     def mostrar_bloques_protocolo(self):
         self.TablaBloques.setRowCount(len(self.protocolo_a_ejecutar))
@@ -146,11 +158,13 @@ class run(QDialog):
 
     @pyqtSlot(str)
     def mostrarPopup(self, mensaje):
+        self.temp_msg = mensaje
         self.worker.pausarProtocolo() #Pausa la ejecucion
         self.manual_window = ingresoManual(mensaje_protocolo=mensaje)
+        self.manual_window.sgn_saltar.connect(self.condicional_manual)
         self.manual_window.Mensaje_enviado.connect(self.procesarResultadoPopup)
         self.manual_window.show()
-
+        
     @pyqtSlot(list)
     def mostrarPopupNumerico(self,lista_valores):
         self.worker.pausarProtocolo() #Pausa la ejecucion
@@ -322,6 +336,7 @@ class WorkerThread(QThread):
         self.pasosUpdate.emit(self.listaPasos) #manda la de lista
         self.running = True
         self.continuarProtocolo()
+        self.continuarSuperior()
         self.wait_until_response = False #Variable que me va a controlar solo el envio de los datos
 
     def programacionInstrumento(self):
@@ -437,10 +452,16 @@ class WorkerThread(QThread):
                     i = self.I_MANUAL
                     j = self.J_MANUAL
                 sleep(1)
+
+            while self.pausa:
+                if self.PAUSE_SUPERIOR: #En el caso que ya se encuentre en pausa y se pida saltar...... debo asegurarme de ir a donde he solicitado
+                    while self.PAUSE_SUPERIOR:
+                        if self.I_MANUAL !=None:
+                            i = self.I_MANUAL
+                            j = self.J_MANUAL
+                sleep(1)
             self.I_MANUAL = None
             self.J_MANUAL = None
-            while self.pausa:
-                sleep(1)
             j = 0 #indice de paso
             self.BLOQUE = self.protocolo[i] #Me va a representar el bloque que estoy ejecutando para luego evaluar su estado
             if self.N_PROTOCOLO_ID == 0:
@@ -479,10 +500,15 @@ class WorkerThread(QThread):
                         j = self.J_MANUAL
                         sleep(1)
 
+                while self.pausa:
+                    if self.PAUSE_SUPERIOR: #En el caso que ya se encuentre en pausa y se pida saltar...... debo asegurarme de ir a donde he solicitado
+                        while self.PAUSE_SUPERIOR:
+                            if self.I_MANUAL !=None:
+                                i = self.I_MANUAL
+                                j = self.J_MANUAL
+                    sleep(1)
                 self.I_MANUAL = None
                 self.J_MANUAL = None  
-                while self.pausa:
-                    sleep(1)
                 if self.I_BLOQUE !="NO_SALTO" and self.J_BLOQUE !="NO_SALTO":
                     if int(self.I_BLOQUE)>i:
                         #Aca debo actualizar y agregar NC y OK a los pasos en caso que se salte hacia delante
