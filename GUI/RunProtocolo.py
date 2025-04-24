@@ -38,7 +38,12 @@ class run(QDialog):
         self.shortcut_manual = QShortcut(QKeySequence("space"), self).activated.connect(self.cambiar_manual)
 
         self.temp_msg = None
+        self.lista_valores_temp =None
         self.FLAG_MANUAL_SALTO = False
+
+        ###########
+
+        self.NUMERICO_TEXTO = None
     def cambiar_manual(self):
         self.worker.pausarProtocolo() #Pausa la ejecucion
         self.worker.pausaSuperior()
@@ -48,7 +53,10 @@ class run(QDialog):
         #print(app.i,app.j)
         if self.FLAG_MANUAL_SALTO:
             if app.i == None:
-                self.mostrarPopup(mensaje=self.temp_msg)
+                if self.NUMERICO_TEXTO=="TEXTO": #En el caso que se haya saltado desde manual texto
+                    self.mostrarPopup(mensaje=self.temp_msg)
+                else: #En caso que se haya saltado desde manual numerico
+                    self.mostrarPopupNumerico(lista_valores=self.lista_valores_temp)
             self.FLAG_MANUAL_SALTO=False #Debo desactivar la bandera
         else:
             self.worker.setBloquePasoManual(i = app.i, j= app.j)
@@ -158,6 +166,7 @@ class run(QDialog):
 
     @pyqtSlot(str)
     def mostrarPopup(self, mensaje):
+        self.NUMERICO_TEXTO="TEXTO"
         self.temp_msg = mensaje
         self.worker.pausarProtocolo() #Pausa la ejecucion
         self.manual_window = ingresoManual(mensaje_protocolo=mensaje)
@@ -167,8 +176,11 @@ class run(QDialog):
         
     @pyqtSlot(list)
     def mostrarPopupNumerico(self,lista_valores):
+        self.NUMERICO_TEXTO="NUMERICO"
+        self.lista_valores_temp = lista_valores
         self.worker.pausarProtocolo() #Pausa la ejecucion
         self.manual_window_numerico = IngresoManualNumerico(texto=lista_valores[0],min=lista_valores[1],max=lista_valores[2])
+        self.manual_window_numerico.sgn_saltar.connect(self.condicional_manual)
         self.manual_window_numerico.Mensaje_enviado.connect(self.procesarResultadoPopup)
         self.manual_window_numerico.show()
 

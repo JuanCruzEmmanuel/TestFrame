@@ -5,6 +5,7 @@ from PyQt5 import uic
 
 class IngresoManualNumerico(QDialog):
     Mensaje_enviado = pyqtSignal(str) #Señal que se encarga de emitir el resultado correcto
+    sgn_saltar = pyqtSignal(bool) #Señal para controla el salto
     def __init__(self,texto="EMPTY",min=0,max=0):
         super().__init__() #Llamo a todas las funciones y metodos de la clase QDialog
         uic.loadUi(r'GUI\IngresoManualNumerico.ui', self)  # Carga el archivo log.ui
@@ -16,7 +17,7 @@ class IngresoManualNumerico(QDialog):
         self.ValMin.setText(str(self.__VAL_MIN))
         self.ValMax.setText(str(self.__VAL_MAX))
         self.Enviar.clicked.connect(self.sendMensaje)
-
+        self.BotonSaltar.clicked.connect(self.saltar_manual)
 
     def setMensaje(self,text,min,max):
         """
@@ -44,6 +45,9 @@ class IngresoManualNumerico(QDialog):
 
         return self.resultado
     
+    def saltar_manual(self):
+        self.sgn_saltar.emit(True)
+        self.close()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
