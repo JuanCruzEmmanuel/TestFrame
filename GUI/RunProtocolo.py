@@ -32,7 +32,7 @@ class run(QDialog):
         self.manual_window = None #Creo variable por las dudas de errores
         self.manual_window_numerico = None #Creo variables por la duda de errores
         self.Manual.clicked.connect(self.cambiar_manual)
-
+        self.Automatico.clicked.connect(self.cambiar_automatico)
         #Atajos de teclado se utiliza el metodo QKeySequence y QShortcut
         #prueba
         self.shortcut_manual = QShortcut(QKeySequence("space"), self).activated.connect(self.cambiar_manual)
@@ -45,6 +45,7 @@ class run(QDialog):
 
         self.NUMERICO_TEXTO = None
     def cambiar_manual(self):
+        self.worker.selectModo(modo="MANUAL")
         self.worker.pausarProtocolo() #Pausa la ejecucion
         self.worker.pausaSuperior()
         app = Ventana_Manual(protocolo=self.protocolo_a_ejecutar)
@@ -61,8 +62,9 @@ class run(QDialog):
         else:
             self.worker.setBloquePasoManual(i = app.i, j= app.j)
             self.worker.continuarSuperior()
+
     def cambiar_automatico(self):
-        pass
+        self.worker.selectModo(modo="AUTOMATICO")
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
@@ -134,6 +136,7 @@ class run(QDialog):
         self.worker.pasosUpdate.connect(self.mostrar_pasos_protocolo)
         self.worker.UpdateTablaBloque.connect(self.cargarDatos) #Conecta la señal a actualizar tabla
         self.worker.abrirPopupNumerico.connect(self.mostrarPopupNumerico)
+        self.worker.abrirManual.connect(self.cambiar_manual)
         self.worker.start()
         self.descripcionPaso.setText("Ejecutando protocolo...")
 
@@ -203,7 +206,7 @@ class WorkerThread(QThread):
     bloqueNombre = pyqtSignal(str) # Señal que controla el nombre del bloque
     pasosUpdate = pyqtSignal(list) #Señal con la lista de pasos actualizada (lista de lista)
     abrirPopupNumerico = pyqtSignal(list) #Señal para control windows numerica
-
+    abrirManual = pyqtSignal() #Abre la ventana de avanzar manual o saltar paso
     def __init__(self, protocolo,N_PROTOCOLO_ID = 0,database = None):
         super().__init__()
         self.database = database # SE AGREGA UN AUX DE LA BASE DE DATOS POR LAS DUDAS
@@ -230,11 +233,15 @@ class WorkerThread(QThread):
         self.wait_until_response = False
         self.VERIFICACION_FLAG = False #bandera para controlar la verificacion
         self.FLAG_MANUAL_SALTO = False #Flag que controla el cambio de posiciones en caso de de estar en manual y elegir la opcion saltar
+
+        self.MODO = "AUTOMATICO"
         #POSICIONES AUXILIARES
         self.I_BLOQUE = "NO_SALTO"
         self.J_BLOQUE = "NO_SALTO"
         self.I_MANUAL = None
         self.J_MANUAL = None
+
+
     def pausarProtocolo(self):
         self.pausa = True
 
@@ -390,6 +397,11 @@ class WorkerThread(QThread):
         print(valor)
         self.procesarResultado(valor=valor)
         
+    def selectModo(self,modo):
+        """
+        Selecciona el modo MANUAL o AUTOMATICO
+        """
+        self.MODO = modo
 
     def calibracion(self):
         print("Ingreso a calibración")
@@ -519,6 +531,8 @@ class WorkerThread(QThread):
                                 i = self.I_MANUAL
                                 j = self.J_MANUAL
                     sleep(1)
+                if self.MODO == "MANUAL":
+                    self.abrirManual.emit()
                 self.I_MANUAL = None
                 self.J_MANUAL = None  
                 if self.I_BLOQUE !="NO_SALTO" and self.J_BLOQUE !="NO_SALTO":
