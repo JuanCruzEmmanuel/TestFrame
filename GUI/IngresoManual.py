@@ -6,6 +6,7 @@ from PyQt5 import uic
 
 class ingresoManual(QMainWindow):
     Mensaje_enviado = pyqtSignal(str)  # Señal personalizada
+    sgn_saltar = pyqtSignal(bool) #Señal para controla el salto
     def __init__(self, mensaje_protocolo = "NO HAY MENSAJE"):
         super().__init__()
         uic.loadUi(r'GUI\IngresoManual.ui', self)  # Carga el archivo log.ui
@@ -14,7 +15,7 @@ class ingresoManual(QMainWindow):
         self.AutoOk.clicked.connect(self.enviarOk)
         self.Enviar.clicked.connect(self.sendMensaje)
         self.resultado = None
-
+        self.Saltar.clicked.connect(self.saltar_manual)
     def setMensaje(self,text):
 
         self.texto = text
@@ -26,6 +27,9 @@ class ingresoManual(QMainWindow):
             self.resultado = mensaje
             self.Mensaje_enviado.emit(mensaje)
             self.close()
+    def saltar_manual(self):
+        self.sgn_saltar.emit(True)
+        self.close()
     def enviarOk(self):
 
         """

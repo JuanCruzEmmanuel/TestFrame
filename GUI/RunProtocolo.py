@@ -4,7 +4,7 @@ from datetime import datetime
 import sys
 import os
 from PyQt5.QtWidgets import QApplication, QDialog, QTableWidgetItem
-from PyQt5.QtCore import QEventLoop, QThread, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import QEventLoop, QThread, pyqtSignal, pyqtSlot,Qt
 from PyQt5.QtGui import QColor, QBrush
 from PyQt5 import uic
 from GUI.IngresoManual import ingresoManual
@@ -32,21 +32,66 @@ class run(QDialog):
         self.manual_window = None #Creo variable por las dudas de errores
         self.manual_window_numerico = None #Creo variables por la duda de errores
         self.Manual.clicked.connect(self.cambiar_manual)
-
+        self.Automatico.clicked.connect(self.cambiar_automatico)
         #Atajos de teclado se utiliza el metodo QKeySequence y QShortcut
         #prueba
         self.shortcut_manual = QShortcut(QKeySequence("space"), self).activated.connect(self.cambiar_manual)
+
+        self.temp_msg = None
+        self.lista_valores_temp =None
+        self.FLAG_MANUAL_SALTO = False
+
+        ###########
+
+        self.NUMERICO_TEXTO = None
     def cambiar_manual(self):
+        self.worker.selectModo(modo="MANUAL")
         self.worker.pausarProtocolo() #Pausa la ejecucion
         self.worker.pausaSuperior()
-        app = Ventana_Manual(protocolo=self.protocolo_a_ejecutar)
+        app = Ventana_Manual(protocolo=self.protocolo_a_ejecutar,MODO_FUNCIONAMIENTO="MANUAL")
 
         app.exec_()
-        print(app.i,app.j)
-        self.worker.continuarSuperior()
-    def cambiar_automatico(self):
-        pass
+        #print(app.i,app.j)
+        if self.FLAG_MANUAL_SALTO:
+            print("Indicador_1")
+            if app.i == None:
+                print("Indicador_5")
+                if self.NUMERICO_TEXTO=="TEXTO": #En el caso que se haya saltado desde manual texto
+                    self.mostrarPopup(mensaje=self.temp_msg)
+                else: #En caso que se haya saltado desde manual numerico
+                    self.mostrarPopupNumerico(lista_valores=self.lista_valores_temp)
+                
+                if app.MODO =="AUTOMATICO":
+                    self.cambiar_automatico()
+            else:
+                print("Indicador_16")
+                self.worker.setBloquePasoManual(i = app.i, j= app.j)
+                self.worker.continuarSuperior()
+                if app.MODO =="AUTOMATICO":
+                    self.cambiar_automatico()
+            print("Indicador_6")
+            self.FLAG_MANUAL_SALTO=False #Debo desactivar la bandera
+        else:
+            print("Indicador_2")
+            self.worker.setBloquePasoManual(i = app.i, j= app.j)
+            self.worker.continuarSuperior()
+            if app.MODO =="AUTOMATICO":
+                self.cambiar_automatico()
 
+    def cambiar_automatico(self):
+        self.worker.selectModo(modo="AUTOMATICO")
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Escape:
+            # Ignorar la tecla Escape
+            event.ignore()
+        else:
+            # Procesar otras teclas normalmente
+            super().keyPressEvent(event)
+
+    def condicional_manual(self):
+        self.FLAG_MANUAL_SALTO = True
+        self.cambiar_manual()
     @pyqtSlot()
     def mostrar_bloques_protocolo(self):
         self.TablaBloques.setRowCount(len(self.protocolo_a_ejecutar))
@@ -106,6 +151,7 @@ class run(QDialog):
         self.worker.pasosUpdate.connect(self.mostrar_pasos_protocolo)
         self.worker.UpdateTablaBloque.connect(self.cargarDatos) #Conecta la señal a actualizar tabla
         self.worker.abrirPopupNumerico.connect(self.mostrarPopupNumerico)
+        self.worker.abrirManual.connect(self.cambiar_manual)
         self.worker.start()
         self.descripcionPaso.setText("Ejecutando protocolo...")
 
@@ -138,15 +184,21 @@ class run(QDialog):
 
     @pyqtSlot(str)
     def mostrarPopup(self, mensaje):
+        self.NUMERICO_TEXTO="TEXTO"
+        self.temp_msg = mensaje
         self.worker.pausarProtocolo() #Pausa la ejecucion
         self.manual_window = ingresoManual(mensaje_protocolo=mensaje)
+        self.manual_window.sgn_saltar.connect(self.condicional_manual)
         self.manual_window.Mensaje_enviado.connect(self.procesarResultadoPopup)
         self.manual_window.show()
-
+        
     @pyqtSlot(list)
     def mostrarPopupNumerico(self,lista_valores):
+        self.NUMERICO_TEXTO="NUMERICO"
+        self.lista_valores_temp = lista_valores
         self.worker.pausarProtocolo() #Pausa la ejecucion
         self.manual_window_numerico = IngresoManualNumerico(texto=lista_valores[0],min=lista_valores[1],max=lista_valores[2])
+        self.manual_window_numerico.sgn_saltar.connect(self.condicional_manual)
         self.manual_window_numerico.Mensaje_enviado.connect(self.procesarResultadoPopup)
         self.manual_window_numerico.show()
 
@@ -169,7 +221,7 @@ class WorkerThread(QThread):
     bloqueNombre = pyqtSignal(str) # Señal que controla el nombre del bloque
     pasosUpdate = pyqtSignal(list) #Señal con la lista de pasos actualizada (lista de lista)
     abrirPopupNumerico = pyqtSignal(list) #Señal para control windows numerica
-
+    abrirManual = pyqtSignal() #Abre la ventana de avanzar manual o saltar paso
     def __init__(self, protocolo,N_PROTOCOLO_ID = 0,database = None):
         super().__init__()
         self.database = database # SE AGREGA UN AUX DE LA BASE DE DATOS POR LAS DUDAS
@@ -192,11 +244,19 @@ class WorkerThread(QThread):
         self.PAUSE_SUPERIOR = False
         self.pausa = False
         self.driverInstrumento = driverInstrumentos(BASE_DATO=self.database)
-
+        #FLAG GLOBALES Y AUXILIARES
         self.wait_until_response = False
         self.VERIFICACION_FLAG = False #bandera para controlar la verificacion
+        self.FLAG_MANUAL_SALTO = False #Flag que controla el cambio de posiciones en caso de de estar en manual y elegir la opcion saltar
+
+        self.MODO = "AUTOMATICO"
+        #POSICIONES AUXILIARES
         self.I_BLOQUE = "NO_SALTO"
         self.J_BLOQUE = "NO_SALTO"
+        self.I_MANUAL = None
+        self.J_MANUAL = None
+
+
     def pausarProtocolo(self):
         self.pausa = True
 
@@ -212,6 +272,16 @@ class WorkerThread(QThread):
         """
         self.PAUSE_SUPERIOR = False
 
+        self.pausa = False #agrego para que no se quede en loop infinito
+    def setBloquePasoManual(self,i,j):
+        """
+        Setea la posicion de trabajo\n
+        :i: Indice de bloque\n
+        :j: Indice de fila\n
+        :return: Posicion deseada
+        """
+        self.I_MANUAL = i
+        self.J_MANUAL = j
     def continuarProtocolo(self):
         # Continúa la ejecución del protocolo
         self.pausa = False
@@ -223,13 +293,45 @@ class WorkerThread(QThread):
         item = self.TIPO_ITEM[paso["Tipo_Item"]]()
 
     def ingresoManual(self):
+        print("Indicador_11")
+        FLAG_PAUSA_SUPERIOR = False
         #print("INGRESO A MANUAL")
         # Emitir señal para abrir el popup en el hilo principal
-        if self.PASO["Tipo_Item"]=="IngresoManual":
-            if self.PASO["Tipo_Respuesta"]!="NUMERICO":
-                self.abrirPopup.emit(self.paso_ejecucion)
-            else:
-                self.abrirPopupNumerico.emit([self.PASO["Nombre"],self.PASO["ResultadoMinimo"],self.PASO["ResultadoMaximo"]]) #Emito esta señal para ingreso numerico
+        if not self.PAUSE_SUPERIOR: 
+            print("Indicador_12")
+            if self.PASO["Tipo_Item"]=="IngresoManual":
+                if self.PASO["Tipo_Respuesta"]!="NUMERICO":
+                    self.abrirPopup.emit(self.paso_ejecucion)
+                else:
+                    self.abrirPopupNumerico.emit([self.PASO["Nombre"],self.PASO["ResultadoMinimo"],self.PASO["ResultadoMaximo"]]) #Emito esta señal para ingreso numerico
+        else: #En caso que si exista la pausa superior
+            FLAG_PAUSA_SUPERIOR=True
+            while FLAG_PAUSA_SUPERIOR: #Mientra este activo, se va a mantener aca
+                print("Indicador_3")
+                if not self.PAUSE_SUPERIOR: #Pero no quiero que muestre nada hasta que se salga de la seleccion
+                    print("Indicador_4")
+                    if self.I_MANUAL == None: #Solo me interesa evaluar si se ha seleccionado algun valor distinto de None
+                        print("Se continua al siguiente paso....")
+                        if self.PASO["Tipo_Item"]=="IngresoManual":
+                            print("Indicador_14")
+                            if self.PASO["Tipo_Respuesta"]!="NUMERICO":
+                                print("Indicador_15")
+                                self.abrirPopup.emit(self.paso_ejecucion)
+                                FLAG_PAUSA_SUPERIOR =False
+                            else:
+                                print("Indicador_13")
+                                self.abrirPopupNumerico.emit([self.PASO["Nombre"],self.PASO["ResultadoMinimo"],self.PASO["ResultadoMaximo"]]) #Emito esta señal para ingreso numerico
+                                FLAG_PAUSA_SUPERIOR=False
+                    else: #Se ha seleccionado saltar.....
+                        print("Se ha seleccionado saltar a otro paso....")
+                        FLAG_PAUSA_SUPERIOR=False
+                        self.FLAG_MANUAL_SALTO = True #Activa esta variable de estado para poder avisarle al run que existe un salto obligado
+                        
+                else:
+                    print("Reposo")
+                    sleep(1) #Descanso 1 segundo para no consumir recursos innecesariamente.
+
+                                       
 
     def manejarResultado(self, valor):
         #print(f"Resultado recibido en hilo secundario: {valor}")
@@ -276,6 +378,7 @@ class WorkerThread(QThread):
         self.pasosUpdate.emit(self.listaPasos) #manda la de lista
         self.running = True
         self.continuarProtocolo()
+        self.continuarSuperior()
         self.wait_until_response = False #Variable que me va a controlar solo el envio de los datos
 
     def programacionInstrumento(self):
@@ -317,6 +420,11 @@ class WorkerThread(QThread):
         print(valor)
         self.procesarResultado(valor=valor)
         
+    def selectModo(self,modo):
+        """
+        Selecciona el modo MANUAL o AUTOMATICO
+        """
+        self.MODO = modo
 
     def calibracion(self):
         print("Ingreso a calibración")
@@ -381,10 +489,26 @@ class WorkerThread(QThread):
         i = 0 #Indice de bloque
         #for bloque_idx, bloque in enumerate(self.protocolo):
         while i < len(self.protocolo):
+
+            if self.FLAG_MANUAL_SALTO:#Se ha activado la variable de estado desde manual
+                i = self.I_MANUAL
+                j = self.J_MANUAL
+                #self.FLAG_MANUAL_SALTO = False #Desactivo, esto tal vez no es lo mejor aca
             while self.PAUSE_SUPERIOR:
+                if self.I_MANUAL !=None:
+                    i = self.I_MANUAL
+                    j = self.J_MANUAL
                 sleep(1)
+
             while self.pausa:
+                if self.PAUSE_SUPERIOR: #En el caso que ya se encuentre en pausa y se pida saltar...... debo asegurarme de ir a donde he solicitado
+                    while self.PAUSE_SUPERIOR:
+                        if self.I_MANUAL !=None:
+                            i = self.I_MANUAL
+                            j = self.J_MANUAL
                 sleep(1)
+            self.I_MANUAL = None
+            self.J_MANUAL = None
             j = 0 #indice de paso
             self.BLOQUE = self.protocolo[i] #Me va a representar el bloque que estoy ejecutando para luego evaluar su estado
             if self.N_PROTOCOLO_ID == 0:
@@ -411,10 +535,40 @@ class WorkerThread(QThread):
             self.progreso.emit(f"Ejecutando bloque {i + 1} de {len(self.protocolo)}")
             #for paso in self.protocolo[i]["Pasos"]:
             while j < len(self.protocolo[i]["Pasos"]):
+                print("Indicador_7")
+                if self.FLAG_MANUAL_SALTO:#Se ha activado la variable de estado desde manual
+                    print("Indicador_8")
+                    i = self.I_MANUAL
+                    j = self.J_MANUAL
+                    self.FLAG_MANUAL_SALTO = False #desactivo la variable para que el protocolo continue de manera normal
+
                 while self.PAUSE_SUPERIOR:
-                    sleep(1)
+                    print("Indicador_9")
+                    if self.I_MANUAL !=None:
+                        i = self.I_MANUAL
+                        j = self.J_MANUAL
+                        sleep(1)
+
                 while self.pausa:
+                    print("Indicador_10")
+                    if self.PAUSE_SUPERIOR: #En el caso que ya se encuentre en pausa y se pida saltar...... debo asegurarme de ir a donde he solicitado
+                        while self.PAUSE_SUPERIOR:
+                            if self.I_MANUAL !=None:
+                                i = self.I_MANUAL
+                                j = self.J_MANUAL
                     sleep(1)
+                if self.MODO == "MANUAL": #Nunca hemos salido del modo manual, por lo que nuevamente se debe re ingresar; esto a su vez debe nuevamente preguntar si se ha o no realizado una accion
+                    self.abrirManual.emit()
+
+                while self.PAUSE_SUPERIOR:
+                    print("Ingrese debido a que seguimos en modo manual")
+                    if self.I_MANUAL !=None:
+                        i = self.I_MANUAL
+                        j = self.J_MANUAL
+                        sleep(1)
+
+                self.I_MANUAL = None
+                self.J_MANUAL = None  
                 if self.I_BLOQUE !="NO_SALTO" and self.J_BLOQUE !="NO_SALTO":
                     if int(self.I_BLOQUE)>i:
                         #Aca debo actualizar y agregar NC y OK a los pasos en caso que se salte hacia delante

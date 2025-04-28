@@ -22,15 +22,25 @@
      <height>441</height>
     </rect>
    </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
    <widget class="QWidget" name="principal">
     <widget class="QPushButton" name="SELECCION_FILAS_COLUMNAS">
      <property name="geometry">
       <rect>
-       <x>630</x>
-       <y>320</y>
-       <width>75</width>
-       <height>23</height>
+       <x>690</x>
+       <y>80</y>
+       <width>161</width>
+       <height>81</height>
       </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 16pt &quot;Arial&quot;;
+font-weight: bold;</string>
      </property>
      <property name="text">
       <string>SALTAR</string>
@@ -39,14 +49,47 @@
     <widget class="QPushButton" name="PASO_AVANCE">
      <property name="geometry">
       <rect>
-       <x>630</x>
-       <y>360</y>
-       <width>75</width>
-       <height>31</height>
+       <x>700</x>
+       <y>350</y>
+       <width>141</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 10pt &quot;Arial&quot;;
+font-weight: bold;</string>
+     </property>
+     <property name="text">
+      <string>SEGUIENTE PASO</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="MANUAL">
+     <property name="geometry">
+      <rect>
+       <x>700</x>
+       <y>20</y>
+       <width>91</width>
+       <height>17</height>
       </rect>
      </property>
      <property name="text">
-      <string>AVANZAR</string>
+      <string>MANUAL</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="AUTOMATICO">
+     <property name="geometry">
+      <rect>
+       <x>700</x>
+       <y>50</y>
+       <width>101</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>AUTOMATICO</string>
      </property>
     </widget>
    </widget>
@@ -86,6 +129,9 @@
        <height>23</height>
       </rect>
      </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
      <property name="text">
       <string>Avanzar</string>
      </property>
@@ -98,6 +144,9 @@
        <width>75</width>
        <height>23</height>
       </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <property name="text">
       <string>Retroceder</string>

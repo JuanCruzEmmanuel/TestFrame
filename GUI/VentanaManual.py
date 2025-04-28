@@ -5,7 +5,7 @@ import json
 from PyQt5.QtWidgets import QTableWidgetItem
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 class Ventana_Manual(QtWidgets.QDialog):
-    def __init__(self,protocolo = None):
+    def __init__(self,protocolo = None,MODO_FUNCIONAMIENTO = "AUTOMATICO"):
         super().__init__()
         uic.loadUi("GUI/Manual.ui", self)  # Reemplaza con el nombre real del archivo .ui
         self.protocolo = protocolo
@@ -17,14 +17,20 @@ class Ventana_Manual(QtWidgets.QDialog):
         # Conectar el botón con la función para cambiar de página
         self.SELECCION_FILAS_COLUMNAS.clicked.connect(self.ir_a_seleccion)
         self.Retroceder.clicked.connect(self.ir_a_principal)
-
+        self.MODO = MODO_FUNCIONAMIENTO
         self.Bloques.clicked.connect(self.show_pasos)
         self.Pasos.clicked.connect(self.get_indice_paso)
         self.Avanzar.clicked.connect(self.returned_value)
         self.PASO_AVANCE.clicked.connect(self.avanzar_paso)
         self.i = None
         self.j = None
-
+        self.MANUAL.clicked.connect(self.MODO_MANUAL)
+        self.AUTOMATICO.clicked.connect(self.MODO_AUTOMATICO)
+    
+    def MODO_MANUAL(self):
+        self.MODO="MANUAL"
+    def MODO_AUTOMATICO(self):
+        self.MODO="AUTOMATICO"
     def avanzar_paso(self):
         self.reset_indices
         
