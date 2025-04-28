@@ -47,10 +47,10 @@ INTERFAZ GRAFICA: UI O GUI:
             ○ VISOR DE INFORMACION TEXTO ✓
             ○ VISOR DE RANGOS ✓
             ○ PERMITIR COMPLETAR ✓
-        ○ PANTALLA DE EJECUCION MANUAL X ------> ESENCIAL
-            ○ BOTON DE SALTO X ----> ESENCIAL
-            ○ BOTON AUTOMATICO/MANUAL X
-            ○ BOTON AVANZAR X
+        ○ PANTALLA DE EJECUCION MANUAL ✓ ------> ESENCIAL
+            ○ BOTON DE SALTO ✓ ----> ESENCIAL
+            ○ BOTON AUTOMATICO/MANUAL ✓
+            ○ BOTON AVANZAR ✓
 
 ○ BASE DE DATOS:
     ○ ACCEDER A LOS USUARIOS ✓
@@ -92,7 +92,7 @@ from GUI.log import LogWindow
 from CONTROLADORES.BBDD import SMVA_DB
 
 def main():
-    __VERSION__ = "0.9.1"
+    __VERSION__ = "0.9.4"
     database = SMVA_DB() #Cargo la base de datos
     app = QApplication(sys.argv)
 

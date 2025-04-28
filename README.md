@@ -55,9 +55,9 @@ Se dividirá en diferentes tópicos: Interfaz Gráfica, Funciones, Instrumentos,
     - Visor de rangos.
     - Permitir completar.
   - **Pantalla de Ejecución Manual (Esencial):**
-    - Botón de salto (Esencial). (Pendiente)
-    - Botón automático/manual. (Pendiente)
-    - Botón avanzar. (Pendiente)
+    - Botón de salto (Esencial). Listo
+    - Botón automático/manual.
+    - Botón avanzar. 
 
 ## BASE DE DATOS
 
