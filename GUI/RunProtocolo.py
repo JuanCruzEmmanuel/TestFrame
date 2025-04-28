@@ -48,7 +48,7 @@ class run(QDialog):
         self.worker.selectModo(modo="MANUAL")
         self.worker.pausarProtocolo() #Pausa la ejecucion
         self.worker.pausaSuperior()
-        app = Ventana_Manual(protocolo=self.protocolo_a_ejecutar)
+        app = Ventana_Manual(protocolo=self.protocolo_a_ejecutar,MODO_FUNCIONAMIENTO="MANUAL")
 
         app.exec_()
         #print(app.i,app.j)
@@ -60,16 +60,23 @@ class run(QDialog):
                     self.mostrarPopup(mensaje=self.temp_msg)
                 else: #En caso que se haya saltado desde manual numerico
                     self.mostrarPopupNumerico(lista_valores=self.lista_valores_temp)
+                
+                if app.MODO =="AUTOMATICO":
+                    self.cambiar_automatico()
             else:
                 print("Indicador_16")
                 self.worker.setBloquePasoManual(i = app.i, j= app.j)
                 self.worker.continuarSuperior()
+                if app.MODO =="AUTOMATICO":
+                    self.cambiar_automatico()
             print("Indicador_6")
             self.FLAG_MANUAL_SALTO=False #Debo desactivar la bandera
         else:
             print("Indicador_2")
             self.worker.setBloquePasoManual(i = app.i, j= app.j)
             self.worker.continuarSuperior()
+            if app.MODO =="AUTOMATICO":
+                self.cambiar_automatico()
 
     def cambiar_automatico(self):
         self.worker.selectModo(modo="AUTOMATICO")

@@ -30,7 +30,7 @@
      <property name="geometry">
       <rect>
        <x>690</x>
-       <y>30</y>
+       <y>80</y>
        <width>161</width>
        <height>81</height>
       </rect>
@@ -64,6 +64,32 @@ font-weight: bold;</string>
      </property>
      <property name="text">
       <string>SEGUIENTE PASO</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="MANUAL">
+     <property name="geometry">
+      <rect>
+       <x>700</x>
+       <y>20</y>
+       <width>91</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>MANUAL</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="AUTOMATICO">
+     <property name="geometry">
+      <rect>
+       <x>700</x>
+       <y>50</y>
+       <width>101</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>AUTOMATICO</string>
      </property>
     </widget>
    </widget>
