@@ -550,7 +550,7 @@ class WorkerThread(QThread):
                                 i = self.I_MANUAL
                                 j = self.J_MANUAL
                     sleep(1)
-                """if self.MODO == "MANUAL": #Nunca hemos salido del modo manual, por lo que nuevamente se debe re ingresar; esto a su vez debe nuevamente preguntar si se ha o no realizado una accion
+                if self.MODO == "MANUAL": #Nunca hemos salido del modo manual, por lo que nuevamente se debe re ingresar; esto a su vez debe nuevamente preguntar si se ha o no realizado una accion
                     self.abrirManual.emit()
 
                 while self.PAUSE_SUPERIOR:
@@ -558,7 +558,7 @@ class WorkerThread(QThread):
                     if self.I_MANUAL !=None:
                         i = self.I_MANUAL
                         j = self.J_MANUAL
-                        sleep(1)"""
+                        sleep(1)
 
                 self.I_MANUAL = None
                 self.J_MANUAL = None  
