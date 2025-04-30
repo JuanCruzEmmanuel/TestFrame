@@ -10,6 +10,8 @@ class PROSIM8(instru_contract):
         self.con = None
         self.HEARTRATE = 60
         self.MODE = "ADULT"
+        self.LEAD_ARTIFACT = "ALL"
+        self.LEAD_SIZE = "025"
     def connect(self):
         """
         CONECTA PROSIM8 CON PUERTO SERIE\n
@@ -25,6 +27,25 @@ class PROSIM8(instru_contract):
         self.writecommand(cmd="REMOTE")
         
         print(self.readcommand()) #DEBERIA DEVOLVER RMAIN
+
+    def setArtifactLead(self,lead):
+
+        self.LEAD_ARTIFACT = "LEAD"
+
+        self.writecommand(cmd = f"EARTLD={self.LEAD_ARTIFACT}")
+
+        self.readcommand()
+
+    def SetArtifactSize(self,size):
+        if len(size)==2:
+            self.LEAD_SIZE =f"0{size}"
+        else:
+            self.LEAD_SIZE = "100"
+
+        
+        self.writecommand(cmd = f"EARTSZ={self.LEAD_SIZE}")
+        
+        self.readcommand()
 
     def disconnect(self):
         """
@@ -130,4 +151,50 @@ class PROSIM8(instru_contract):
         #Se tiene que saber que entre 0.05 a 0.45; saltos de 0.05mV;
         #Saltos de 0.50 a 5.00 saltos de 0.25mV
         self.writecommand(cmd=f"ECGAMPL={param}")
+        self.readcommand()
+    
+    def setArtifact(self,param="OFF"):
+        """
+        Funcion que setea el tipo de artefacto\n
+        :param:
+        DIC: El diccionario va a tener una cantidad de posibles valores para que la funcion tenga un accionar correcto\n
+        """
+
+        dic_artifact={
+            "50":"50",
+            "60": "60",
+            "50HZ":"50",
+            "50Hz":"50",
+            "60HZ": "60",
+            "60Hz": "60",
+            "60hz": "60",
+            "50hz": "50",
+            "Musc": "MSC",
+            "MUSC": "MSC",
+            "musc": "MSC",
+            "MUSCULAR": "MSC",
+            "muscular": "MSC",
+            "MSC": "MSC",
+            "WANDERING": "WAND",
+            "BASELINE": "WAND",
+            "wandering": "WAND",
+            "wand": "WAND",
+            "base": "WAND",
+            "wanderingBaseline":"WAND",
+            "WanderingBaseline":"WAND",
+            "RESP":"RESP",
+            "resp":"RESP",
+            "Resp":"RESP",
+            "RESPIRATORIA":"RESP",
+            "respiratoria":"RESP"
+        }
+
+        try:
+            param = dic_artifact[param]
+        except:
+            param = param
+        
+        #configura
+        self.writecommand(cmd = f"EART={param}")
+
         self.readcommand()
