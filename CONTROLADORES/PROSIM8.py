@@ -2,12 +2,14 @@
 import serial
 import numpy
 from INSTRUCONTRACT import instru_contract
-
+from time import sleep
 class PROSIM8(instru_contract):
     def __init__(self,port,baudare=115200):
         self.port = port
         self.baudrate = baudare
         self.con = None
+        self.HEARTRATE = 60
+        self.MODE = "ADULT"
     def connect(self):
         """
         CONECTA PROSIM8 CON PUERTO SERIE\n
@@ -15,7 +17,14 @@ class PROSIM8(instru_contract):
         serial.STOPBITS_ONE = 1\n
         serial.PARITY_NONE = 'None'\n
         """
-        self.con = serial.Serial(port=self.port,baudrate=self.baudrate,stopbits=serial.STOPBITS_ONE, parity=serial.PARITY_NONE,bytesize=8,xonxoff=True)
+        self.con = serial.Serial(port=self.port,baudrate=self.baudrate,stopbits=serial.STOPBITS_ONE, parity=serial.PARITY_NONE,bytesize=8,xonxoff=False)
+        #Lo conecto y lo dejo en estado remoto
+        self.remote()
+    def remote(self):
+
+        self.writecommand(cmd="REMOTE")
+        
+        print(self.readcommand()) #DEBERIA DEVOLVER RMAIN
 
     def disconnect(self):
         """
@@ -24,7 +33,101 @@ class PROSIM8(instru_contract):
         self.con.close()
 
     def readcommand(self):
-        pass
+        response = self.con.readline().decode("utf-8")
+
+        return response
+    def writecommand(self,cmd):
+
+        self.con.write(cmd.encode())
+        sleep(0.5) #Delay de seguridad
+
+    def setHeartRate(self,rate):
+        """
+        SETEA LA FRECUENCIA DE LATIDOS\n
+        :rate: 10 - 360\n
+        """
+        if int(rate)<10:
+            print("Valor por debajo del limite")
+            self.setHeartRate=10
+        elif int(rate)>360:
+            print("Valor por encima del limite")
+            self.setHeartRate = 360
+        else:
+            print(f"Se setea el valor frecuencia cardiaca en: {int(rate)}")
+            self.setHeartRate = int(rate)
+
+    def setMode(self,mode):
+        """
+        SETEA EL MODO\n
+        :mode: ADULTO, NEO,.... y los que sean necesarios\n
+        """
+
+        self.MODE =mode
+
+    def NormalRate(self):
+        """
+        Se encarga de enviar el comando para configurar el control normal de la señal cardiaca\n
+        """
+        if self.MODE=="ADULTO":
+            if len(self.NormalRate)==2: #por ejemplo 99, se debe enviar de la forma 099
+
+                _temp_cmd = f"NSRA=0{self.NormalRate}" #Normal Sinus Rate Adult
+            else:
+                _temp_cmd = f"NSRA={self.NormalRate}"
+        elif self.MODE =="PEDIATRICO":
+            if len(self.NormalRate)==2: #por ejemplo 99, se debe enviar de la forma 099
+                _temp_cmd = f"NSRP=0{self.NormalRate}" #Normal Sinus Rate Pediatric
+            else:
+                _temp_cmd = f"NSRP={self.NormalRate}"
+        else:
+            _temp_cmd = "...."
+
+        self.writecommand(cmd=_temp_cmd)
+        #Creo que no responde nada especifico, pero por una cuestion de buenas practicas....
+        self.readcommand()
+
+    def truncar_dos_decimales(self,valor):
+        return int(valor * 100) / 100
+
+    def setDeviation(self,param="0.00"):
+        """
+        Setea desviacion de la linea base\n
+        :param:
+        param: valor que puede ir desde:\n
+        ± 0.00 a 0.05 a 0.01mV de paso\n
+        ± 0.10 a 0.80 a 0.10mV de paso
+        """ 
+        #En este caso particular como es un valor "numerico" puedo determinar si el valor ingresado tiene forma de valor flotante
+        
+        _float_param = float(param)
+        try:
+            if -0.05<=_float_param<= 0.05:
+                _float_param = self.truncar_dos_decimales(valor=_float_param)
+                param = str(_float_param)
+            elif (0.10 <= _float_param <= 0.80 or -0.80 <= _float_param <= -0.10):
+                # Solo aceptar si es múltiplo de 0.10 exacto
+                if round(_float_param % 0.10, 8) == 0:
+                    param = str(_float_param)
+            else:
+                print("ERR-150")
+                print("El formato ingresado es incorrecto")
+                param = "0.00"
+        except:
+            print("ERR-151")
+            print("El formato ingresado es incorrecto")
+            param = "0.00"
+        
+        self.writecommand(cmd=f"STDEV={param}")
+
+        self.readcommand()
     
-    def writecommand(self):
-        pass
+    def setECGAmplitude(self,param="1.00"):
+        """
+        Setea la amplitud del ECG\n
+        
+        """
+        #No me voy a gastar en esta instancia en poner la amplitud correcta, se hace muy largo;
+        #Se tiene que saber que entre 0.05 a 0.45; saltos de 0.05mV;
+        #Saltos de 0.50 a 5.00 saltos de 0.25mV
+        self.writecommand(cmd=f"ECGAMPL={param}")
+        self.readcommand()
