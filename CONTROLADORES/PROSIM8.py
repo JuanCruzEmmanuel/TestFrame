@@ -268,3 +268,59 @@ class PROSIM8(instru_contract):
         self.writecommand(cmd=f"PREWAVE={arrh}")
 
         self.readcommand()
+
+    def setSupArrhythmia(self,param):
+        """
+        ***GLOSARIO***:\n
+        **AFL**: Atrial Flutter\n
+        **SNA**: Sinus Arrhythmia\n
+        **MB80**: Missed Beat at 80 BPM\n
+        **MB120**: Missed Beat at 120 BPM\n
+        **ATC**: Atrial Tachycaria\n
+        **PAT**: Paroxismal Atrial Tachycardia\n
+        **NOD**: Nodal Rhythm\n
+        **SVT**: Supraventricual Tachycardia 
+        
+        """
+        supra_ventricular_arrhythmia_dic = {
+            "Flutter": "AFL",
+            "AtrialFlutter": "AFL",
+            "flutter": "AFL",
+            "AFL":"AFL",
+            "Sinus":"SNA",
+            "sinus":"SNA",
+            "SNA":"SNA",
+            "Sinusal":"SNA",
+            "ArritmiaSinusal":"SNA",
+            "SinusArrhythmia":"SNA",
+            "80BPM" :"MB80",
+            "80":"MB80",
+            "80LPM":"MB80",
+            "120BPM":"MB120",
+            "120":"MB120",
+            "120LPM":"MB120",
+            "SupraventricularTachycardia":"SVT",
+            "TaquicardiaSupraventricular":"SVT",
+            "SupTaquicardia":"SVT",
+            "SVT":"SVT",
+            "SupTachycardia":"SVT",
+            "Nodal":"NOD",
+            "NOD":"NOD",
+            "Paraox": "PAT",
+            "PAT":"PAT",
+            "Paroxismal":"PAT",
+            "Paroxysmal":"PAT",
+            "TaquicardiaAtrialParoxismal":"PAT",
+            "ParoxysmalAtrialTachycardia":"PAT",
+            "TaquicardiaAtrial":"ATC",
+            "ATC":"ATC",
+            "Taquicardia":"ATC",
+            "Tachycardia":"ATC",
+            "TaquicardiaAtrial":"ATC",
+            "AtrialTachycardia":"ATC"
+        }
+
+        arrh = supra_ventricular_arrhythmia_dic[param]
+
+        self.writecommand(cmd=f"SPVWAVE={arrh}")
+        self.readcommand()
