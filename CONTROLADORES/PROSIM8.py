@@ -229,9 +229,9 @@ class PROSIM8(instru_contract):
         self.SIDE = _side_dic[param] #Selecciona el lado donde se va a realizar la arrimia
 
 
-    def setPreVentricularArrhytmia(self,param):
+    def setPreVentricularArrhythmia(self,param):
 
-        _pre_ventricular_arrhytmia_dic = {
+        _pre_ventricular_arrhythmia_dic = {
             "prematureatrialcontraction":"PAC",
             "PrematureAtrialContraction":"PAC",
             "PAC":"PAC",
@@ -258,7 +258,7 @@ class PROSIM8(instru_contract):
             "RT":"PVC1R",
         }
         try:
-            arrh = _pre_ventricular_arrhytmia_dic[param]
+            arrh = _pre_ventricular_arrhythmia_dic[param]
         except:
             arrh = "PAC" #Para que no se detenga la ejecucion.....
         if not self.SIDE=="Left":
@@ -320,7 +320,52 @@ class PROSIM8(instru_contract):
             "AtrialTachycardia":"ATC"
         }
 
-        arrh = supra_ventricular_arrhythmia_dic[param]
+        try:
+            arrh = supra_ventricular_arrhythmia_dic[param]
+        except:
+            arrh = "AFL" #Para que no se detenga la ejecucion.....
 
         self.writecommand(cmd=f"SPVWAVE={arrh}")
+        self.readcommand()
+
+    def VentricularArrhythmia(self,param):
+
+        _ventricular_arrhythmia_dic = {
+            "6":"PVC6M",
+            "6min":"PVC6M",
+            "PVC6M":"PVC6M",
+            "12":"PVC12M",
+            "12min":"PVC12M",
+            "PVC12M":"PVC12M",
+            "24":"PVC24M",
+            "24min":"PVC24M",
+            "PVC24M":"PVC24M",
+            "MultiFocal":"FMF",
+            "Multi":"FMF",
+            "FrequentMultiFocal":"FMF",
+            "Trigeminismo":"TRIG",
+            "Trigeminy":"TRIG",
+            "TRIG":"TRIG",
+            "Trig":"TRIG",
+            "Bigeminismo":"BIG",
+            "Bigeminy":"BIG",
+            "BIG":"BIG",
+            "Big":"BIG",
+            "PAIR":"PAIR",
+            "PAR":"PAIR",
+            "5": "RUN5",
+            "11":"RUN11"
+        }
+    
+        try:
+            arrh = _ventricular_arrhythmia_dic[param]
+        except:
+            arrh = "FMF" #Para que no se detenga la ejecucion.....
+
+        self.writecommand(cmd=f"VNTWAVE={arrh}")
+        self.readcommand()
+
+    def RunAsistolia(self):
+        
+        self.writecommand(cmd=f"VNTWAVE=ASYS")
         self.readcommand()
