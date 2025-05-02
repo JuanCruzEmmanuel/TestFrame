@@ -12,6 +12,7 @@ class PROSIM8(instru_contract):
         self.MODE = "ADULT"
         self.LEAD_ARTIFACT = "ALL"
         self.LEAD_SIZE = "025"
+        self.SIDE = "Left"
     def connect(self):
         """
         CONECTA PROSIM8 CON PUERTO SERIE\n
@@ -28,24 +29,6 @@ class PROSIM8(instru_contract):
         
         print(self.readcommand()) #DEBERIA DEVOLVER RMAIN
 
-    def setArtifactLead(self,lead):
-
-        self.LEAD_ARTIFACT = "LEAD"
-
-        self.writecommand(cmd = f"EARTLD={self.LEAD_ARTIFACT}")
-
-        self.readcommand()
-
-    def SetArtifactSize(self,size):
-        if len(size)==2:
-            self.LEAD_SIZE =f"0{size}"
-        else:
-            self.LEAD_SIZE = "100"
-
-        
-        self.writecommand(cmd = f"EARTSZ={self.LEAD_SIZE}")
-        
-        self.readcommand()
 
     def disconnect(self):
         """
@@ -196,5 +179,92 @@ class PROSIM8(instru_contract):
         
         #configura
         self.writecommand(cmd = f"EART={param}")
+
+        self.readcommand()
+
+
+    def setArtifactLead(self,lead):
+
+        self.LEAD_ARTIFACT = "LEAD"
+
+        self.writecommand(cmd = f"EARTLD={self.LEAD_ARTIFACT}")
+
+        self.readcommand()
+
+    def SetArtifactSize(self,size):
+        if int(size)<25:
+            size = "25"
+        elif int(size)>100:
+            size = "100"
+        if len(size)==2:
+            self.LEAD_SIZE =f"0{size}"
+        else:
+            self.LEAD_SIZE = "100"
+
+        
+        self.writecommand(cmd = f"EARTSZ={self.LEAD_SIZE}")
+        
+        self.readcommand()
+
+    def setSide(self,param):
+
+        _side_dic = {
+
+            "Izquierda":"Left",
+            "IZQ": "Left",
+            "I":"Left",
+            "L":"Left",
+            "Left":"Left",
+            "izq":"Left",
+            "izquierda":"Left",
+            "DER":"Right",
+            "der":"Right",
+            "D":"Right",
+            "R":"Right",
+            "Right":"Right",
+            "Derecha":"Right",
+            "derecha":"Right"
+        }
+
+        self.SIDE = _side_dic[param] #Selecciona el lado donde se va a realizar la arrimia
+
+
+    def setPreVentricularArrhytmia(self,param):
+
+        _pre_ventricular_arrhytmia_dic = {
+            "prematureatrialcontraction":"PAC",
+            "PrematureAtrialContraction":"PAC",
+            "PAC":"PAC",
+            "AtrialContraction":"PAC",
+            "ACONTRACTION":"PAC",
+            "prematurenodalcontraction":"PNC",
+            "PrematureNodalContraction":"PNC",
+            "PNC":"PNC",
+            "NodalContraction":"PNC",
+            "NCONTRACTION":"PNC",
+            "ContraccionVentricular": "PVC1",
+            "PVC":"PVC1",
+            "VentricularContraction":"PVC1",
+            "Early":"PVC1E",
+            "early":"PVC1E",
+            "Temprana":"PVC1E",
+            "temprana":"PVC1E",
+            "ContraccionTemprana":"PVC1E",
+            "RenT":"PVC1R",
+            "RonT":"PVC1R",
+            "ContraccionRenT":"PVC1R",
+            "ContraccionRT":"PVC1R",
+            "RTContraction":"PVC1R",
+            "RT":"PVC1R",
+        }
+        try:
+            arrh = _pre_ventricular_arrhytmia_dic[param]
+        except:
+            arrh = "PAC" #Para que no se detenga la ejecucion.....
+        if not self.SIDE=="Left":
+            if "1" in arrh:
+                arrh = arrh.replace("1","2") #Cambio el 1 por el 2, ya que eso simboliza que el pvc se realiza a la derecha
+        
+        self.writecommand(cmd=f"PREWAVE={arrh}")
 
         self.readcommand()
