@@ -13,6 +13,10 @@ class PROSIM8(instru_contract):
         self.LEAD_ARTIFACT = "ALL"
         self.LEAD_SIZE = "025"
         self.SIDE = "Left"
+        self.PACER_POLARITY = "P"
+        self.PACER_AMP = "010"
+        self.PACER_WIDTH = "1.0"
+        self.PACER_CHAMBER = "A"
     def connect(self):
         """
         CONECTA PROSIM8 CON PUERTO SERIE\n
@@ -44,6 +48,16 @@ class PROSIM8(instru_contract):
 
         self.con.write(cmd.encode())
         sleep(0.5) #Delay de seguridad
+
+    def setPacerPolarity(self,polarity):
+        self.PACER_POLARITY = polarity
+    
+    def setPacerAmplitude(self,ampl):
+
+        self.PACER_AMP = ampl
+
+    def setPacerWidht(self,width):
+        self.PACER_WIDTH = width
 
     def setHeartRate(self,rate):
         """
@@ -366,6 +380,96 @@ class PROSIM8(instru_contract):
         self.readcommand()
 
     def RunAsistolia(self):
-        
+
         self.writecommand(cmd=f"VNTWAVE=ASYS")
+        self.readcommand()
+
+    def ConductionArrythmia(self,param): #El alias puede ser bloqueo
+
+        _conduction_arrythmia_dic = {
+            "PrimerBloqueo":"1DB",
+            "PrimerGrado":"1DB",
+            "FirstDegeeBlock":"1DB",
+            "BloqueoAV":"1DB",
+            "Wenck":"2DB1",
+            "Wenckebach":"2DB1",
+            "SegundoGrade":"2DB2",
+            "SecondDegree":"2DB2",
+            "Tipo2":"2DB2",
+            "2DG":"2DB2",
+            "TercerGrado":"3DB",
+            "ThirdDegree":"3DB",
+            "BloqueoTercerGrado":"3DB",
+            "RamaDerecha":"RBBB",
+            "RightBundleBranchBlock":"RBBB",
+            "RightBranch":"RBBB",
+            "RamaIzquierda":"LBBB",
+            "LeftBranch":"LBBB",
+            "LeftBundleBranchBlock":"LBBB"
+        }
+        try:
+            arrh = _conduction_arrythmia_dic[param]
+        except:
+            arrh = "1DB"
+
+
+        self.writecommand(cmd=f"CNDWAVE={arrh}")
+        self.readcommand()
+
+    def setPacerChamber(self,chamber):
+
+        self.PACER_CHAMBER = chamber
+
+    def setPacerPulse(self,wave):
+
+        tvp_wave_dic = {
+            "Atrial":"ATR",
+            "atrial":"ATR",
+            "ATR":"ATR",
+            "Asincronica":"ASY",
+            "asincronica":"ASY",
+            "Asincronico":"ASY",
+            "asincronico":"ASY",
+            "ASIN":"ASY",
+            "ASI":"ASY",
+            "Asynchronous":"ASY",
+            "ASY":"ASY",
+            "Frecuente":"DFS",
+            "Frequent":"DFS",
+            "DFS":"DFS",
+            "Ocasional":"DOS",
+            "Occasional":"DOS",
+            "DOS":"DOS",
+            "AtrioVentricular":"AVS",
+            "Atrio-Ventricular":"AVS",
+            "SinCaputra":"NCP",
+            "Sin-Captura":"NPC",
+            "NonCapture":"NPC",
+            "Non-Capture":"NPC",
+            "NPC":"NPC",
+            "Sin-Funcion":"NFN",
+            "Non-Function":"NFN"
+        }
+
+        try:
+            wave_selected = tvp_wave_dic[wave]
+        except:
+            wave_selected = "ATR"
+            print("ERROR-502")
+
+
+        #Setea polaridad
+        self.writecommand(cmd=f"TVPPOL={self.PACER_CHAMBER},{self.PACER_POLARITY}")
+        self.readcommand()
+        #Setea Amplitud
+        self.writecommand(cmd=f"TVPAMPL={self.PACER_CHAMBER},{self.PACER_AMP}")
+        self.readcommand()
+        #Setea Ancho de pulso
+        self.writecommand(cmd=f"TVPWID={self.PACER_CHAMBER},{self.PACER_WIDTH}")
+        self.readcommand()
+
+        #######################################
+        #Setea el tipo de onda
+
+        self.writecommand(cmd=f"TVPWAVE={wave_selected}")
         self.readcommand()
