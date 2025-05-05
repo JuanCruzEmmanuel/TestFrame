@@ -17,6 +17,7 @@ class PROSIM8(instru_contract):
         self.PACER_AMP = "010"
         self.PACER_WIDTH = "1.0"
         self.PACER_CHAMBER = "A"
+        self.FIB_GRANULARITY = "COARSE"
     def connect(self):
         """
         CONECTA PROSIM8 CON PUERTO SERIE\n
@@ -473,3 +474,56 @@ class PROSIM8(instru_contract):
 
         self.writecommand(cmd=f"TVPWAVE={wave_selected}")
         self.readcommand()
+
+    def setGranularity(self,param):
+        _granularity_dic = {
+            "fino":"FINE",
+            "Fino":"FINE",
+            "Fine":"FINE",
+            "FINE":"FINE",
+            "fine":"FINE",
+            "Grueso":"COARSE",
+            "grueso":"COARSE",
+            "COARSE":"COARSE",
+            "Coarse":"COARSE",
+            "coarse":"COARSE"
+        }
+        try:
+            self.FIB_GRANULARITY = _granularity_dic[param]
+        except:
+            self.FIB_GRANULARITY = "COARSE"
+            print("ERROR-503")
+
+    def setFibrilation(self,param):
+        """
+        Setea la fibrilacion, puede ser de atrio, o ventricular
+        """
+        _fibrilation_dic = {
+            "Atrio":"ATRIAL",
+            "Atrial":"ATRIAL",
+            "ATRIO":"ATRIAL",
+            "atrio":"ATRIAL",
+            "atrial":"ATRIAL",
+            "A":"ATRIAL",
+            "V":"VENTRICULAR",
+            "Ventricular":"VENTRICULAR",
+            "VENTRICULAR":"VENTRICULAR",
+            "ventricular":"VENTRICULAR",
+            "VENTRICULO":"VENTRICULAR",
+            "ventriculo":"VENTRICULAR",
+            "Ventriculo":"VENTRICULAR"
+
+        }
+        try:
+            switcher = _fibrilation_dic[param]
+        except:
+            switcher = "VENTRICULAR"
+        
+        if switcher=="ATRIAL":
+            self.writecommand(cmd=f"AFIB={self.FIB_GRANULARITY}")
+
+            self.readcommand()
+        else:
+            self.writecommand(cmd=f"VFIB={self.FIB_GRANULARITY}")
+
+            self.readcommand()
