@@ -18,6 +18,7 @@ class PROSIM8(instru_contract):
         self.PACER_WIDTH = "1.0"
         self.PACER_CHAMBER = "A"
         self.FIB_GRANULARITY = "COARSE"
+        self.DEBUG = False
     def connect(self):
         """
         CONECTA PROSIM8 CON PUERTO SERIE\n
@@ -48,7 +49,16 @@ class PROSIM8(instru_contract):
     def writecommand(self,cmd):
 
         self.con.write(cmd.encode())
-        sleep(0.5) #Delay de seguridad
+        if self.DEBUG:
+            sleep(0.5) #Delay de seguridad
+
+    def debugMode(self,param):
+        if "t" in param.lower():
+            self.DEBUG = True
+        elif "v" in param.lower():
+            self.DEBUG = True
+        elif "s"  in param.lower():
+            self.DEBUG = True
 
     def setPacerPolarity(self,polarity):
         self.PACER_POLARITY = polarity
@@ -57,7 +67,7 @@ class PROSIM8(instru_contract):
 
         self.PACER_AMP = ampl
 
-    def setPacerWidht(self,width):
+    def setPacerWidth(self,width):
         self.PACER_WIDTH = width
 
     def setHeartRate(self,rate):
@@ -67,13 +77,13 @@ class PROSIM8(instru_contract):
         """
         if int(rate)<10:
             print("Valor por debajo del limite")
-            self.setHeartRate=10
+            self.HEARTRATE=10
         elif int(rate)>360:
             print("Valor por encima del limite")
-            self.setHeartRate = 360
+            self.HEARTRATE = 360
         else:
             print(f"Se setea el valor frecuencia cardiaca en: {int(rate)}")
-            self.setHeartRate = int(rate)
+            self.HEARTRATE = int(rate)
 
     def setMode(self,mode):
         """
@@ -88,16 +98,16 @@ class PROSIM8(instru_contract):
         Se encarga de enviar el comando para configurar el control normal de la señal cardiaca\n
         """
         if self.MODE=="ADULTO":
-            if len(self.NormalRate)==2: #por ejemplo 99, se debe enviar de la forma 099
+            if len(self.HEARTRATE)==2: #por ejemplo 99, se debe enviar de la forma 099
 
-                _temp_cmd = f"NSRA=0{self.NormalRate}" #Normal Sinus Rate Adult
+                _temp_cmd = f"NSRA=0{self.HEARTRATE}" #Normal Sinus Rate Adult
             else:
-                _temp_cmd = f"NSRA={self.NormalRate}"
+                _temp_cmd = f"NSRA={self.HEARTRATE}"
         elif self.MODE =="PEDIATRICO":
-            if len(self.NormalRate)==2: #por ejemplo 99, se debe enviar de la forma 099
-                _temp_cmd = f"NSRP=0{self.NormalRate}" #Normal Sinus Rate Pediatric
+            if len(self.HEARTRATE)==2: #por ejemplo 99, se debe enviar de la forma 099
+                _temp_cmd = f"NSRP=0{self.HEARTRATE}" #Normal Sinus Rate Pediatric
             else:
-                _temp_cmd = f"NSRP={self.NormalRate}"
+                _temp_cmd = f"NSRP={self.HEARTRATE}"
         else:
             _temp_cmd = "...."
 
@@ -527,3 +537,22 @@ class PROSIM8(instru_contract):
             self.writecommand(cmd=f"VFIB={self.FIB_GRANULARITY}")
 
             self.readcommand()
+
+    def setMonovtach(self):
+        """
+        SOLO FUNCIONA SI HEARTRATE >120
+        """
+        """try:
+            if int(param)<120:
+                _rate = "120"
+            elif int(param)>300:
+                _rate = "300"
+            else:
+                _rate = str(int(param))
+        except:
+            print("ERROR-505")
+            _rate = "120"
+        """
+        self.writecommand(cmd = f"MONOVTACH={self.HEARTRATE}")
+
+        self.readcommand()
