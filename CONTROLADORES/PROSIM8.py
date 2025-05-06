@@ -1,15 +1,16 @@
-######## SE va a encargar de controlar al PROSIM 8 INSTRUMENTO TRONCAL, seguiremos con la misma logica creada hasta el momento
+"""
+v1.0.0
+"""
 import serial
+from typing import Optional
 import numpy
-from INSTRUCONTRACT import instru_contract
 from time import sleep
-class PROSIM8(instru_contract):
-    def __init__(self,port,baudare=115200):
+class PROSIM8:
+    def __init__(self,port,baudrate=115200):
         self.port = port
-        self.baudrate = baudare
-        self.con = None
+        self.baudrate = baudrate
         self.HEARTRATE = 60
-        self.MODE = "ADULT"
+        self.MODE = "ADULTO"
         self.LEAD_ARTIFACT = "ALL"
         self.LEAD_SIZE = "025"
         self.SIDE = "Left"
@@ -19,6 +20,7 @@ class PROSIM8(instru_contract):
         self.PACER_CHAMBER = "A"
         self.FIB_GRANULARITY = "COARSE"
         self.DEBUG = False
+        self.con: Optional[serial.Serial] = None
     def connect(self):
         """
         CONECTA PROSIM8 CON PUERTO SERIE\n
@@ -26,31 +28,56 @@ class PROSIM8(instru_contract):
         serial.STOPBITS_ONE = 1\n
         serial.PARITY_NONE = 'None'\n
         """
-        self.con = serial.Serial(port=self.port,baudrate=self.baudrate,stopbits=serial.STOPBITS_ONE, parity=serial.PARITY_NONE,bytesize=8,xonxoff=False)
-        #Lo conecto y lo dejo en estado remoto
-        self.remote()
+        if self.con is not None and self.con.is_open:
+            return
+        try:
+            self.con = serial.Serial(
+                port=self.port,
+                baudrate=self.baudrate,
+                stopbits=serial.STOPBITS_ONE,
+                parity=serial.PARITY_NONE,
+                bytesize=8,
+                xonxoff=False,
+                timeout=1
+            )
+            self.remote()
+        except serial.SerialException as e:
+            self.con = None
+            raise ConnectionError(f"Error de conexión: {e}")
+        
     def remote(self):
 
         self.writecommand(cmd="REMOTE")
-        
         print(self.readcommand()) #DEBERIA DEVOLVER RMAIN
+
 
 
     def disconnect(self):
         """
         DESCONECTA PROSIM8 CON PUERTO SERIE\n
         """
-        self.con.close()
+        if self.con is not None:
+            if self.con.is_open:
+                self.con.close()
+            self.con = None
 
     def readcommand(self):
-        response = self.con.readline().decode("utf-8")
-
-        return response
+        if self.con is None or not self.con.is_open:
+            raise serial.SerialException("Puerto serie no está conectado")
+        raw = self.con.readline()  # type: ignore
+        try:
+            return raw.decode('utf-8').strip()
+        except UnicodeDecodeError:
+            return raw.decode('latin1').strip()
+    
+    
     def writecommand(self,cmd):
-
-        self.con.write(cmd.encode())
-        if self.DEBUG:
-            sleep(0.5) #Delay de seguridad
+        if self.con is None or not self.con.is_open:
+            raise serial.SerialException("Puerto serie no está conectado")
+        cmd = cmd + "\r"
+        self.con.write(cmd.encode('utf-8'))  # type: ignore
+        if hasattr(self, 'DEBUG') and self.DEBUG:
+            sleep(0.1)
 
     def debugMode(self,param):
         if "t" in param.lower():
@@ -98,13 +125,13 @@ class PROSIM8(instru_contract):
         Se encarga de enviar el comando para configurar el control normal de la señal cardiaca\n
         """
         if self.MODE=="ADULTO":
-            if len(self.HEARTRATE)==2: #por ejemplo 99, se debe enviar de la forma 099
+            if len(str(self.HEARTRATE))==2: #por ejemplo 99, se debe enviar de la forma 099
 
                 _temp_cmd = f"NSRA=0{self.HEARTRATE}" #Normal Sinus Rate Adult
             else:
                 _temp_cmd = f"NSRA={self.HEARTRATE}"
         elif self.MODE =="PEDIATRICO":
-            if len(self.HEARTRATE)==2: #por ejemplo 99, se debe enviar de la forma 099
+            if len(str(self.HEARTRATE))==2: #por ejemplo 99, se debe enviar de la forma 099
                 _temp_cmd = f"NSRP=0{self.HEARTRATE}" #Normal Sinus Rate Pediatric
             else:
                 _temp_cmd = f"NSRP={self.HEARTRATE}"
@@ -221,7 +248,7 @@ class PROSIM8(instru_contract):
             size = "25"
         elif int(size)>100:
             size = "100"
-        if len(size)==2:
+        if len(str(size))==2:
             self.LEAD_SIZE =f"0{size}"
         else:
             self.LEAD_SIZE = "100"
@@ -556,3 +583,10 @@ class PROSIM8(instru_contract):
         self.writecommand(cmd = f"MONOVTACH={self.HEARTRATE}")
 
         self.readcommand()
+
+if __name__=="__main__":
+    ps8 = PROSIM8(port="COM11")
+    ps8.connect()
+    ps8.setHeartRate(20)
+    ps8.NormalRate()
+
