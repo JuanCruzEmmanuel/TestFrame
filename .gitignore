@@ -20,7 +20,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-_TEMPS_/
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints
 
