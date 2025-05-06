@@ -1,6 +1,6 @@
 # Changelog CONTROLADORES
 
-## Controlador PROSIM8 [Versión 1.1] - Correcciones Críticas y Mejoras de Estabilidad
+## Controlador PROSIM8 [Versión 1.1.0] - Correcciones Críticas y Mejoras de Estabilidad
 
 ### Corregido
 - **Manejo de conexión serial**: 
@@ -27,7 +27,7 @@
   - `SetArtifactSize()` con conversión numérica segura
   - Comandos de polaridad/amplitud del marcapasos sincronizados inmediatamente
 
-## [Versión 1.0] - Implementación Inicial
+## [Versión 1.0.0] - Implementación Inicial
 
 ### Características
 - Clase base con configuración inicial de parámetros
