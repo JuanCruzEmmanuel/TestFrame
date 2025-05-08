@@ -1,11 +1,38 @@
 """
-v1.0.0
+prosim8.py - Driver para control remoto de ProSim 8 (Fluke Biomedical)
+Versión 1.0.1
+
+Este módulo implementa la clase PROSIM8 para gestionar la comunicación
+con un simulador de paciente ProSim 8 a través de un puerto serie USB.
+Permite poner el equipo en modo remoto, configurar parámetros fisiológicos
+(ECG, NIBP, SpO₂, ritmo cardíaco, arritmias, estimulación, etc.), y
+manejar la conexión de forma robusta con timeouts y reintentos básicos.
 """
 import serial
 from typing import Optional
 import numpy
 from time import sleep
 class PROSIM8:
+    """
+    Clase para controlar el simulador ProSim 8 vía puerto serie.
+
+    Métodos principales:
+    - Abrir/cerrar conexión serial:                     connect()/disconnect()
+    - Cambiar entre modo remoto y local:                remote()/local(): 
+    - Configurar ritmo sinusal:                         setHeartRate(), NormalRate()
+    - Ajustar señales ECG:                              setDeviation(), setECGAmplitude(), setArtifact(), etc.
+    - Métodos de arritmias:                             setPreVentricularArrhythmia(), setSupArrhythmia(), VentricularArrhythmia(), ConductionArrythmia().
+    - Métodos de marcapasos:                            setPacerPolarity(), setPacerAmplitude(), setPacerWidth(), setPacerChamber(), setPacerPulse().
+    - Simular fibrilación y taquicardia ventricular:    setFibrilation(), setMonovtach()
+
+    Ejemplo de uso básico:
+        ps8 = PROSIM8(port="COM11")
+        ps8.connect()
+        ps8.setHeartRate(70)
+        ps8.NormalRate()
+        ...
+        ps8.disconnect()
+    """
     def __init__(self,port,baudrate=115200):
         self.port = port
         self.baudrate = baudrate
