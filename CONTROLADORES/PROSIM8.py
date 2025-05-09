@@ -1,4 +1,11 @@
 """
+  _____  _____   ____   _____ _____ __  __    ___           _____  _____  _______      ________ _____  
+ |  __ \|  __ \ / __ \ / ____|_   _|  \/  |  / _ \         |  __ \|  __ \|_   _\ \    / /  ____|  __ \ 
+ | |__) | |__) | |  | | (___   | | | \  / | | (_) |        | |  | | |__) | | |  \ \  / /| |__  | |__) |
+ |  ___/|  _  /| |  | |\___ \  | | | |\/| |  > _ <         | |  | |  _  /  | |   \ \/ / |  __| |  _  / 
+ | |    | | \ \| |__| |____) |_| |_| |  | | | (_) |        | |__| | | \ \ _| |_   \  /  | |____| | \ \ 
+ |_|    |_|  \_\\____/|_____/|_____|_|  |_|  \___/         |_____/|_|  \_\_____|   \/   |______|_|  \_\
+                                                                                                                                                                                                                                                                                                                                                                             
 prosim8.py - Driver para control remoto de ProSim 8 (Fluke Biomedical)
 Versión 1.2.0
 
@@ -12,6 +19,12 @@ import serial
 from typing import Optional
 import numpy
 from time import sleep
+
+__company__ = "Feas Electronica"
+__author__ = "Juan Cruz Noya & Julian Font"
+__version__ = "1.2.0"
+__country__ = "Argentina"
+
 class PROSIM8:
     """
     Clase para controlar el simulador ProSim 8 vía puerto serie.
@@ -622,7 +635,53 @@ class PROSIM8:
         cmd = f"PERF={PERFUSION}"
         self.sendCommand(cmd)
  
+    def set_SpO2_Sensor(self,sensor):
+        """
+        Setea el tipo de sensor de oximetría.
 
+        Args:
+            sensor (str): Tipo de sensor a configurar.
+
+        Returns:
+            str: "OK" si la configuración fue exitosa.
+        """
+        sensor_type_dic = {
+            "NELCOR":"NELCR",
+            "NELCR":"NELCR",
+            "MASIMO":"MASIM",
+            "MASIM":"MASIM",
+            "MASIMORAD":"MASIMR",
+            "MASIMOR":"MASIMR",
+            "MASIMR":"MASIMR",
+            "NONIN":"NONIN",
+            "OHMED":"OHMED",
+            "PHIL":"PHIL",
+            "NIHON":"NIHON",
+            "MINDRAY":"MINDR",
+            "MINDR":"MINDR",
+            "BCI":"BCI"
+        }
+
+        try:
+            selected_sensor = sensor_type_dic[sensor]
+        except:
+            selected_sensor="BCI"
+        
+        self.sendCommand(cmd=f"SPO2TYPE={selected_sensor}")
+
+    #*****************************************************************RESPIRATORIO**********************************************************************
+
+    def RespCurveOn(self):
+        """
+        Inicia la curva de respiratoria
+        """
+        self.sendCommand(cmd="RESPRUN=TRUE")
+
+    def RespCurveOff(self):
+        """
+        Finaliza la curva de respiratoria
+        """
+        self.sendCommand(cmd="RESPRUN=FALSE")
 
 if __name__=="__main__":
     ps8 = PROSIM8(port="COM11", debug = True)
