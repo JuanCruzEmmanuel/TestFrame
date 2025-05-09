@@ -1,6 +1,6 @@
 """
 prosim8.py - Driver para control remoto de ProSim 8 (Fluke Biomedical)
-Versión 1.0.1
+Versión 1.2.0
 
 Este módulo implementa la clase PROSIM8 para gestionar la comunicación
 con un simulador de paciente ProSim 8 a través de un puerto serie USB.
@@ -33,9 +33,11 @@ class PROSIM8:
         ...
         ps8.disconnect()
     """
-    def __init__(self,port,baudrate=115200):
+    def __init__(self,port,debug=False,baudrate=115200):
+        
         self.port = port
         self.baudrate = baudrate
+        self.debug = debug
         self.HEARTRATE = 60
         self.MODE = "ADULTO"
         self.LEAD_ARTIFACT = "ALL"
@@ -46,7 +48,6 @@ class PROSIM8:
         self.PACER_WIDTH = "1.0"
         self.PACER_CHAMBER = "A"
         self.FIB_GRANULARITY = "COARSE"
-        self.DEBUG = False
         self.con: Optional[serial.Serial] = None
     def connect(self):
         """
@@ -73,10 +74,7 @@ class PROSIM8:
             raise ConnectionError(f"Error de conexión: {e}")
         
     def remote(self):
-
-        self.writecommand(cmd="REMOTE")
-        print(self.readcommand()) #DEBERIA DEVOLVER RMAIN
-
+        self.sendCommand(cmd="REMOTE")
 
 
     def disconnect(self):
@@ -88,32 +86,59 @@ class PROSIM8:
                 self.con.close()
             self.con = None
 
-    def readcommand(self):
+    def _format_int(self, value, width= 3):
+        try:
+            iv = int(value)
+            return str(iv).zfill(width)
+        except (ValueError, TypeError):
+            return str(value)
+
+    def _format_decimal(self, value, int_digits=2, dec_digits=2):
+        """
+        Formatea un número decimal con dígitos fijos antes y después del punto.
+        """
+        try:
+            fv = float(value)
+            fmt = f"{{:0{int_digits + 1 + dec_digits}.{dec_digits}f}}"
+            return fmt.format(fv)
+        except (ValueError, TypeError):
+            return str(value)
+        
+    
+    def sendCommand(self, cmd):
+        if self.con is None or not self.con.is_open:
+            raise serial.SerialException("Puerto serie no está conectado")
+        
+        # Formatear número a 3 dígitos si el comando contiene un "="
+        if '=' in cmd:
+            key, value = cmd.split('=', 1)
+            if '.' in value:
+                value = self._format_decimal(value, int_digits=2, dec_digits=2)
+            elif value.isdigit():
+                value = self._format_int(value, width=3)
+            cmd = f"{key}={value}"
+        
+        cmd = cmd + "\r"
+        self.con.write(cmd.encode('utf-8'))  # type: ignore
+        if self.debug:
+            print(f"Comando enviado: {cmd}")
+
         if self.con is None or not self.con.is_open:
             raise serial.SerialException("Puerto serie no está conectado")
         raw = self.con.readline()  # type: ignore
         try:
-            return raw.decode('utf-8').strip()
+            if self.debug:
+                print(f"Status recibido: {raw.decode('utf-8').strip()}")
+            return
         except UnicodeDecodeError:
-            return raw.decode('latin1').strip()
-    
-    
-    def writecommand(self,cmd):
-        if self.con is None or not self.con.is_open:
-            raise serial.SerialException("Puerto serie no está conectado")
-        cmd = cmd + "\r"
-        self.con.write(cmd.encode('utf-8'))  # type: ignore
-        if hasattr(self, 'DEBUG') and self.DEBUG:
-            sleep(0.1)
+            if self.debug:
+                print(f"Status recibido: {raw.decode('latin1').strip()}")
+            return
 
-    def debugMode(self,param):
-        if "t" in param.lower():
-            self.DEBUG = True
-        elif "v" in param.lower():
-            self.DEBUG = True
-        elif "s"  in param.lower():
-            self.DEBUG = True
 
+
+
+#*****************************************************************ECG**********************************************************************
     def setPacerPolarity(self,polarity):
         self.PACER_POLARITY = polarity
     
@@ -151,23 +176,9 @@ class PROSIM8:
         """
         Se encarga de enviar el comando para configurar el control normal de la señal cardiaca\n
         """
-        if self.MODE=="ADULTO":
-            if len(str(self.HEARTRATE))==2: #por ejemplo 99, se debe enviar de la forma 099
+        cmd = f"NSRA={self.HEARTRATE}"
+        self.sendCommand(cmd)
 
-                _temp_cmd = f"NSRA=0{self.HEARTRATE}" #Normal Sinus Rate Adult
-            else:
-                _temp_cmd = f"NSRA={self.HEARTRATE}"
-        elif self.MODE =="PEDIATRICO":
-            if len(str(self.HEARTRATE))==2: #por ejemplo 99, se debe enviar de la forma 099
-                _temp_cmd = f"NSRP=0{self.HEARTRATE}" #Normal Sinus Rate Pediatric
-            else:
-                _temp_cmd = f"NSRP={self.HEARTRATE}"
-        else:
-            _temp_cmd = "...."
-
-        self.writecommand(cmd=_temp_cmd)
-        #Creo que no responde nada especifico, pero por una cuestion de buenas practicas....
-        self.readcommand()
 
     def truncar_dos_decimales(self,valor):
         return int(valor * 100) / 100
@@ -199,10 +210,9 @@ class PROSIM8:
             print("ERR-151")
             print("El formato ingresado es incorrecto")
             param = "0.00"
-        
-        self.writecommand(cmd=f"STDEV={param}")
 
-        self.readcommand()
+        cmd=f"STDEV={param}"
+        self.sendCommand(cmd)
     
     def setECGAmplitude(self,param="1.00"):
         """
@@ -212,8 +222,8 @@ class PROSIM8:
         #No me voy a gastar en esta instancia en poner la amplitud correcta, se hace muy largo;
         #Se tiene que saber que entre 0.05 a 0.45; saltos de 0.05mV;
         #Saltos de 0.50 a 5.00 saltos de 0.25mV
-        self.writecommand(cmd=f"ECGAMPL={param}")
-        self.readcommand()
+        cmd=f"ECGAMPL={param}"
+        self.sendCommand(cmd)
     
     def setArtifact(self,param="OFF"):
         """
@@ -257,18 +267,16 @@ class PROSIM8:
             param = param
         
         #configura
-        self.writecommand(cmd = f"EART={param}")
+        cmd = f"EART={param}"
+        self.sendCommand(cmd)
 
-        self.readcommand()
 
 
     def setArtifactLead(self,lead):
 
         self.LEAD_ARTIFACT = "LEAD"
-
-        self.writecommand(cmd = f"EARTLD={self.LEAD_ARTIFACT}")
-
-        self.readcommand()
+        cmd = f"EARTLD={self.LEAD_ARTIFACT}"
+        self.sendCommand(cmd)
 
     def SetArtifactSize(self,size):
         if int(size)<25:
@@ -280,10 +288,8 @@ class PROSIM8:
         else:
             self.LEAD_SIZE = "100"
 
-        
-        self.writecommand(cmd = f"EARTSZ={self.LEAD_SIZE}")
-        
-        self.readcommand()
+        cmd = f"EARTSZ={self.LEAD_SIZE}"
+        self.sendCommand(cmd)
 
     def setSide(self,param):
 
@@ -344,9 +350,8 @@ class PROSIM8:
             if "1" in arrh:
                 arrh = arrh.replace("1","2") #Cambio el 1 por el 2, ya que eso simboliza que el pvc se realiza a la derecha
         
-        self.writecommand(cmd=f"PREWAVE={arrh}")
-
-        self.readcommand()
+        cmd = f"PREWAVE={arrh}"
+        self.sendCommand(cmd)
 
     def setSupArrhythmia(self,param):
         """
@@ -403,10 +408,8 @@ class PROSIM8:
             arrh = supra_ventricular_arrhythmia_dic[param]
         except:
             arrh = "AFL" #Para que no se detenga la ejecucion.....
-
-        self.writecommand(cmd=f"SPVWAVE={arrh}")
-        self.readcommand()
-
+        cmd=f"SPVWAVE={arrh}"
+        self.sendCommand(cmd)
     def VentricularArrhythmia(self,param):
 
         _ventricular_arrhythmia_dic = {
@@ -440,17 +443,17 @@ class PROSIM8:
             arrh = _ventricular_arrhythmia_dic[param]
         except:
             arrh = "FMF" #Para que no se detenga la ejecucion.....
+        cmd = f"VNTWAVE={arrh}"
+        self.sendCommand(cmd)
 
-        self.writecommand(cmd=f"VNTWAVE={arrh}")
-        self.readcommand()
 
     def RunAsistolia(self):
-
-        self.writecommand(cmd=f"VNTWAVE=ASYS")
-        self.readcommand()
+        cmd=f"VNTWAVE=ASYS"
+        self.sendCommand(cmd)
 
     def ConductionArrythmia(self,param): #El alias puede ser bloqueo
 
+        
         _conduction_arrythmia_dic = {
             "PrimerBloqueo":"1DB",
             "PrimerGrado":"1DB",
@@ -477,9 +480,8 @@ class PROSIM8:
         except:
             arrh = "1DB"
 
-
-        self.writecommand(cmd=f"CNDWAVE={arrh}")
-        self.readcommand()
+        cmd = f"CNDWAVE={arrh}"
+        self.sendCommand(cmd)
 
     def setPacerChamber(self,chamber):
 
@@ -524,20 +526,19 @@ class PROSIM8:
 
 
         #Setea polaridad
-        self.writecommand(cmd=f"TVPPOL={self.PACER_CHAMBER},{self.PACER_POLARITY}")
-        self.readcommand()
+        cmd = f"TVPPOL={self.PACER_CHAMBER},{self.PACER_POLARITY}"
+        self.sendCommand(cmd)
         #Setea Amplitud
-        self.writecommand(cmd=f"TVPAMPL={self.PACER_CHAMBER},{self.PACER_AMP}")
-        self.readcommand()
+        cmd = f"TVPAMPL={self.PACER_CHAMBER},{self.PACER_AMP}"
+        self.sendCommand(cmd)
         #Setea Ancho de pulso
-        self.writecommand(cmd=f"TVPWID={self.PACER_CHAMBER},{self.PACER_WIDTH}")
-        self.readcommand()
+        cmd = f"TVPWID={self.PACER_CHAMBER},{self.PACER_WIDTH}"
+        self.sendCommand(cmd)
 
         #######################################
         #Setea el tipo de onda
-
-        self.writecommand(cmd=f"TVPWAVE={wave_selected}")
-        self.readcommand()
+        cmd = f"TVPWAVE={wave_selected}"
+        self.sendCommand(cmd)
 
     def setGranularity(self,param):
         _granularity_dic = {
@@ -584,13 +585,11 @@ class PROSIM8:
             switcher = "VENTRICULAR"
         
         if switcher=="ATRIAL":
-            self.writecommand(cmd=f"AFIB={self.FIB_GRANULARITY}")
-
-            self.readcommand()
+            cmd = f"AFIB={self.FIB_GRANULARITY}"
+            self.sendCommand(cmd)
         else:
-            self.writecommand(cmd=f"VFIB={self.FIB_GRANULARITY}")
-
-            self.readcommand()
+            cmd = f"VFIB={self.FIB_GRANULARITY}"
+            self.sendCommand(cmd)
 
     def setMonovtach(self):
         """
@@ -607,13 +606,47 @@ class PROSIM8:
             print("ERROR-505")
             _rate = "120"
         """
-        self.writecommand(cmd = f"MONOVTACH={self.HEARTRATE}")
+        cmd = f"MONOVTACH={self.HEARTRATE}"
+        self.sendCommand(cmd)
 
-        self.readcommand()
+    #*****************************************************************SpO2**********************************************************************
+    def set_SpO2_saturacion(self, SATURATION):
+        cmd = f"SAT={SATURATION}"
+        self.sendCommand(cmd)
+    
+    def set_SpO2_perfusion(self, PERFUSION):
+        cmd = f"PERF={PERFUSION}"
+        self.sendCommand(cmd)
+
+    def set_SpO2_ppm(self, PERFUSION):
+        cmd = f"PERF={PERFUSION}"
+        self.sendCommand(cmd)
+ 
+
 
 if __name__=="__main__":
-    ps8 = PROSIM8(port="COM11")
+    ps8 = PROSIM8(port="COM11", debug = True)
     ps8.connect()
-    ps8.setHeartRate(20)
-    ps8.NormalRate()
+
+    ps8.set_SpO2_perfusion(0.2)
+
+
+
+""" 
+Ejemplos de uso:
+
+    Primero conectar el PS8 y crear el objeto:
+        ps8 = PROSIM8(port="COM11")
+        ps8.connect()
+    
+
+    Configurar en PS8 curva ECG de 100ppm:
+        ps8.setHeartRate(100)
+        ps8.NormalRate()
+
+    Configurar en PS8 curva pletismografica en 85%:
+        ps8.set_SpO2_saturacion(85)
+    
+"""
+
 
