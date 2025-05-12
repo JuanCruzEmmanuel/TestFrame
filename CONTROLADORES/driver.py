@@ -1,14 +1,18 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from CONTROLADORES.Multimetro import Fluke45, Fluke8845
 from CONTROLADORES.psu364x import PSU
 from CONTROLADORES.IMPULSE7000 import IMPULSE7000
 from CONTROLADORES.ESA620 import ESA620
 from CONTROLADORES.OSCILOSCOPIO import TEKTRONIX
+from CONTROLADORES.PROSIM8 import PROSIM8
 import serial
 import time
 from datetime import datetime
 import json
 
-__version__ ="1.2.2"
+__version__ ="1.2.3"
 
 __autor__ ="Juan Cruz Noya & Julian Font"
 
@@ -34,7 +38,7 @@ Version 1.2     Se comienza a trabajar en el manejo de errores de comunicación.
                 Error -101: Puerto serie no encontrado (Acceso denegado).
 Version 1.2.1   Se implementa la funcion LOCAL() en esa620() antes de cerrar el puerto.
 Version 1.2.2   Se corrige un error, en donde la instruccion LOCAL() se ejecutaba despues de cerrar el puerto
-
+Version 1.2.3   Se agrega el PROSIM8
 """
 
 
@@ -494,6 +498,56 @@ def osciloscopio(CMD):
 
         "EN CASO QUE SOLO SE BUSQUE EJECUTAR CONFIGURACIONES DE OSCILOSCOPIO DEBE DEVOLVER OK"
         return "OK"
+
+def prosim8(CMD):
+    port = next((COM for COM in CMD if "port" in COM.lower()), "COM11") #Se busca si encuentra el port si no lo localiza usa el valor por defecto
+    try:
+        port = port.split(" ")[1]   #En caso de encontrar port debo tomar el valor del COM
+    except:
+        port = port
+    try:
+        instru = PROSIM8(port = port)
+        args_dic = {} #Diccionario para guardar todos los argumentos que van a estar en el comando CMD
+        for arg in CMD:
+            splited_arg = arg.split(" ")#Separo la palabra que se encuentra con espacio y me la divide en 2 mitades
+            args_dic[splited_arg[0]]=splited_arg[1] #La primer mitad la uso como clave, la segunda como value
+        instru.connect() #Conecto
+        if args_dic["run"] =="ECG":
+            for key, value in args_dic.items():
+                if key == "frec" or key =="FREC" or key=="FREQ" or key =="FRECUENCIA" or key =="BPM" or key =="LPM":
+                    instru.setHeartRate(rate=args_dic[key])
+                    instru.NormalRate()
+                elif key == "amp" or key =="AMP" or key=="amplitud" or key =="importancia" or key =="AMPLITUD":
+                    instru.setECGAmplitude(param=args_dic[key])
+                elif key in ["artifact", "artefacto","ghost"]:
+                    instru.setArtifact(param=value)
+                elif key in ["dev", "desviacion"]:
+                    instru.setDeviation(param=value)
+        elif args_dic["run"] =="ARRITMIA":
+            pass
+        elif args_dic["run"] =="MARCAPASO":
+            pass
+        elif args_dic["run"] =="FIB":
+            pass
+        elif args_dic["run"] =="VTACH":
+            pass
+        elif args_dic["run"] =="SpO2":
+            pass
+        elif args_dic["run"] =="RESP":
+            pass
+        elif args_dic["run"] =="SEÑAL":
+            pass
+        elif args_dic["run"] =="TEMP":
+            pass
+        elif args_dic["run"] =="GC":
+            pass
+        elif args_dic["run"] =="PI":
+            pass
+        elif args_dic["run"] =="PNI":
+            pass
+    except:
+        return "-110"
+
 def DRIVER(cmd:str):
     """
     Funcion mas general. Se encarga de recibir el comando y luego valuarlo segun sea el tipo de instrumento
@@ -518,7 +572,11 @@ def DRIVER(cmd:str):
         "osc":osciloscopio,
         "osciloscopio":osciloscopio,
         "tektronix":osciloscopio,
-        "OSC":osciloscopio
+        "OSC":osciloscopio,
+        "PS8":prosim8,
+        "prosim":prosim8,
+        "PROSIM":prosim8,
+        "prosim8":prosim8
     }
     CMD = cmd.split(sep=" --")
     """
@@ -536,10 +594,7 @@ def DRIVER(cmd:str):
 if __name__ == "__main__":
     N = 50
 
-    while N>0:
-        print(f"Se esta ejecutando la prueba {N}")
-        print(DRIVER("ESA620 --run EquipmentCurrent"))
-        N = N-1
+    print(DRIVER(cmd = "PS8 --run ECG --frec 100 --amp 1.0 --artifact musc"))
 
     #print(DRIVER("osc --vscale 2 --vpos 0 --run medicion --pos 1"))
     
