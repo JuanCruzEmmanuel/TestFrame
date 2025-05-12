@@ -66,6 +66,7 @@ class PROSIM8:
         self.PACER_CHAMBER = "A"
         self.FIB_GRANULARITY = "COARSE"
         self.con: Optional[serial.Serial] = None
+        self.PRESSURECHANNEL = "1"
     def connect(self):
         """
         CONECTA PROSIM8 CON PUERTO SERIE\n
@@ -793,6 +794,18 @@ class PROSIM8:
     #In-develpment
     #*****************************************************************PRESION INVASIVA*************************************************************************
     #In-develpment
+
+    def setPressChannel(self,channel):
+        """
+        Selecciona el canal de presion invasiva\n
+        :param:
+        **channel**: IBP channel 1 or 2
+        """
+        if channel !="1" or channel !="2":
+            print("ERROR DE CANALES DE PRESIONES")
+            self.PRESSURECHANNEL = "1"
+        else:
+            self.PRESSURECHANNEL = channel
     #*****************************************************************TEMPERATURA******************************************************************************
     def setTemperature(self,degree):
         """
