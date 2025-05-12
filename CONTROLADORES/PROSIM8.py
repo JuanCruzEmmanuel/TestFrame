@@ -151,7 +151,7 @@ class PROSIM8:
         if '=' in cmd:
             key, value = cmd.split('=', 1)
             if '.' in value:
-                value = self._format_decimal(value, int_digits=2, dec_digits=2)
+                value = self._format_decimal(value, int_digits=1, dec_digits=2)
             elif value.isdigit():
                 value = self._format_int(value, width=3)
             cmd = f"{key}={value}"
@@ -173,10 +173,23 @@ class PROSIM8:
                 print(f"Status recibido: {raw.decode('latin1').strip()}")
             return
 
+    def sendCommandNoNumerico(self, cmd):
+        cmd = cmd + "\r"
+        self.con.write(cmd.encode('utf-8'))  # type: ignore
 
-
-
+        if self.debug:
+            print(f"Comando enviado: {cmd}")
+        raw = self.con.readline()  # type: ignore
+        try:
+            if self.debug:
+                print(f"Status recibido: {raw.decode('utf-8').strip()}")
+            return
+        except UnicodeDecodeError:
+            if self.debug:
+                print(f"Status recibido: {raw.decode('latin1').strip()}")
+            return
 #*****************************************************************ECG**********************************************************************
+    
     def setPacerPolarity(self,polarity):
         self.PACER_POLARITY = polarity
     
@@ -306,7 +319,7 @@ class PROSIM8:
         
         #configura
         cmd = f"EART={param}"
-        self.sendCommand(cmd)
+        self.sendCommandNoNumerico(cmd)
 
 
 
@@ -839,9 +852,7 @@ class PROSIM8:
 if __name__=="__main__":
     ps8 = PROSIM8(port="COM11", debug = True)
     ps8.connect()
-
-    ps8.set_SpO2_perfusion(0.2)
-
+    ps8.setECGAmplitude(param="1.00")
 
 
 """ 
