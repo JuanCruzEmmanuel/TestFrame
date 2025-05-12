@@ -14,6 +14,26 @@ con un simulador de paciente ProSim 8 a través de un puerto serie USB.
 Permite poner el equipo en modo remoto, configurar parámetros fisiológicos
 (ECG, NIBP, SpO₂, ritmo cardíaco, arritmias, estimulación, etc.), y
 manejar la conexión de forma robusta con timeouts y reintentos básicos.
+
+
+COMO SE DEBERIA ARMAR LOS COMANDOS PARA USO CON LENGUAJE TIPO CMD
+
+VAMOS A DESARROLLAR UN ARBOL DE EJECUCION
+
+-Esto me recomiendo chat gpt para desarrollar los comandos, realmente no me convence; pero deriamos desarrollarlo
+
+
+PS8 -run ECG --frec <BPM> --amp <AMPLITUD> --artifact <TIPO> --lead <DER/IZQ> --dev <DESVIACION>
+PS8 -run ARRITMIA --tipo <TIPO> --side <DER/IZQ>
+PS8 -run MARCAPASO --modo <ATR/ASY/AVS/...> --amp <AMP> --width <WIDTH> --polo <P/N> --chamber <A/V>
+PS8 -run FIB --tipo <A/V> --granularidad <fine/coarse>
+PS8 -run VTACH --frec <BPM>
+PS8 -run SpO2 --sat <SAT> --perf <PERF> --sensor <TIPO>
+PS8 -run RESP --rate <BRPM> --ratio <1-5> --ampl <AMP> --base <0500-2000> --lead <ABDOMINAL/TORACICA> --apnea <ON/OFF>
+PS8 -run SEÑAL --forma <SINE/TRIANGLE/SQUARE/PULSE> --frec <HZ/BPM>
+PS8 -run TEMP --valor <30.0–42.0>
+
+
 """
 import serial
 from typing import Optional
