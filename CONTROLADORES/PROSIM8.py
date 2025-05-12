@@ -40,7 +40,7 @@ class PROSIM8:
     - Simular Parametricas:                             SetSENO(), SetTRIANGULAR()
     - Simular SpO2:                                     set_SpO2_saturacion(), set_SpO2_perfusion(), set_SpO2_ppm(), set_SpO2_Sensor()
     - Simular Respiratoria:                             RespCurveOn(), RespCurveOff(), setRespRate(), setRespRatio(), setRespAmpl(), setRespBase(), setRespLead(), APNEA()
-    
+
     Ejemplo de uso básico:
         ps8 = PROSIM8(port="COM11")
         ps8.connect()
@@ -770,6 +770,23 @@ class PROSIM8:
         **freq**: frecuency in Hz: 0.125,2.0 or 2.5
         """
         self.sendCommand(cmd=f"TRI={freq}")       
+
+    def setSQUARE(self,freq):
+        """
+        Set ECG wave to square\n
+        :param:
+        **freq**: frecuency in Hz: 0.125,2.0 or 2.5
+        """
+        self.sendCommand(cmd=f"SQUARE={freq}")
+    def setPULSE(self,rate):
+        """
+        Set ECG wave to Pulse\n
+        :param:
+        **rate**: rate in bpm 30, 60 or 80
+        """
+        #Hay que testear si solo esos valores se pueden agregar
+
+        self.sendCommand(cmd=f"PULSE={rate}")
 if __name__=="__main__":
     ps8 = PROSIM8(port="COM11", debug = True)
     ps8.connect()
