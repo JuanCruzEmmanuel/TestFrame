@@ -37,9 +37,10 @@ class PROSIM8:
     - Métodos de arritmias:                             setPreVentricularArrhythmia(), setSupArrhythmia(), VentricularArrhythmia(), ConductionArrythmia().
     - Métodos de marcapasos:                            setPacerPolarity(), setPacerAmplitude(), setPacerWidth(), setPacerChamber(), setPacerPulse().
     - Simular fibrilación y taquicardia ventricular:    setFibrilation(), setMonovtach()
-    - Simular Parametricas:                             SetSENO(), SetTRIANGULAR()
+    - Simular Parametricas:                             setSENO(), setTRIANGULAR(), setSQUARE(), setPulse()
     - Simular SpO2:                                     set_SpO2_saturacion(), set_SpO2_perfusion(), set_SpO2_ppm(), set_SpO2_Sensor()
     - Simular Respiratoria:                             RespCurveOn(), RespCurveOff(), setRespRate(), setRespRatio(), setRespAmpl(), setRespBase(), setRespLead(), APNEA()
+    - Simular Temperatura:                              setTemperature()
 
     Ejemplo de uso básico:
         ps8 = PROSIM8(port="COM11")
@@ -793,7 +794,13 @@ class PROSIM8:
     #*****************************************************************PRESION INVASIVA*************************************************************************
     #In-develpment
     #*****************************************************************TEMPERATURA******************************************************************************
-    #In-develpment
+    def setTemperature(self,degree):
+        """
+        Set the temperature\n
+        :param:
+        **degree** Temperature un degree C: 3 digits w/dp: 30.0 to 42.0 by 00.5
+        """
+        self.sendCommand(cmd=f"TEMP={degree}")
     #*****************************************************************GASTO CARDIACO***************************************************************************
     #In-develpment
 if __name__=="__main__":
