@@ -7,7 +7,7 @@
  |_|    |_|  \_\\____/|_____/|_____|_|  |_|  \___/         |_____/|_|  \_\_____|   \/   |______|_|  \_\
                                                                                                                                                                                                                                                                                                                                                                              
 prosim8.py - Driver para control remoto de ProSim 8 (Fluke Biomedical)
-Versión 1.2.0
+Versión 1.2.1
 
 Este módulo implementa la clase PROSIM8 para gestionar la comunicación
 con un simulador de paciente ProSim 8 a través de un puerto serie USB.
@@ -22,7 +22,7 @@ from time import sleep
 
 __company__ = "Feas Electronica"
 __author__ = "Juan Cruz Noya & Julian Font"
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 __country__ = "Argentina"
 
 class PROSIM8:
@@ -37,7 +37,10 @@ class PROSIM8:
     - Métodos de arritmias:                             setPreVentricularArrhythmia(), setSupArrhythmia(), VentricularArrhythmia(), ConductionArrythmia().
     - Métodos de marcapasos:                            setPacerPolarity(), setPacerAmplitude(), setPacerWidth(), setPacerChamber(), setPacerPulse().
     - Simular fibrilación y taquicardia ventricular:    setFibrilation(), setMonovtach()
-
+    - Simular Parametricas:                             SetSENO(), SetTRIANGULAR()
+    - Simular SpO2:                                     set_SpO2_saturacion(), set_SpO2_perfusion(), set_SpO2_ppm(), set_SpO2_Sensor()
+    - Simular Respiratoria:                             RespCurveOn(), RespCurveOff(), setRespRate(), setRespRatio(), setRespAmpl(), setRespBase(), setRespLead(), APNEA()
+    
     Ejemplo de uso básico:
         ps8 = PROSIM8(port="COM11")
         ps8.connect()
