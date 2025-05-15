@@ -824,7 +824,37 @@ class PROSIM8:
         self.sendCommand(cmd=f"PULSE={rate}")
 
     #*****************************************************************PRESION NO INVASIVA**********************************************************************
-    #In-develpment
+    #In-develpment SUMULATION COMMANDS
+
+    def ZPRESS(self):
+        """
+        CANAL DE PRESION NO INVASIVA EN CERO
+        """
+        self.sendCommand(cmd=f"ZPRESS")
+
+    def NIBP(self,at=False):
+        """
+        NIBP SIMULATION ON/OFF
+        """
+        if at:
+            self.sendCommand(cmd=f"NIBPRUN=ON")
+        else:
+            self.sendCommand(cmd=f"NIBPRUN=OFF")
+    def NIBPENVELOPE(self,shift):
+        """
+        Set the NIBP envelope shift\n
+        :param:
+
+        **shift**: Envelope shift porcentage: 2 digits signed:-10 to +10
+        """
+        self.sendCommand(cmd=f"NIBPES={shift}")
+    def NIBPVOLUME(self,volume):
+        """
+        Set the NIBP volume\n
+        **volume**: Volume in mL: 3 digits w/dp: 0.10 to 1.25; by 0.05
+        """
+        self.sendCommand(cmd=f"NIBPV={volume}")
+    #In-develpment MEASUREMENT AND CONTROL COMMANDS
     #*****************************************************************PRESION INVASIVA*************************************************************************
     #In-develpment
 
@@ -884,6 +914,9 @@ class PROSIM8:
         }
 
         self.sendCommand(cmd=f"IBPW={self.PRESSURECHANNEL},{pressure_dic[wave]}")
+
+    #SE PUEDE SEGUIR DESARROLLANDO PARA LOS ARTEFACTOS, AUNQUE ESTO GENERA UN AUMENTO EN EL TIEMPO DE DESARROLLO.......
+
     #*****************************************************************TEMPERATURA******************************************************************************
     def setTemperature(self,degree):
         """

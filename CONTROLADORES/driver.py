@@ -615,8 +615,15 @@ def prosim8(CMD):
                             instru.setPressChannel(channel=value)
                     instru.setPressWave(wave=señal)
 
-        elif args_dic["run"] =="PNI":
-            pass
+        elif args_dic["run"].lower() =="pni": #PNI
+            for key, value in args_dic.items():
+                if key.lower() in ["zero","zeropress","zpress","cero"]:
+                    instru.ZPRESS()
+                elif key.lower() in ["vol","volumen","v"]:
+                    instru.NIBPVOLUME(volume=value)
+                elif key.lower() in ["envolvente","envelope","e"]:
+                    instru.NIBPENVELOPE(shift=value)
+            instru.NIBP(at=True)
     except:
         return "-110"
 
