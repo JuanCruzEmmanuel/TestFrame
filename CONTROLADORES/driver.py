@@ -587,7 +587,7 @@ def prosim8(CMD):
                     instru.setRespRate(rate=value)
                 elif key.lower() in ["amplitud","amp"]:
                     instru.setRespAmpl(ampl=value)
-                elif key.lower() in ["base","baseline","line"]:
+                elif key.lower() in ["base","baseline","bline"]:
                     instru.setRespBase(baseline=value)
                 elif key.lower() in ["lead","type","tipo"]:
                     instru.setRespLead(lead=value)
@@ -600,8 +600,21 @@ def prosim8(CMD):
                     instru.setTemperature(degree=value)
         elif args_dic["run"] =="GC":
             pass
-        elif args_dic["run"] =="PI":
-            pass
+        elif args_dic["run"].lower() in ["pi","ip","invasivepresure","presioninvasiva","ibp"]:
+            for key, value in args_dic.items():
+                if key.lower() in ["press","presion","pressure","pres","estatica","static"]:
+                    presion=value #Porq sino se sobre escribe
+                    for key, value in args_dic.items(): #Es mucho muy importante que se setee primero el canal
+                        if key.lower() in ["canal","ch","channel"]:
+                            instru.setPressChannel(channel=value)
+                    instru.setPressPressure(pressure=presion)
+                if key.lower() in ["wave","señal","onda","tipo"]:
+                    señal=value #Porq sino se sobre escribe
+                    for key, value in args_dic.items(): #Es mucho muy importante que se setee primero el canal
+                        if key.lower() in ["canal","ch","channel"]:
+                            instru.setPressChannel(channel=value)
+                    instru.setPressWave(wave=señal)
+
         elif args_dic["run"] =="PNI":
             pass
     except:

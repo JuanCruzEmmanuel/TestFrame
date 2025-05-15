@@ -839,6 +839,51 @@ class PROSIM8:
             self.PRESSURECHANNEL = "1"
         else:
             self.PRESSURECHANNEL = channel
+    def setPressPressure(self,pressure):
+        """
+        Ingresa la presion estatica\n
+        :param:
+        **pressure** : signed static pressure: 3 digits: -010 to +300
+        """
+
+        self.sendCommand(cmd=f"IBPS={self.PRESSURECHANNEL},{pressure}")
+    def setPressWave(self,wave):
+        """
+        Se setean ondas precargadas\n
+        :param:
+        ***wave*** : {
+        ART:arterial,
+        RART:radial artery,
+        LV:left ventricule,
+        LA:left atrium,
+        RV:right ventricle,
+        PA:pulmary artery,
+        PAW:pa wedge
+        RA:right atrium
+        }
+        """
+        pressure_dic={
+            "arterial":"ART",
+            "art":"ART",
+            "rad":"RART",
+            "radial":"RART",
+            "lv":"LV",
+            "ventriculoizquierdo":"LV",
+            "la":"LA",
+            "atrioizquierdo":"LA",
+            "ventriculoderecho":"RV",
+            "rightventricle":"RV",
+            "rv":"RV",
+            "arteriapulmonar":"PA",
+            "pulmonar":"PA",
+            "pa":"PA",
+            "wedge":"PAW",
+            "atrioderecho":"RA",
+            "rightatrium":"RA",
+            "ra":"RA"
+        }
+
+        self.sendCommand(cmd=f"IBPW={self.PRESSURECHANNEL},{pressure_dic[wave]}")
     #*****************************************************************TEMPERATURA******************************************************************************
     def setTemperature(self,degree):
         """
