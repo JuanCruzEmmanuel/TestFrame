@@ -579,9 +579,21 @@ def prosim8(CMD):
                     instru.set_SpO2_perfusion(PERFUSION=value)
                 elif key.lower() in ["freq","frecuencia","fp","pulso"]:
                     instru.setHeartRate(rate=value)
-            pass
+                elif key.lower() in ["sensor","tipo","type"]:
+                    instru.set_SpO2_Sensor(sensor=value)
         elif args_dic["run"] =="RESP":
-            pass
+            for key, value in args_dic.items():
+                if key.lower() in ["freq","frec","frecuencia"]:
+                    instru.setRespRate(rate=value)
+                elif key.lower() in ["amplitud","amp"]:
+                    instru.setRespAmpl(ampl=value)
+                elif key.lower() in ["base","baseline","line"]:
+                    instru.setRespBase(baseline=value)
+                elif key.lower() in ["lead","type","tipo"]:
+                    instru.setRespLead(lead=value)
+            instru.RespCurveOn()
+        elif args_dic["run"].lower() =="apnea":
+            instru.APNEA(atrib=True)
         elif args_dic["run"] =="TEMP":
             for key, value in args_dic.items():
                 if key.lower() in ["temp","temperature"]: #Seteo la temperatura
