@@ -559,10 +559,18 @@ def prosim8(CMD):
                     instru.ConductionArrythmia(param = value)
         elif args_dic["run"] =="MARCAPASO":
             pass
-        elif args_dic["run"] =="FIB":
-            pass
+        elif args_dic["run"].lower() =="afib":
+            for key, value in args_dic.items():
+                if key.lower() in ["granulacion","gran","granularity"]:
+                    instru.setGranularity(param=value)
+            instru.setFibrilation(param="Atrial")
+        elif args_dic["run"].lower() =="vfib":
+            for key, value in args_dic.items():
+                if key.lower() in ["granulacion","gran","granularity"]:
+                    instru.setGranularity(param=value)
+            instru.setFibrilation(param="VENTRICULAR")
         elif args_dic["run"] =="VTACH":
-            pass
+            instru.setMonovtach()
         elif args_dic["run"] =="SpO2":
             pass
         elif args_dic["run"] =="RESP":
