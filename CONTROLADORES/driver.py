@@ -523,6 +523,24 @@ def prosim8(CMD):
                     instru.setArtifact(param=value)
                 elif key in ["dev", "desviacion"]:
                     instru.setDeviation(param=value)
+        elif args_dic["run"] in ["asistolia", "asist", "ASISTOLIA", "ASYS","asis"]:
+            instru.RunAsistolia() #corre asistolia
+        elif args_dic["run"] in ["seno", "sen", "SENO", "SEN","SIN","sine","sin"]:
+            for key, value in args_dic.items():
+                if key == "frec" or key =="FREC" or key=="FREQ" or key =="FRECUENCIA":
+                    instru.setSINE(freq=value) #SENO
+        elif args_dic["run"] in ["square", "sqr", "cuad", "cuadrada","SQRT","SQR","CUAD","CUADRADA"]:
+            for key, value in args_dic.items():
+                if key == "frec" or key =="FREC" or key=="FREQ" or key =="FRECUENCIA":
+                    instru.setSQUARE(freq=value) #CUADRADA
+        elif args_dic["run"] in ["tri", "TRI", "triangular", "TRIANGLE"]:
+            for key, value in args_dic.items():
+                if key == "frec" or key =="FREC" or key=="FREQ" or key =="FRECUENCIA":
+                    instru.setTRIANGLE(freq=value) #TRIANGULAR
+        elif args_dic["run"] in ["pulso", "PULSO", "PUL", "PULSE","pulse"]:
+            for key, value in args_dic.items():
+                if key == "frec" or key =="FREC" or key=="FREQ" or key =="FRECUENCIA":
+                    instru.setPULSE(rate=value) #PULSO
         elif args_dic["run"] =="ARRITMIA":
             pass
         elif args_dic["run"] =="MARCAPASO":
@@ -534,8 +552,6 @@ def prosim8(CMD):
         elif args_dic["run"] =="SpO2":
             pass
         elif args_dic["run"] =="RESP":
-            pass
-        elif args_dic["run"] =="SEÑAL":
             pass
         elif args_dic["run"] =="TEMP":
             pass
