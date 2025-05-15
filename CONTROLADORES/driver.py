@@ -541,8 +541,22 @@ def prosim8(CMD):
             for key, value in args_dic.items():
                 if key == "frec" or key =="FREC" or key=="FREQ" or key =="FRECUENCIA":
                     instru.setPULSE(rate=value) #PULSO
-        elif args_dic["run"] =="ARRITMIA":
-            pass
+        elif args_dic["run"] in ["PreVentricular","PV","preventricular","pv","premature","PREMATURE"]: #PREMATURE ARRHYTM
+            for key, value in args_dic.items():
+                if key in ["arr", "arritmia","type","tipo","ARRITMIA","ARRHY","ARRIT"]:
+                    instru.setPreVentricularArrhythmia(param = value)
+        elif args_dic["run"] in ["SupraVentricular","SV","supraventricular","sv","supra","SUPRA","suprav","SUPRAV"]: #SUPRAVENTRICULAR ARRHYTM
+            for key, value in args_dic.items():
+                if key in ["arr", "arritmia","type","tipo","ARRITMIA","ARRHY","ARRIT"]:
+                    instru.setSupArrhythmia(param = value)
+        elif args_dic["run"] in ["Ventricular","ven","ventricular","VEN"]: #VENTRICULAR
+            for key, value in args_dic.items():
+                if key in ["arr", "arritmia","type","tipo","ARRITMIA","ARRHY","ARRIT"]:
+                    instru.VentricularArrhythmia(param = value)
+        elif args_dic["run"].lower() in ["conduccion","con","conduc","conduction"]: #arritmia de conduccion
+            for key, value in args_dic.items():
+                if key in ["arr", "arritmia","type","tipo","ARRITMIA","ARRHY","ARRIT"]:
+                    instru.ConductionArrythmia(param = value)
         elif args_dic["run"] =="MARCAPASO":
             pass
         elif args_dic["run"] =="FIB":
