@@ -572,6 +572,13 @@ def prosim8(CMD):
         elif args_dic["run"] =="VTACH":
             instru.setMonovtach()
         elif args_dic["run"] =="SpO2":
+            for key, value in args_dic.items():
+                if key.lower() in ["sat","saturacion","saturation"]:
+                    instru.set_SpO2_saturacion(SATURATION=value)
+                elif key.lower() in ["perf","perfusion"]:
+                    instru.set_SpO2_perfusion(PERFUSION=value)
+                elif key.lower() in ["freq","frecuencia","fp","pulso"]:
+                    instru.setHeartRate(rate=value)
             pass
         elif args_dic["run"] =="RESP":
             pass
