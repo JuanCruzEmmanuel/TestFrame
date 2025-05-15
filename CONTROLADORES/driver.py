@@ -576,7 +576,9 @@ def prosim8(CMD):
         elif args_dic["run"] =="RESP":
             pass
         elif args_dic["run"] =="TEMP":
-            pass
+            for key, value in args_dic.items():
+                if key.lower() in ["temp","temperature"]: #Seteo la temperatura
+                    instru.setTemperature(degree=value)
         elif args_dic["run"] =="GC":
             pass
         elif args_dic["run"] =="PI":
