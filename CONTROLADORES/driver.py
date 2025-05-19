@@ -1,14 +1,18 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from CONTROLADORES.Multimetro import Fluke45, Fluke8845
 from CONTROLADORES.psu364x import PSU
 from CONTROLADORES.IMPULSE7000 import IMPULSE7000
 from CONTROLADORES.ESA620 import ESA620
 from CONTROLADORES.OSCILOSCOPIO import TEKTRONIX
+from CONTROLADORES.PROSIM8 import PROSIM8
 import serial
 import time
 from datetime import datetime
 import json
 
-__version__ ="1.2.2"
+__version__ ="1.2.3"
 
 __autor__ ="Juan Cruz Noya & Julian Font"
 
@@ -34,7 +38,7 @@ Version 1.2     Se comienza a trabajar en el manejo de errores de comunicación.
                 Error -101: Puerto serie no encontrado (Acceso denegado).
 Version 1.2.1   Se implementa la funcion LOCAL() en esa620() antes de cerrar el puerto.
 Version 1.2.2   Se corrige un error, en donde la instruccion LOCAL() se ejecutaba despues de cerrar el puerto
-
+Version 1.2.3   Se agrega el PROSIM8
 """
 
 
@@ -494,6 +498,135 @@ def osciloscopio(CMD):
 
         "EN CASO QUE SOLO SE BUSQUE EJECUTAR CONFIGURACIONES DE OSCILOSCOPIO DEBE DEVOLVER OK"
         return "OK"
+
+def prosim8(CMD):
+    port = next((COM for COM in CMD if "port" in COM.lower()), "COM11") #Se busca si encuentra el port si no lo localiza usa el valor por defecto
+    try:
+        port = port.split(" ")[1]   #En caso de encontrar port debo tomar el valor del COM
+    except:
+        port = port
+    try:
+        instru = PROSIM8(port = port)
+        args_dic = {} #Diccionario para guardar todos los argumentos que van a estar en el comando CMD
+        for arg in CMD:
+            splited_arg = arg.split(" ")#Separo la palabra que se encuentra con espacio y me la divide en 2 mitades
+            args_dic[splited_arg[0]]=splited_arg[1] #La primer mitad la uso como clave, la segunda como value
+        instru.connect() #Conecto
+        if args_dic["run"] =="ECG":
+            for key, value in args_dic.items():
+                if key == "frec" or key =="FREC" or key=="FREQ" or key =="FRECUENCIA" or key =="BPM" or key =="LPM":
+                    instru.setHeartRate(rate=args_dic[key])
+                    instru.NormalRate()
+                elif key == "amp" or key =="AMP" or key=="amplitud" or key =="importancia" or key =="AMPLITUD":
+                    instru.setECGAmplitude(param=args_dic[key])
+                elif key in ["artifact", "artefacto","ghost"]:
+                    instru.setArtifact(param=value)
+                elif key in ["dev", "desviacion"]:
+                    instru.setDeviation(param=value)
+        elif args_dic["run"] in ["asistolia", "asist", "ASISTOLIA", "ASYS","asis"]:
+            instru.RunAsistolia() #corre asistolia
+        elif args_dic["run"] in ["seno", "sen", "SENO", "SEN","SIN","sine","sin"]:
+            for key, value in args_dic.items():
+                if key == "frec" or key =="FREC" or key=="FREQ" or key =="FRECUENCIA":
+                    instru.setSINE(freq=value) #SENO
+        elif args_dic["run"] in ["square", "sqr", "cuad", "cuadrada","SQRT","SQR","CUAD","CUADRADA"]:
+            for key, value in args_dic.items():
+                if key == "frec" or key =="FREC" or key=="FREQ" or key =="FRECUENCIA":
+                    instru.setSQUARE(freq=value) #CUADRADA
+        elif args_dic["run"] in ["tri", "TRI", "triangular", "TRIANGLE"]:
+            for key, value in args_dic.items():
+                if key == "frec" or key =="FREC" or key=="FREQ" or key =="FRECUENCIA":
+                    instru.setTRIANGLE(freq=value) #TRIANGULAR
+        elif args_dic["run"] in ["pulso", "PULSO", "PUL", "PULSE","pulse"]:
+            for key, value in args_dic.items():
+                if key == "frec" or key =="FREC" or key=="FREQ" or key =="FRECUENCIA":
+                    instru.setPULSE(rate=value) #PULSO
+        elif args_dic["run"] in ["PreVentricular","PV","preventricular","pv","premature","PREMATURE"]: #PREMATURE ARRHYTM
+            for key, value in args_dic.items():
+                if key in ["arr", "arritmia","type","tipo","ARRITMIA","ARRHY","ARRIT"]:
+                    instru.setPreVentricularArrhythmia(param = value)
+        elif args_dic["run"] in ["SupraVentricular","SV","supraventricular","sv","supra","SUPRA","suprav","SUPRAV"]: #SUPRAVENTRICULAR ARRHYTM
+            for key, value in args_dic.items():
+                if key in ["arr", "arritmia","type","tipo","ARRITMIA","ARRHY","ARRIT"]:
+                    instru.setSupArrhythmia(param = value)
+        elif args_dic["run"] in ["Ventricular","ven","ventricular","VEN"]: #VENTRICULAR
+            for key, value in args_dic.items():
+                if key in ["arr", "arritmia","type","tipo","ARRITMIA","ARRHY","ARRIT"]:
+                    instru.VentricularArrhythmia(param = value)
+        elif args_dic["run"].lower() in ["conduccion","con","conduc","conduction"]: #arritmia de conduccion
+            for key, value in args_dic.items():
+                if key in ["arr", "arritmia","type","tipo","ARRITMIA","ARRHY","ARRIT"]:
+                    instru.ConductionArrythmia(param = value)
+        elif args_dic["run"] =="MARCAPASO":
+            pass
+        elif args_dic["run"].lower() =="afib":
+            for key, value in args_dic.items():
+                if key.lower() in ["granulacion","gran","granularity"]:
+                    instru.setGranularity(param=value)
+            instru.setFibrilation(param="Atrial")
+        elif args_dic["run"].lower() =="vfib":
+            for key, value in args_dic.items():
+                if key.lower() in ["granulacion","gran","granularity"]:
+                    instru.setGranularity(param=value)
+            instru.setFibrilation(param="VENTRICULAR")
+        elif args_dic["run"] =="VTACH":
+            instru.setMonovtach()
+        elif args_dic["run"] =="SpO2":
+            for key, value in args_dic.items():
+                if key.lower() in ["sat","saturacion","saturation"]:
+                    instru.set_SpO2_saturacion(SATURATION=value)
+                elif key.lower() in ["perf","perfusion"]:
+                    instru.set_SpO2_perfusion(PERFUSION=value)
+                elif key.lower() in ["freq","frecuencia","fp","pulso"]:
+                    instru.setHeartRate(rate=value)
+                elif key.lower() in ["sensor","tipo","type"]:
+                    instru.set_SpO2_Sensor(sensor=value)
+        elif args_dic["run"] =="RESP":
+            for key, value in args_dic.items():
+                if key.lower() in ["freq","frec","frecuencia"]:
+                    instru.setRespRate(rate=value)
+                elif key.lower() in ["amplitud","amp"]:
+                    instru.setRespAmpl(ampl=value)
+                elif key.lower() in ["base","baseline","bline"]:
+                    instru.setRespBase(baseline=value)
+                elif key.lower() in ["lead","type","tipo"]:
+                    instru.setRespLead(lead=value)
+            instru.RespCurveOn()
+        elif args_dic["run"].lower() =="apnea":
+            instru.APNEA(atrib=True)
+        elif args_dic["run"] =="TEMP":
+            for key, value in args_dic.items():
+                if key.lower() in ["temp","temperature"]: #Seteo la temperatura
+                    instru.setTemperature(degree=value)
+        elif args_dic["run"] =="GC":
+            pass
+        elif args_dic["run"].lower() in ["pi","ip","invasivepresure","presioninvasiva","ibp"]:
+            for key, value in args_dic.items():
+                if key.lower() in ["press","presion","pressure","pres","estatica","static"]:
+                    presion=value #Porq sino se sobre escribe
+                    for key, value in args_dic.items(): #Es mucho muy importante que se setee primero el canal
+                        if key.lower() in ["canal","ch","channel"]:
+                            instru.setPressChannel(channel=value)
+                    instru.setPressPressure(pressure=presion)
+                if key.lower() in ["wave","señal","onda","tipo"]:
+                    señal=value #Porq sino se sobre escribe
+                    for key, value in args_dic.items(): #Es mucho muy importante que se setee primero el canal
+                        if key.lower() in ["canal","ch","channel"]:
+                            instru.setPressChannel(channel=value)
+                    instru.setPressWave(wave=señal)
+
+        elif args_dic["run"].lower() =="pni": #PNI
+            for key, value in args_dic.items():
+                if key.lower() in ["zero","zeropress","zpress","cero"]:
+                    instru.ZPRESS()
+                elif key.lower() in ["vol","volumen","v"]:
+                    instru.NIBPVOLUME(volume=value)
+                elif key.lower() in ["envolvente","envelope","e"]:
+                    instru.NIBPENVELOPE(shift=value)
+            instru.NIBP(at=True)
+    except:
+        return "-110"
+
 def DRIVER(cmd:str):
     """
     Funcion mas general. Se encarga de recibir el comando y luego valuarlo segun sea el tipo de instrumento
@@ -518,7 +651,11 @@ def DRIVER(cmd:str):
         "osc":osciloscopio,
         "osciloscopio":osciloscopio,
         "tektronix":osciloscopio,
-        "OSC":osciloscopio
+        "OSC":osciloscopio,
+        "PS8":prosim8,
+        "prosim":prosim8,
+        "PROSIM":prosim8,
+        "prosim8":prosim8
     }
     CMD = cmd.split(sep=" --")
     """
@@ -536,10 +673,7 @@ def DRIVER(cmd:str):
 if __name__ == "__main__":
     N = 50
 
-    while N>0:
-        print(f"Se esta ejecutando la prueba {N}")
-        print(DRIVER("ESA620 --run EquipmentCurrent"))
-        N = N-1
+    print(DRIVER(cmd = "PS8 --run ECG --frec 100 --amp 1.0 --artifact musc"))
 
     #print(DRIVER("osc --vscale 2 --vpos 0 --run medicion --pos 1"))
     
