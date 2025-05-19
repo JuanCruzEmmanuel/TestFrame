@@ -7,6 +7,7 @@ from CONTROLADORES.IMPULSE7000 import IMPULSE7000
 from CONTROLADORES.ESA620 import ESA620
 from CONTROLADORES.OSCILOSCOPIO import TEKTRONIX
 from CONTROLADORES.PROSIM8 import PROSIM8
+from CONTROLADORES.GUIAPRESION import GUIAPRESION
 import serial
 import time
 from datetime import datetime
@@ -39,6 +40,7 @@ Version 1.2     Se comienza a trabajar en el manejo de errores de comunicación.
 Version 1.2.1   Se implementa la funcion LOCAL() en esa620() antes de cerrar el puerto.
 Version 1.2.2   Se corrige un error, en donde la instruccion LOCAL() se ejecutaba despues de cerrar el puerto
 Version 1.2.3   Se agrega el PROSIM8
+Version 1.2.4   Se agrega codigo de guia de presion
 """
 
 
@@ -239,6 +241,73 @@ def psu(CMD:list):
             return get[action]()
     
     return "OK"
+
+def guiaPresion(CMD:list):
+    """
+    UN EJEMPLO DE COMANDO DESDE EL SMVA SERIA *GuiaPresion --run ganancia --value 33761
+    """
+
+
+    instru = GUIAPRESION(port="COM24")
+    instru.connection() #Conecto el instrumento
+    prioridades = { #Es importante el orden donde se establecen ciertos parametros
+        "value":1,
+        "Value":1,
+        "Valor":1,
+        "valor":1,
+        "run": 2,
+        "Run":2
+    }
+
+    run_dic = {
+        "ganancia":instru.ganancia,
+        "gain":instru.ganancia,
+        "Gain":instru.ganancia,
+        "Ganancia":instru.ganancia,
+        "Pos":instru.posicionamiento,
+        "Posicion":instru.posicionamiento,
+        "pos":instru.posicionamiento
+    }
+
+    guia_presion_setter={
+        "value":instru.setValue,
+        "Value":instru.setValue,
+        "valor":instru.setValue,
+        "Valor":instru.setValue
+    }
+
+    def obtener_prioridad(elemento): #lo hago funcion para trabajar con la funcion lamda mas facil
+        palabras = elemento.split()
+    # Buscar la palabra clave que existe en las prioridades
+        for palabra in palabras:
+            if palabra.lower() in prioridades:
+                return prioridades[palabra]
+    # Si no encuentra ninguna palabra clave, asignar una prioridad muy alta
+        return float('inf')
+    
+
+    CMD_SORTED = sorted(CMD,key=obtener_prioridad)
+    #print(CMD_SORTED)
+    for cmd in CMD_SORTED:
+        cmd = cmd.split(" ")
+        
+        if cmd[0] == "port":
+            pass
+        elif "run" in cmd[0].lower():
+            ejecutar = cmd[1] #Tomo el elemento por ejemplo gain
+
+        else: #En caso de no ser run, va a ser un setter 
+            guia_presion_setter[cmd[0]](value=cmd[1]) #En este caso va a setear el valor separado por el espacio
+
+    try:
+        exc = run_dic[ejecutar]()
+
+        return exc
+    except:
+        "EN CASO DE ERROR"
+        return "NO OK"
+
+
 def impulse(CMD:list):
     port = next((COM for COM in CMD if "port" in COM.lower()), "COM14") #Se busca si encuentra el port si no lo localiza usa el valor por defecto
     try:
@@ -655,7 +724,9 @@ def DRIVER(cmd:str):
         "PS8":prosim8,
         "prosim":prosim8,
         "PROSIM":prosim8,
-        "prosim8":prosim8
+        "prosim8":prosim8,
+        "GuiaPresion":guiaPresion,
+        "GuiaDePresion":guiaPresion
     }
     CMD = cmd.split(sep=" --")
     """
