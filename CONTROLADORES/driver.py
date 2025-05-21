@@ -642,14 +642,15 @@ def prosim8(CMD):
             instru.setFibrilation(param="VENTRICULAR")
         elif args_dic["run"] =="VTACH":
             instru.setMonovtach()
-        elif args_dic["run"] =="SpO2":
+        elif args_dic["run"] in ["SpO2","SPO2"]:
             for key, value in args_dic.items():
                 if key.lower() in ["sat","saturacion","saturation"]:
                     instru.set_SpO2_saturacion(SATURATION=value)
                 elif key.lower() in ["perf","perfusion"]:
                     instru.set_SpO2_perfusion(PERFUSION=value)
-                elif key.lower() in ["freq","frecuencia","fp","pulso"]:
+                elif key.lower() in ["freq","frecuencia","fp","pulso","frec"]:
                     instru.setHeartRate(rate=value)
+                    instru.NormalRate()
                 elif key.lower() in ["sensor","tipo","type"]:
                     instru.set_SpO2_Sensor(sensor=value)
         elif args_dic["run"] =="RESP":
@@ -745,9 +746,9 @@ def DRIVER(cmd:str):
 
 if __name__ == "__main__":
     N = 50
-
-    print(DRIVER(cmd = "PS8 --run ECG --frec 200 --amp 1.0 --artifact musc --asize 200"))
-
+    #Probar todas las caracteristicas de ECG// frec: frecuencia //amp: amplitud //artifact: artefacto //asize: artifact size
+    #-print(DRIVER(cmd = "PS8 --run ECG --frec 200 --amp 1.0 --artifact musc --asize 200"))
+    DRIVER(cmd = "PS8 --run SPO2 --frec 80 --sat 99 --perf 1.00 --sensor BCI")
     #print(DRIVER("osc --vscale 2 --vpos 0 --run medicion --pos 1"))
     
     

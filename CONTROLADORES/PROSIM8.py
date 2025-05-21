@@ -143,7 +143,17 @@ class PROSIM8:
             return str(value)
         
     
-    def sendCommand(self, cmd):
+    def sendCommand(self, cmd,type="3digits"):
+        """
+        type es una variable que va a controla el tipo de dato que hay:\n
+        3digits: Numeros sin signo de la forma xxx por ejemplo 25--->025\n
+        2digits: Numeros de dos digitos con coma y dos valores despues de la coma por ejemplo 2 ---> 02.00\n
+        1digits:Numeros de 1 digito con coma y dos valores despues de la coma por ejemplo 2 ---> 2.00\n
+        4digits: Numero sin signo con 4 espacios xxxx por ejemplo 500 ---> 0500 #solo para baseline\n
+        string: sin formato numerico\n
+        temp: 2 digitos, coma 1 cero 30 ---> 30.0
+        
+        """
         if self.con is None or not self.con.is_open:
             raise serial.SerialException("Puerto serie no está conectado")
         
@@ -151,9 +161,19 @@ class PROSIM8:
         if '=' in cmd:
             key, value = cmd.split('=', 1)
             if '.' in value:
-                value = self._format_decimal(value, int_digits=1, dec_digits=2)
+                if type=="1digits":
+                    value = self._format_decimal(value, int_digits=1, dec_digits=2)
+                elif type=="2digits":
+                    value = self._format_decimal(value, int_digits=2, dec_digits=2)
+                elif type =="temp":
+                    value = self._format_decimal(value, int_digits=2, dec_digits=1)
             elif value.isdigit():
-                value = self._format_int(value, width=3)
+                if type=="3digits":
+                    value = self._format_int(value, width=3)
+                elif type=="4digits":
+                    value = self._format_int(value, width=4)
+                elif type=="string":
+                    pass #En caso de las arritmias y esas cosas
             cmd = f"{key}={value}"
         
         cmd = cmd + "\r"
@@ -664,12 +684,20 @@ class PROSIM8:
 
     #*****************************************************************SpO2**********************************************************************
     def set_SpO2_saturacion(self, SATURATION):
+        """
+        Sets SpO2 Saturation Percentage\n
+        Unsigned 3 digits 000 to 100
+        """
         cmd = f"SAT={SATURATION}"
         self.sendCommand(cmd)
     
     def set_SpO2_perfusion(self, PERFUSION):
+        """
+        Sets SpO2 perfsusion, the pusle amplitude in percent\n
+        2 digits w/dp: 00.01 to 20.00 [by 00.01]
+        """
         cmd = f"PERF={PERFUSION}"
-        self.sendCommand(cmd)
+        self.sendCommand(cmd,type="2digits")
 
     def set_SpO2_ppm(self, PERFUSION):
         cmd = f"PERF={PERFUSION}"
@@ -746,7 +774,7 @@ class PROSIM8:
         :param:
         **ampl**: 3 digits w/dp: 0.00 to 5.00 by 0.05
         """
-        self.sendCommand(cmd = f"RESPAMPL={ampl}")
+        self.sendCommand(cmd = f"RESPAMPL={ampl}",type="1digits")
 
     def setRespBase(self,baseline):
         """
@@ -755,7 +783,7 @@ class PROSIM8:
         
         **baseline**: Va desde 0500, 1000, 1500 o 2000
         """
-        self.sendCommand(cmd=f"RESPBASE={baseline}")
+        self.sendCommand(cmd=f"RESPBASE={baseline}",type="4digits")
         
     def setRespLead(self,lead):
         lead_dic = {
@@ -806,6 +834,17 @@ class PROSIM8:
         :param:
         **freq**: frecuency in Hz: 0.125,2.0 or 2.5
         """
+        try:
+            freq = float(freq)
+            if freq <2.0:
+                freq = "0.125"
+            elif freq <2.5:
+                if freq >=2.0:
+                    freq="2.0"
+            else:
+                freq = "2.5"
+        except:
+            freq = "2.0"
         self.sendCommand(cmd=f"TRI={freq}")       
 
     def setSQUARE(self,freq):
@@ -814,6 +853,18 @@ class PROSIM8:
         :param:
         **freq**: frecuency in Hz: 0.125,2.0 or 2.5
         """
+        try:
+            freq = float(freq)
+            if freq <2.0:
+                freq = "0.125"
+            elif freq <2.5:
+                if freq >=2.0:
+                    freq="2.0"
+            else:
+                freq = "2.5"
+
+        except:
+            freq = "2.0"
         self.sendCommand(cmd=f"SQUARE={freq}")
     def setPULSE(self,rate):
         """
@@ -849,13 +900,18 @@ class PROSIM8:
 
         **shift**: Envelope shift porcentage: 2 digits signed:-10 to +10
         """
-        self.sendCommand(cmd=f"NIBPES={shift}")
+        sign = '-' if shift < 0 else "+"
+        number = abs(shift)
+        formatted_shift = f"{sign}{number:02}"
+  
+
+        self.sendCommand(cmd=f"NIBPES={formatted_shift}")
     def NIBPVOLUME(self,volume):
         """
         Set the NIBP volume\n
         **volume**: Volume in mL: 3 digits w/dp: 0.10 to 1.25; by 0.05
         """
-        self.sendCommand(cmd=f"NIBPV={volume}")
+        self.sendCommand(cmd=f"NIBPV={volume}",type="1digits")
     #In-develpment MEASUREMENT AND CONTROL COMMANDS
     #*****************************************************************PRESION INVASIVA*************************************************************************
     #In-develpment
@@ -871,13 +927,21 @@ class PROSIM8:
             self.PRESSURECHANNEL = "1"
         else:
             self.PRESSURECHANNEL = channel
+
+    def presure_format(self,value):
+
+        sign = '-' if value < 0 else ''
+        number = abs(value)
+        formatted = f"{sign}{number:03}"
+        return formatted
+
     def setPressPressure(self,pressure):
         """
         Ingresa la presion estatica\n
         :param:
         **pressure** : signed static pressure: 3 digits: -010 to +300
         """
-
+        pressure = self.presure_format(value=pressure)
         self.sendCommand(cmd=f"IBPS={self.PRESSURECHANNEL},{pressure}")
     def setPressWave(self,wave):
         """
@@ -926,7 +990,7 @@ class PROSIM8:
         :param:
         **degree** Temperature un degree C: 3 digits w/dp: 30.0 to 42.0 by 00.5
         """
-        self.sendCommand(cmd=f"TEMP={degree}")
+        self.sendCommand(cmd=f"TEMP={degree}",type="temp")
     #*****************************************************************GASTO CARDIACO***************************************************************************
     #In-develpment
 if __name__=="__main__":
