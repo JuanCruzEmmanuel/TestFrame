@@ -309,7 +309,9 @@ class PROSIM8:
             "resp":"RESP",
             "Resp":"RESP",
             "RESPIRATORIA":"RESP",
-            "respiratoria":"RESP"
+            "respiratoria":"RESP",
+            "off":"OFF",
+            "OFF":"OFF"
         }
 
         try:

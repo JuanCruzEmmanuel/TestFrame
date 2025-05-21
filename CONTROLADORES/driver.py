@@ -575,7 +575,7 @@ def prosim8(CMD):
     except:
         port = port
     try:
-        instru = PROSIM8(port = port)
+        instru = PROSIM8(port = port,debug=True)
         args_dic = {} #Diccionario para guardar todos los argumentos que van a estar en el comando CMD
         for arg in CMD:
             splited_arg = arg.split(" ")#Separo la palabra que se encuentra con espacio y me la divide en 2 mitades
@@ -590,6 +590,8 @@ def prosim8(CMD):
                     instru.setECGAmplitude(param=args_dic[key])
                 elif key in ["artifact", "artefacto","ghost"]:
                     instru.setArtifact(param=value)
+                elif key in ["artsize","asize"]:
+                    instru.SetArtifactSize(size=value)
                 elif key in ["dev", "desviacion"]:
                     instru.setDeviation(param=value)
         elif args_dic["run"] in ["asistolia", "asist", "ASISTOLIA", "ASYS","asis"]:
@@ -744,7 +746,7 @@ def DRIVER(cmd:str):
 if __name__ == "__main__":
     N = 50
 
-    print(DRIVER(cmd = "PS8 --run ECG --frec 100 --amp 1.0 --artifact musc"))
+    print(DRIVER(cmd = "PS8 --run ECG --frec 200 --amp 1.0 --artifact musc --asize 200"))
 
     #print(DRIVER("osc --vscale 2 --vpos 0 --run medicion --pos 1"))
     
