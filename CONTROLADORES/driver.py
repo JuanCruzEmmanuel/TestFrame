@@ -755,7 +755,9 @@ if __name__ == "__main__":
     #Probar todas las caracteristicas de trianguluar// frec: frecuencia
     #-DRIVER(cmd = "PS8 --run tri --frec 2")
 
-    DRIVER(cmd = "PS8 --run seno --frec 1")
+    #DRIVER(cmd = "PS8 --run seno --frec 1")
+
+    DRIVER(cmd = "PS8 --run pi --ch 1 --estatica 270")
 
     #print(DRIVER("osc --vscale 2 --vpos 0 --run medicion --pos 1"))
     

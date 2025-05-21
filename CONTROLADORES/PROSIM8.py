@@ -955,15 +955,15 @@ class PROSIM8:
         :param:
         **channel**: IBP channel 1 or 2
         """
-        if channel !="1" or channel !="2":
+        if channel !="1" and channel !="2":
             print("ERROR DE CANALES DE PRESIONES")
             self.PRESSURECHANNEL = "1"
         else:
             self.PRESSURECHANNEL = channel
 
     def presure_format(self,value):
-
-        sign = '-' if value < 0 else ''
+        value = int(value)
+        sign = '-' if value < 0 else '+'
         number = abs(value)
         formatted = f"{sign}{number:03}"
         return formatted
