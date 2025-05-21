@@ -826,7 +826,40 @@ class PROSIM8:
         **freq**: frequency in hz; 0.05, 0.5, 1, 2, 5, 10, 25, 30, 40, 50, 60, 100 or 150\n
         *user notes: In practice we can used it in between ranges. P.E. 70*
         """
-        self.sendCommand(cmd=f"SINE={freq}")
+        try:
+            freq= float(freq)
+            if freq <0.5:
+                freq = "0.05"
+            elif freq <1:
+                freq ="0.5"
+            elif freq <2:
+                freq ="1"
+            elif freq<5:
+                freq ="2"
+            elif freq<10:
+                freq="5"
+            elif freq<25:
+                freq="10"
+            elif freq<30:
+                freq ="25"
+
+            elif freq<40:
+                freq="30"
+            elif freq<50:
+                freq="40"
+            elif freq<60:
+                freq ="50"
+
+            elif freq<100:
+                freq="60"
+            elif freq<150:
+                freq="100"
+            elif freq>=150:
+                freq ="150"
+
+        except:
+            freq="60"
+        self.sendCommand(cmd=f"SINE={freq}",type="string")
     
     def setTRIANGLE(self,freq):
         """

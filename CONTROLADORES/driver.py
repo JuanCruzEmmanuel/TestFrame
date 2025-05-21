@@ -748,7 +748,15 @@ if __name__ == "__main__":
     N = 50
     #Probar todas las caracteristicas de ECG// frec: frecuencia //amp: amplitud //artifact: artefacto //asize: artifact size
     #-print(DRIVER(cmd = "PS8 --run ECG --frec 200 --amp 1.0 --artifact musc --asize 200"))
-    DRIVER(cmd = "PS8 --run SPO2 --frec 80 --sat 99 --perf 1.00 --sensor BCI")
+    #Probar todas las caracteristicas de Spo2// frec: frecuencia //sat: saturacion //perf: perfusion //sensor: sensor
+    #-DRIVER(cmd = "PS8 --run SPO2 --frec 80 --sat 99 --perf 1.00 --sensor BCI")
+    #Probar todas las caracteristicas de cuadrada// frec: frecuencia
+    #-DRIVER(cmd = "PS8 --run cuadrada --frec 1.5")
+    #Probar todas las caracteristicas de trianguluar// frec: frecuencia
+    #-DRIVER(cmd = "PS8 --run tri --frec 2")
+
+    DRIVER(cmd = "PS8 --run seno --frec 1")
+
     #print(DRIVER("osc --vscale 2 --vpos 0 --run medicion --pos 1"))
     
     
