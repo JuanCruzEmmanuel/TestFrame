@@ -1026,9 +1026,26 @@ class PROSIM8:
             "rightatrium":"RA",
             "ra":"RA"
         }
+        selected_wave= pressure_dic[wave]
 
-        self.sendCommand(cmd=f"IBPW={self.PRESSURECHANNEL},{pressure_dic[wave]}")
+        self.sendCommand(cmd=f"IBPW={self.PRESSURECHANNEL},{selected_wave}",type="string")
 
+        if selected_wave =="ART":
+
+            self.sendCommand(cmd=f"IBPP={self.PRESSURECHANNEL},120,080",type="string")
+
+        elif selected_wave =="LV":
+            self.sendCommand(cmd=f"IBPP={self.PRESSURECHANNEL},120,000",type="string")
+        elif selected_wave =="RV":
+            self.sendCommand(cmd=f"IBPP={self.PRESSURECHANNEL},025,000",type="string")
+        elif selected_wave =="LA":
+            self.sendCommand(cmd=f"IBPP={self.PRESSURECHANNEL},012,000",type="string")
+        elif selected_wave =="RART":
+            self.sendCommand(cmd=f"IBPP={self.PRESSURECHANNEL},120,000",type="string")
+        elif selected_wave =="PAW":
+            self.sendCommand(cmd=f"IBPP={self.PRESSURECHANNEL},025,000",type="string")
+        elif selected_wave =="RA":
+            self.sendCommand(cmd=f"IBPP={self.PRESSURECHANNEL},025,000",type="string")
     #SE PUEDE SEGUIR DESARROLLANDO PARA LOS ARTEFACTOS, AUNQUE ESTO GENERA UN AUMENTO EN EL TIEMPO DE DESARROLLO.......
 
     #*****************************************************************TEMPERATURA******************************************************************************
