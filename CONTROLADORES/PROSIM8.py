@@ -939,6 +939,21 @@ class PROSIM8:
   
 
         self.sendCommand(cmd=f"NIBPES={formatted_shift}")
+
+
+    def NIBPDYNAMIC(self,value):
+        """
+        la presion dinamica recibe si o si valores de sistolica y diastolica por ende value debe tener algo que la diferencie
+        puede ser '/'
+        """
+        "VALUE = 100/65"
+        sist,dias = value.split("/")
+        sist = abs(sist)
+        sist = f"{sist:03}" #formateo
+        dias = abs(dias)
+        dias = f"{dias:03}" #formateo
+
+        self.sendCommand(cmd=f"NIBPP={sist},{dias}",type="string")
     def NIBPVOLUME(self,volume):
         """
         Set the NIBP volume\n

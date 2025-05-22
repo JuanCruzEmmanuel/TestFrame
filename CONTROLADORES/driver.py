@@ -695,6 +695,8 @@ def prosim8(CMD):
                     instru.NIBPVOLUME(volume=value)
                 elif key.lower() in ["envolvente","envelope","e"]:
                     instru.NIBPENVELOPE(shift=value)
+                elif key.lower() in ["dinamica","dynamic","d"]:
+                    instru.NIBPDYNAMIC(shift=value)
             instru.NIBP(at=True)
 
         elif args_dic["run"].lower() in ["gc","co"]: #PNI
