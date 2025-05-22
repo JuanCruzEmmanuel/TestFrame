@@ -696,6 +696,20 @@ def prosim8(CMD):
                 elif key.lower() in ["envolvente","envelope","e"]:
                     instru.NIBPENVELOPE(shift=value)
             instru.NIBP(at=True)
+
+        elif args_dic["run"].lower() in ["gc","co"]: #PNI
+            for key, value in args_dic.items():
+                if key.lower() in ["base","temp"]:
+                    instru.COBASETEMPERATURE(degree=value)
+                elif key.lower() in ["inject","injectado","injec_temp"]:
+                    instru.COINJECTTEMPERATURE(degree=value)
+                elif key.lower() in ["wave","señal"]:
+                    instru.COWAVE(wave=value)
+                elif key.lower() in ["start","inicio"]:
+                    instru.CORUN()
+                elif key.lower() in ["fin","apagar"]:
+                    instru.COOOF()
+
     except:
         return "-110"
 
@@ -756,9 +770,16 @@ if __name__ == "__main__":
     #-DRIVER(cmd = "PS8 --run tri --frec 2")
 
     #DRIVER(cmd = "PS8 --run seno --frec 1")
+    #prueba de PRESION ESTATICA
+    #DRIVER(cmd = "PS8 --run pi --ch 2 --estatica 270")
+    #DRIVER(cmd = "PS8 --run pi --ch 1 --señal arterial")
 
-    DRIVER(cmd = "PS8 --run pi --ch 1 --estatica 270")
+    #RESPIRATORIA
 
+    #DRIVER(cmd = "PS8 --run RESP --frec 40 --amplitud 1.0 --baseline 1000 --lead LA")
+
+    #Arritmias
+    DRIVER(cmd = "PS8 --run supraventricular --arr ATC")
     #print(DRIVER("osc --vscale 2 --vpos 0 --run medicion --pos 1"))
     
     

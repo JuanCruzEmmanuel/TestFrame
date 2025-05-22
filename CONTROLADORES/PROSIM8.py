@@ -1025,7 +1025,42 @@ class PROSIM8:
         """
         self.sendCommand(cmd=f"TEMP={degree}",type="temp")
     #*****************************************************************GASTO CARDIACO***************************************************************************
-    #In-develpment
+    
+    def COBASETEMPERATURE(self,degree):
+
+        self.sendCommand(cmd=f"COBASE={degree}",type="temp")
+    
+    def COINJECTTEMPERATURE(self,degree):
+
+        number = abs(degree)
+        degree_formated = f"{number:02}"
+        self.sendCommand(cmd=f"COINJ={degree_formated}")
+    
+    def COWAVE(self,wave):
+
+        wave_dic ={
+
+            "2.5":"2.5",
+            "5":"5",
+            "10":"10",
+            "falla":"FAULTY",
+            "defectuosa":"FAULTY",
+            "FAULTY":"FAULTY",
+            "lr":"LRSHUNT",
+            "LR":"LRSHUNT",
+            "CAL":"CAL",
+            "cal":"CAL"
+        }
+        wave = wave_dic[wave]
+        self.sendCommand(cmd=f"COWAVE={wave}",type="string")
+
+    def CORUN(self):
+
+        self.sendCommand(cmd=f"CORUN=TRUE")
+    
+    def COOOF(self):
+
+        self.sendCommand(cmd=f"CORUN=FALSE")
 if __name__=="__main__":
     ps8 = PROSIM8(port="COM11", debug = True)
     ps8.connect()
