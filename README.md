@@ -83,7 +83,7 @@ Se dividirá en diferentes tópicos: Interfaz Gráfica, Funciones, Instrumentos,
 - Fuente programable.
 - Carga eléctrica programable.
 - Impulse 7000 (muy pocas funciones).
-- ProSim 8 (pendiente).
+- ProSim 8 .
 - MedSim 300 (pendiente).
 - Impedanciometro (pendiente).
 - Alarmas multipar/PM9000.
@@ -91,6 +91,7 @@ Se dividirá en diferentes tópicos: Interfaz Gráfica, Funciones, Instrumentos,
 - Mediciones multipares/PM9000 (pendiente).
 - Robot SZGH T750 (pendiente).
 - Robot PM9000.
+- Sumulador Guia de Presiones
 
 ## SECCIÓN INTELIGENCIA ARTIFICIAL
 

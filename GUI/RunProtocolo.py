@@ -176,7 +176,7 @@ class run(QDialog):
     @pyqtSlot()
     def finalizarEjecucion(self):
         self.descripcionPaso.setText("Protocolo completado.")
-        print("FIN PROTOCOLO")
+        print("FIN PROTOCOLO") #ACA SE DEBE ENVIAR UNA SEÑAL
 
     @pyqtSlot()
     def protocoloDetenido(self):
