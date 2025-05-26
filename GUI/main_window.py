@@ -7,6 +7,7 @@ from GUI.AsociarConfig import AsociarConfiguracionInstrumento
 from GUI.IngresarNumeroSerie import IngresarNumeroSerie
 from CONTROLADORES.LOGIC_MAIN_WINDOWS import configurar_logica_pagina_principal
 from CONTROLADORES.LOGIC_ADD_CONFIG import configurar_logica_agregar_config
+from CONTROLADORES.LOGIC_ADD_SERIAL_NUMBER import configurar_logica_agregar_serial_number
 from time import sleep
 import sys
 
@@ -27,6 +28,8 @@ class MainWindow(QMainWindow):
 
         self.id_seleccionado = None  #El ID del protocolo que se utilizara
         self.config_seleccionada = None # Se utiliza en LOGIC_ADD_CONFIG
+        self.id_protocolos_nuevo = None # Va a ser util a la hora de cargar el numero de serie
+        self.id_protocolo_nuevo = None # Va a ser util a la hora de cargar el numero de serie
         self.VERSION.setText(version)
         self.stacks.setCurrentWidget(self.main)
         self._vigencia = "Vigente"
@@ -37,6 +40,7 @@ class MainWindow(QMainWindow):
         # Lógica separada
         configurar_logica_pagina_principal(self) #Botones de la main_windows
         configurar_logica_agregar_config(self) #Botones de asociar config
+        configurar_logica_agregar_serial_number(self) #Botones asociados a la configuracion del numero de serie
         #configurar_logica_run_page(self.run_protocolo, self.stacks, self.database)
         self.runProtocolo = run(database=self.database)
 

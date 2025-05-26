@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stacks">
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="main">
        <widget class="QFrame" name="Contenedor">
@@ -708,7 +708,7 @@ p, li { white-space: pre-wrap; }
                 <enum>Qt::DotLine</enum>
                </property>
                <attribute name="horizontalHeaderVisible">
-                <bool>false</bool>
+                <bool>true</bool>
                </attribute>
                <attribute name="horizontalHeaderCascadingSectionResizes">
                 <bool>false</bool>
@@ -922,7 +922,7 @@ p, li { white-space: pre-wrap; }
              <enum>QFrame::Raised</enum>
             </property>
            </widget>
-           <widget class="QPushButton" name="NewSerialNumber">
+           <widget class="QPushButton" name="newSerialNumber">
             <property name="geometry">
              <rect>
               <x>820</x>
@@ -938,7 +938,7 @@ p, li { white-space: pre-wrap; }
              <string>OK</string>
             </property>
            </widget>
-           <widget class="QPushButton" name="Next">
+           <widget class="QPushButton" name="avanzarRunProtocolo">
             <property name="geometry">
              <rect>
               <x>970</x>

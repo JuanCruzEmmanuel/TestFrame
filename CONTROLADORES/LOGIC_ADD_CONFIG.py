@@ -41,11 +41,25 @@ def setConfig(win):
     if win.config_seleccionada != None:
         idconfig = win.config_seleccionada[0]
 
-        win.bbdd.setConfigEnProtocolo(id_config=idconfig,id_protocolo=win.id_seleccionado)
+        win.database.setConfigEnProtocolo(id_config=idconfig,id_protocolo=win.id_seleccionado)
+
+        win.database.bloquePaso(id=win.id_seleccionado) #Crea temporal
+        print("Se ha copiado el Protocolo en un temporal")
+
+        #######ASOCIAR NUMERO DE SERIE#################
+        #Lo tengo que hacer aca, porque es el lugar donde ya se encuentra el nuevo protocolo creado, debo asociarle un Numero de Serie
+        #Debido a esto, muy posiblemente haya un problema cuando se ingrese el numero de serie
+        win.id_protocolos_nuevo = win.database.ID_PROTOCOLO_CREADO[0]
+        win.id_protocolo_nuevo = win.database.ID_PROTOCOLOS_BLOQUE_CREADO[0]
+        win.updateModulosTable() #Actualizo la tabla de modulos
+
     else:
         pass
 def back_to_main(win):
     """
     Se encarga de volver al main_windows del stack
     """
+    win.info_modulo = None #Las reinicio
+    win.info_modulo_ns = None #Las reinicio
+    win.LASTID = None #Las reinicio
     win.stacks.setCurrentWidget(win.main)

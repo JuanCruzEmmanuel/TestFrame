@@ -68,7 +68,7 @@ def ejecutar_fila_seleccionada(win):
         win.tablaProtocolo.item(fila, col).text()
         for col in range(win.tablaProtocolo.columnCount())
     ]
-    no_ignore=False
+    no_ignore=True
     if valores[4].lower() == "si":
         try:
             win.id_seleccionado = valores[0]
@@ -78,20 +78,27 @@ def ejecutar_fila_seleccionada(win):
             #app = AsociarConfiguracionInstrumento(bbdd=win.database, id_protocolos=valores[0])
             if no_ignore:
                 #app.exec_()
-                win.database.bloquePaso(id=valores[0])
-
-                app_serial = IngresarNumeroSerie(
+                """win.database.bloquePaso(id=valores[0]) #Crea temporal
+                print("Se ha copiado el Protocolo en un temporal")
+                #######ASOCIAR NUMERO DE SERIE#################
+                #Lo tengo que hacer aca, porque es el lugar donde ya se encuentra el nuevo protocolo creado, debo asociarle un Numero de Serie
+                #Debido a esto, muy posiblemente haya un problema cuando se ingrese el numero de serie
+                win.id_protocolos_nuevo = win.database.ID_PROTOCOLO_CREADO[0]
+                win.id_protocolo_nuevo = win.database.ID_PROTOCOLOS_BLOQUE_CREADO[0]
+                win.updateModulosTable(win) #Actualizo la tabla de modulos"""
+                """app_serial = IngresarNumeroSerie(
                     bbdd=win.database,
                     id_protocolo_modelo=valores[0],
                     id_protocolos=str(win.database.ID_PROTOCOLO_CREADO[0]),
                     id_protocolo=str(win.database.ID_PROTOCOLOS_BLOQUE_CREADO[0])
                 )
-                app_serial.exec_()
+                app_serial.exec_()"""
 
+                """
                 win.runProtocolo.cargarDatos()
                 win.runProtocolo.mostrar_bloques_protocolo()
                 win.runProtocolo.iniciarEjecucion()
-                win.runProtocolo.show()
+                win.runProtocolo.show()"""
         except Exception as e:
             print(f"Error al ejecutar: {e}")
     else:
