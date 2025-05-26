@@ -1,7 +1,7 @@
 # controllers/page_main_logic.py
 from PyQt5.QtWidgets import QTableWidgetItem
-from GUI.AsociarConfig import AsociarConfiguracionInstrumento
-from GUI.IngresarNumeroSerie import IngresarNumeroSerie
+#from GUI.AsociarConfig import AsociarConfiguracionInstrumento
+#from GUI.IngresarNumeroSerie import IngresarNumeroSerie
 
 def configurar_logica_pagina_principal(win):
     """

@@ -8,6 +8,7 @@ from GUI.IngresarNumeroSerie import IngresarNumeroSerie
 from CONTROLADORES.LOGIC_MAIN_WINDOWS import configurar_logica_pagina_principal
 from CONTROLADORES.LOGIC_ADD_CONFIG import configurar_logica_agregar_config
 from CONTROLADORES.LOGIC_ADD_SERIAL_NUMBER import configurar_logica_agregar_serial_number
+from CONTROLADORES.LOGIC_RUN_PROTOCOLO import configurar_logica_run_protocolo
 from time import sleep
 import sys
 
@@ -37,12 +38,14 @@ class MainWindow(QMainWindow):
 
         self.datos = self.cargar_datos_json()
 
+        self.protocolo_a_ejecutar=None #La creo para que sea mas visible desde el main, aunque el importante esta luego
         # Lógica separada
         configurar_logica_pagina_principal(self) #Botones de la main_windows
         configurar_logica_agregar_config(self) #Botones de asociar config
         configurar_logica_agregar_serial_number(self) #Botones asociados a la configuracion del numero de serie
+        configurar_logica_run_protocolo(self) #Botones asociados a run Protocolo
         #configurar_logica_run_page(self.run_protocolo, self.stacks, self.database)
-        self.runProtocolo = run(database=self.database)
+        #self.runProtocolo = run(database=self.database)
 
     def cargar_datos_json(self):
         # Cargar el archivo JSON

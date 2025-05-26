@@ -56,7 +56,8 @@ def asociarNumeroSerie(win):
         print(win.id_protocolos_nuevo,win.id_protocolo_nuevo,win.LASTID)
         win.database.asociarModuloaProtocolo(id_protocolos = win.id_protocolos_nuevo,id_protocolo=win.id_protocolo_nuevo,LASTID=win.LASTID)
         #self.close()  # Cierra la ventana
-
+        win.cargarDatos()
+        win.stacks.setCurrentWidget(win.run_protocolo)
 def updateNumeroSerie(win):
     """
     Se encarga de actualizar self.info_modulo con el numero de serie para luego subirlo
