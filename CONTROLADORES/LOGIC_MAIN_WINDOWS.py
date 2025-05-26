@@ -71,7 +71,10 @@ def ejecutar_fila_seleccionada(win):
     no_ignore=False
     if valores[4].lower() == "si":
         try:
+            win.id_seleccionado = valores[0]
+            #print(valores[0])
             win.stacks.setCurrentWidget(win.asoconfig)
+            win.updateTablaConfig()
             #app = AsociarConfiguracionInstrumento(bbdd=win.database, id_protocolos=valores[0])
             if no_ignore:
                 #app.exec_()

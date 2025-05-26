@@ -16,8 +16,17 @@ class MainWindow(QMainWindow):
         self.database = database
         uic.loadUi('gui/main_2.ui', self)
 
-        self.id_seleccionado = None  # Lo inicializás acá
+        #No se si me conviene inicializar las cosas(como para ilustrar o simplemente comentarlas)
+        #FUNCIONES QUE SE CARGAN EN configurar_logica_pagina_principal() para los siguientes botones:
 
+        #self.tablaProtocoolo
+        #self.updateBoton(update)
+        #self.apFiltroNombre(filtrar_tabla_por_nombre) ----> self.tipoVigencia || self.tipoItem
+        #self.EjecutarBoton(ejecutar_fila_seleccionada)
+        #self.mostrar_todos_los_datos(self) -----> self.tablaProtocoolo
+
+        self.id_seleccionado = None  #El ID del protocolo que se utilizara
+        self.config_seleccionada = None # Se utiliza en LOGIC_ADD_CONFIG
         self.VERSION.setText(version)
         self.stacks.setCurrentWidget(self.main)
         self._vigencia = "Vigente"
@@ -30,8 +39,7 @@ class MainWindow(QMainWindow):
         configurar_logica_agregar_config(self) #Botones de asociar config
         #configurar_logica_run_page(self.run_protocolo, self.stacks, self.database)
         self.runProtocolo = run(database=self.database)
-        #self.stacks.setCurrentWidget(self.run_protocolo) #StackedWidget
-        #configurar_logica_pagina2(self.run_protocolo,self.stacks)
+
     def cargar_datos_json(self):
         # Cargar el archivo JSON
         try:
