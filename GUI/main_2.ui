@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stacks">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="main">
        <widget class="QFrame" name="Contenedor">
@@ -486,6 +486,32 @@ font: 75 14pt &quot;MS Shell Dlg 2&quot;;</string>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:14pt; font-weight:72; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-weight:400;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+        <widget class="QTextEdit" name="command_box">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>830</y>
+           <width>811</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 255);</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="command_btn">
+         <property name="geometry">
+          <rect>
+           <x>840</x>
+           <y>830</y>
+           <width>75</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>COMMAND</string>
          </property>
         </widget>
        </widget>

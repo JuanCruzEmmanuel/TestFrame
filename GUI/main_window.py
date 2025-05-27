@@ -33,7 +33,8 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.database = database
         uic.loadUi('gui/main_2.ui', self)
-
+        self.HIDE_COMMAND = True
+        self.hide_or_show_commnad_pallet()
         #No se si me conviene inicializar las cosas(como para ilustrar o simplemente comentarlas)
         #FUNCIONES QUE SE CARGAN EN configurar_logica_pagina_principal() para los siguientes botones:
 
@@ -57,7 +58,6 @@ class MainWindow(QMainWindow):
         self.protocolo_a_ejecutar=None #La creo para que sea mas visible desde el main, aunque el importante esta luego
         
         self.worker = None # Creo el placeholder del hilo de run protocolo, que es basicamente lo principal en ejecutar aca
-        
         # Lógica separada
         configurar_logica_pagina_principal(self) #Botones de la main_windows
         configurar_logica_agregar_config(self) #Botones de asociar config
@@ -66,6 +66,17 @@ class MainWindow(QMainWindow):
         #configurar_logica_run_page(self.run_protocolo, self.stacks, self.database)
         #self.runProtocolo = run(database=self.database)
 
+        #SHORTCUTS
+        self.show_command = QShortcut(QKeySequence("Ctrl+Ñ"), self).activated.connect(self.hide_or_show_commnad_pallet)
+    def hide_or_show_commnad_pallet(self):
+        if self.HIDE_COMMAND:
+            self.command_box.hide()
+            self.command_btn.hide()
+            self.HIDE_COMMAND = not self.HIDE_COMMAND
+        else:
+            self.command_box.show()
+            self.command_btn.show()
+            self.HIDE_COMMAND = not self.HIDE_COMMAND
     def cargar_datos_json(self):
         # Cargar el archivo JSON
         try:

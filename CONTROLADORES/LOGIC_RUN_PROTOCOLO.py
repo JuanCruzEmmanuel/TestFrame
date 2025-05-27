@@ -58,7 +58,7 @@ def configurar_logica_run_protocolo(win):
     win.Manual.clicked.connect(lambda: cambiar_manual(win))
 
     #SHORTCUTS (los nombres son meramente ilustrativos)
-    shortcut_manual = QShortcut(QKeySequence("space"), win).activated.connect(lambda: cambiar_manual(win))
+    win.shortcut_manual = QShortcut(QKeySequence("space"), win).activated.connect(lambda: cambiar_manual(win))
 def cargarDatos(win):
     with open("_TEMPS_/protocolo_a_ejecutar.json", "r", encoding="utf-8", errors="ignore") as file:
         N = 0 #He visto que en la PC endurancia existe un error "raro" y creo que esta podria solucionar ese error
