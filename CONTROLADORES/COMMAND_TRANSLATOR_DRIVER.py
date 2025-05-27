@@ -37,6 +37,9 @@ class COMMAND_TRANSLATOR:
                 if "run_protocolo" in cmd:
                     self.win.stacks.setCurrentWidget(self.win.run_protocolo)
                     self.win.command_box.setText(f"Desplazado a run protocolo")
+                elif "serial" in cmd:
+                    self.win.stacks.setCurrentWidget(self.win.asoconfig)
+                    self.win.command_box.setText(f"Desplazado a configuracion")
             else:
                 self.win.command_box.setText(f"No se pudo decodificar el comando: {CMD}")
         except:
