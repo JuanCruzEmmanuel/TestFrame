@@ -297,7 +297,7 @@ class SMVA_DB():
             #self.cursor.fetchall()
         #-----------------------------------COPIAR LOS PASOS--------------------------------------------------------#
         ### ESTO ES LO QUE PIERDE TIEEEEEEEMPO SE DEBE ACTUALIZAR URGENTE ESTA
-        print(id,str(LASTID[0]))
+        #print(id,str(LASTID[0]))
         #self.cursor.execute("{CALL CopiarProtocoloModelo_2 (?,?)}",(id,str(LASTID[0]))) #Recibe el ID del protocolo nuevo, y el id del protocolo modelo
         self.copiar_protocolo_modelo(val1 = int(id),val2 = int(LASTID[0])) #Replica del metodo anterior
         #self.cursor.fetchall()
@@ -453,10 +453,10 @@ class SMVA_DB():
         cant_bloques = len(protocolos_unicos)
         print(f"La cantidad de bloques distintos es de {cant_bloques}")
         for iterador_bloques in range(cant_bloques):
-            print(f"Nos encontramos en el bloque {iterador_bloques}")
+            #print(f"Nos encontramos en el bloque {iterador_bloques}")
             pasos_bloque = [fila for fila in todas_las_tablas if fila[55] == str(iterador_bloques)] #55 = ordenSecuencia
             resta_aux = len(pasos_bloque)-1
-            print(resta_aux)
+            #print(resta_aux)
             #cant_pasos_bloque = len(pasos_bloque)
             #print(pasos_bloque)
             # Obtener Aux_protocolo en Python
@@ -465,7 +465,7 @@ class SMVA_DB():
                 (val2, iterador_bloques)
             )
             aux_protocolo = self.cursor.fetchone()[0] #Obtento el IdProtocolo auxiliar aun no se bien si lo uso en algo.... pero lo vero, tampoco me gusta el nombre que le di
-            print(f"##Se ha obtenido el siguiente idprotocolo {aux_protocolo} de la tabla protocolo##")
+            #print(f"##Se ha obtenido el siguiente idprotocolo {aux_protocolo} de la tabla protocolo##")
             # Insertar en valuemedicion en lotes
             valuemedicion_data = [(p[39], p[40], p[41]) for p in pasos_bloque] #39 = ValorMedido, 40=EstadoMedicion y 41 = Tiempo_V
             self.cursor.executemany(
@@ -477,7 +477,7 @@ class SMVA_DB():
             
             
             
-            print(f"el primer id de valuemedicion es {aux_valuemedicion}")
+            #print(f"el primer id de valuemedicion es {aux_valuemedicion}")
             # Insertar en mediciones en lotes
             mediciones_data = [
                 (p[29], p[30], p[31], p[32], p[33], p[34], 
@@ -495,7 +495,7 @@ class SMVA_DB():
             aux_mediciones = int(self.cursor.fetchone()[0])-resta_aux
             
             
-            print(f"el primt id de mediciones es {aux_mediciones}")
+            #print(f"el primer id de mediciones es {aux_mediciones}")
             
             # Insertar en pasos en lotes
             pasos_data = [
@@ -520,7 +520,7 @@ class SMVA_DB():
         
         self.cursor.execute("SET FOREIGN_KEY_CHECKS=1;")
 
-        print("fin")
+        #print("fin")
 
     ######## Asiciados al numero de serie ###################
     def getModulosFromCodigo(self,id_protocolo,id_protocolos):
