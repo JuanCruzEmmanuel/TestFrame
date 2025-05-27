@@ -64,7 +64,79 @@ QTextEdit {
 }
 QTableWidget {
     background-color: #444444;
-    font: 75 12pt "MS Shell Dlg 2";
     color: #E0E0E0;
+    gridline-color: #666666;
+    font: 75 12pt "MS Shell Dlg 2";
+    selection-background-color: #666666;
+    selection-color: #ffffff;
+    alternate-background-color: #3a3a3a;
+}
+QHeaderView::section {
+    background-color: #2b2b2b;
+    color: #E0E0E0;
+    padding: 4px;
+    border: 1px solid #444444;
+    font-weight: bold;
+}
+QTableWidget::item:selected {
+    background-color: #888888;  /* color de fondo al seleccionar */
+    color: #000000;             /* texto al seleccionar */
+}
+
+/* Scrollbar Vertical */
+QScrollBar:vertical {
+    background: #2b2b2b;
+    width: 12px;
+    margin: 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: #5c5c5c;
+    min-height: 20px;
+    border-radius: 6px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #888888;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    background: none;
+    height: 0px;
+}
+
+QScrollBar::add-page:vertical,
+QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+
+/* Scrollbar Horizontal */
+QScrollBar:horizontal {
+    background: #2b2b2b;
+    height: 12px;
+    margin: 0px;
+}
+
+QScrollBar::handle:horizontal {
+    background: #5c5c5c;
+    min-width: 20px;
+    border-radius: 6px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background: #888888;
+}
+
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal {
+    background: none;
+    width: 0px;
+}
+
+QScrollBar::add-page:horizontal,
+QScrollBar::sub-page:horizontal {
+    background: none;
 }
 """
