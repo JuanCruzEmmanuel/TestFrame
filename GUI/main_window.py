@@ -14,8 +14,8 @@ from GUI.IngresoManualNumerico import IngresoManualNumerico
 from GUI.VentanaManual import Ventana_Manual
 
 #IMPORTO LIBRERIAS EN CASO DE AGREGAR SHORTCUTS Y SECUENCIAS
-from PyQt5.QtGui import QKeySequence
-from PyQt5.QtWidgets import QShortcut
+from PyQt5.QtGui import QKeySequence,QColor, QBrush
+from PyQt5.QtWidgets import QShortcut, QTableWidgetItem
 
 #IMPORTO CONTROLADORES DE INSTRUMENTO
 from CONTROLADORES.DriverInstrumentosSMVA import driverInstrumentos
@@ -84,6 +84,41 @@ class MainWindow(QMainWindow):
         else:
             # Procesar otras teclas normalmente
             super().keyPressEvent(event)
+
+    @pyqtSlot(list)
+    def mostrar_pasos_protocolo(self, lista_pasos_ejecutados):
+        self.TablaPasos.setRowCount(len(lista_pasos_ejecutados))
+
+        for row, values in enumerate(lista_pasos_ejecutados):
+            estado = values["Estado"]
+            color = QColor(135, 226, 64) if estado == "OK" else QColor(226, 88, 64)
+
+            for col, key in enumerate(["OrdenDeSecuencia", "Nombre", "Estado", "ResultadoMinimo", "ResultadoMaximo", "Resultado"]):
+                item = QTableWidgetItem(str(values[key]))  # Crear el item
+                item.setBackground(QBrush(color))  # Aplicar color
+                self.TablaPasos.setItem(row, col, item)  # Insertar en la tabla
+        self.TablaPasos.scrollToBottom()#Creo que esto me mueve hacia abajo el scroll
+
+###########################PONOGO EL INICIAR EJECUCION ACA POR UNA CUESTION DE FACILIDAD###################################
+    def iniciarEjecucion(self):
+        if self.worker is not None and self.worker.isRunning():
+            self.descripcionPaso.setText("Ya se está ejecutando un protocolo.")
+            return
+        self.worker = WorkerThread(self.protocolo_a_ejecutar,database=self.database)
+        self.worker.progreso.connect(self.actualizarLog)
+        self.worker.terminado.connect(self.finalizarEjecucion)
+        self.worker.detenido.connect(self.protocoloDetenido)
+        self.worker.abrirPopup.connect(self.mostrarPopup)  # Conectar nueva señal
+        self.worker.secuenciaPaso.connect(self.actualizarSecuenciaPaso)
+        self.worker.secuenciaBloque.connect(self.actualizarSecuenciaBloque)
+        self.worker.bloqueNombre.connect(self.actualizarNombreBloque)
+        self.worker.pasosUpdate.connect(self.mostrar_pasos_protocolo)
+        self.worker.UpdateTablaBloque.connect(self.cargarDatos) #Conecta la señal a actualizar tabla
+        self.worker.abrirPopupNumerico.connect(self.mostrarPopupNumerico)
+        self.worker.abrirManual.connect(self.cambiar_manual)
+        self.worker.start()
+        self.descripcionPaso.setText("Ejecutando protocolo...")
+
 
 ############################TAL VEZ NO ES LO CORRECTO######################################
 ##########################PERO POR UNA CUESTION DE FACILIDAD###############################

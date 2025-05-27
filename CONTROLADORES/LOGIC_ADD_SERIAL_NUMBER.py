@@ -58,6 +58,7 @@ def asociarNumeroSerie(win):
         #self.close()  # Cierra la ventana
         win.cargarDatos()
         win.stacks.setCurrentWidget(win.run_protocolo)
+        win.iniciarEjecucion()
 def updateNumeroSerie(win):
     """
     Se encarga de actualizar self.info_modulo con el numero de serie para luego subirlo
