@@ -27,6 +27,8 @@ from CONTROLADORES.LOGIC_ADD_CONFIG import configurar_logica_agregar_config
 from CONTROLADORES.LOGIC_ADD_SERIAL_NUMBER import configurar_logica_agregar_serial_number
 from CONTROLADORES.LOGIC_RUN_PROTOCOLO import configurar_logica_run_protocolo
 
+#OTROS IMPORTS
+from CONTROLADORES.COMMAND_TRANSLATOR_DRIVER import COMMAND_TRANSLATOR
 
 class MainWindow(QMainWindow):
     def __init__(self,database = None,version = "0.0.0"):
@@ -68,6 +70,13 @@ class MainWindow(QMainWindow):
 
         #SHORTCUTS
         self.show_command = QShortcut(QKeySequence("Ctrl+Ñ"), self).activated.connect(self.hide_or_show_commnad_pallet)
+        self.main_menu = QShortcut(QKeySequence("Ctrl+M"), self).activated.connect(self.move_to_main)
+        #OTROS
+        self.comand_translator = COMMAND_TRANSLATOR(win=self)
+
+    def move_to_main(self):
+        self.stacks.setCurrentWidget(self.main)
+    
     def hide_or_show_commnad_pallet(self):
         if self.HIDE_COMMAND:
             self.command_box.hide()

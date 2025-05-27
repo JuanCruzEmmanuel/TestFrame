@@ -10,6 +10,7 @@ def configurar_logica_pagina_principal(win):
     win.apFiltroNombre.clicked.connect(lambda: filtrar_tabla_por_nombre(win))
     win.UpdateBoton.clicked.connect(lambda: update(win))
     win.EjecutarBoton.clicked.connect(lambda: ejecutar_fila_seleccionada(win))
+    win.command_btn.clicked.connect(lambda: ejecutar_comando(win))
     mostrar_todos_los_datos(win)
 
 def mostrar_todos_los_datos(win):
@@ -103,3 +104,8 @@ def ejecutar_fila_seleccionada(win):
             print(f"Error al ejecutar: {e}")
     else:
         print("Protocolo no vigente")
+
+def ejecutar_comando(win):
+
+    CMD = win.command_box.toPlainText()
+    win.comand_translator.translate(CMD=CMD)
