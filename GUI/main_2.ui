@@ -22,6 +22,9 @@
       </property>
       <widget class="QWidget" name="main">
        <widget class="QFrame" name="Contenedor">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>0</x>
@@ -31,7 +34,7 @@
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(238, 238, 238);</string>
+         <string notr="true"/>
         </property>
         <property name="frameShape">
          <enum>QFrame::NoFrame</enum>
@@ -64,10 +67,7 @@
            </rect>
           </property>
           <property name="styleSheet">
-           <string notr="true">background-color: rgb(229, 229, 229);
-font: 87 14pt &quot;Arial&quot;;
-color: rgb(0, 0, 20);
-</string>
+           <string notr="true"/>
           </property>
           <property name="frameShape">
            <enum>QFrame::WinPanel</enum>
@@ -142,10 +142,10 @@ color: rgb(0, 0, 20);
          <widget class="QPushButton" name="UpdateBoton">
           <property name="geometry">
            <rect>
-            <x>830</x>
+            <x>799</x>
             <y>680</y>
-            <width>60</width>
-            <height>50</height>
+            <width>91</width>
+            <height>31</height>
            </rect>
           </property>
           <property name="sizePolicy">
@@ -164,13 +164,7 @@ color: rgb(0, 0, 20);
            <cursorShape>PointingHandCursor</cursorShape>
           </property>
           <property name="styleSheet">
-           <string notr="true">
-background-color: rgb(220, 220, 220);
-font: 75 10pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(0, 0, 0);
-
-border : 2px solid black;   
-border-radius : 20px;</string>
+           <string notr="true"/>
           </property>
           <property name="text">
            <string>UPDATE</string>
@@ -211,16 +205,7 @@ border-radius : 20px;</string>
            </rect>
           </property>
           <property name="styleSheet">
-           <string notr="true">QLineEdit {
-background-color: rgb(245, 245, 245);
-	color: rgb(0, 0, 20);
-	
- border: 2px solid gray;
-border-color: rgb(0, 0, 0);
- border-radius: 10px;
-
-}
-</string>
+           <string notr="true"/>
           </property>
           <property name="text">
            <string/>
@@ -239,13 +224,7 @@ border-color: rgb(0, 0, 0);
            <cursorShape>PointingHandCursor</cursorShape>
           </property>
           <property name="styleSheet">
-           <string notr="true">
-background-color: rgb(220, 220, 220);
-font: 75 13pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(0, 0, 0);
-
-border : 2px solid black;   
-border-radius : 10px;</string>
+           <string notr="true"/>
           </property>
           <property name="text">
            <string>Cambiar</string>
@@ -260,9 +239,11 @@ border-radius : 10px;</string>
             <height>21</height>
            </rect>
           </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
           <property name="styleSheet">
-           <string notr="true">background-color: rgb(255, 255, 255);
-font: 75 12pt &quot;MS Shell Dlg 2&quot;;</string>
+           <string notr="true"/>
           </property>
           <item>
            <property name="text">
@@ -289,9 +270,11 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;</string>
             <height>22</height>
            </rect>
           </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
           <property name="styleSheet">
-           <string notr="true">background-color: rgb(255, 255, 255);
-font: 75 11pt &quot;MS Shell Dlg 2&quot;;</string>
+           <string notr="true"/>
           </property>
           <item>
            <property name="text">
@@ -347,13 +330,7 @@ font: 75 11pt &quot;MS Shell Dlg 2&quot;;</string>
            <cursorShape>PointingHandCursor</cursorShape>
           </property>
           <property name="styleSheet">
-           <string notr="true">
-background-color: rgb(220, 220, 220);
-font: 75 13pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(0, 0, 0);
-
-border : 2px solid black;   
-border-radius : 10px;</string>
+           <string notr="true"/>
           </property>
           <property name="text">
            <string>Aplicar Filtro</string>
@@ -368,6 +345,9 @@ border-radius : 10px;</string>
            <width>401</width>
            <height>101</height>
           </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
          </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
@@ -388,13 +368,7 @@ border-radius : 10px;</string>
            <cursorShape>PointingHandCursor</cursorShape>
           </property>
           <property name="styleSheet">
-           <string notr="true">
-background-color: rgb(220, 220, 220);
-font: 75 13pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(0, 0, 0);
-
-border : 2px solid black;   
-border-radius : 10px;</string>
+           <string notr="true"/>
           </property>
           <property name="text">
            <string>Ejecutar</string>
@@ -426,16 +400,7 @@ border-radius : 10px;</string>
            </rect>
           </property>
           <property name="styleSheet">
-           <string notr="true">QLineEdit {
-background-color: rgb(245, 245, 245);
-	color: rgb(0, 0, 20);
-	
- border: 2px solid gray;
-border-color: rgb(0, 0, 0);
- border-radius: 10px;
-
-}
-</string>
+           <string notr="true"/>
           </property>
           <property name="text">
            <string/>
@@ -454,13 +419,7 @@ border-color: rgb(0, 0, 0);
            <cursorShape>PointingHandCursor</cursorShape>
           </property>
           <property name="styleSheet">
-           <string notr="true">
-background-color: rgb(220, 220, 220);
-font: 75 13pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(0, 0, 0);
-
-border : 2px solid black;   
-border-radius : 10px;</string>
+           <string notr="true"/>
           </property>
           <property name="text">
            <string>Aplicar Filtro</string>
@@ -470,22 +429,21 @@ border-radius : 10px;</string>
         <widget class="QTextEdit" name="VERSION">
          <property name="geometry">
           <rect>
-           <x>1093</x>
-           <y>820</y>
+           <x>1090</x>
+           <y>810</y>
            <width>201</width>
-           <height>41</height>
+           <height>51</height>
           </rect>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(255, 255, 255);
-font: 75 14pt &quot;MS Shell Dlg 2&quot;;</string>
+          <string notr="true">font: 20pt &quot;MS Shell Dlg 2&quot;;</string>
          </property>
          <property name="html">
           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:14pt; font-weight:72; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-weight:400;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:20pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
         <widget class="QTextEdit" name="command_box">
@@ -493,22 +451,28 @@ p, li { white-space: pre-wrap; }
           <rect>
            <x>20</x>
            <y>830</y>
-           <width>811</width>
+           <width>781</width>
            <height>31</height>
           </rect>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(255, 255, 255);</string>
+          <string notr="true"/>
          </property>
         </widget>
         <widget class="QPushButton" name="command_btn">
          <property name="geometry">
           <rect>
-           <x>840</x>
+           <x>814</x>
            <y>830</y>
-           <width>75</width>
+           <width>101</width>
            <height>31</height>
           </rect>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
          </property>
          <property name="text">
           <string>COMMAND</string>

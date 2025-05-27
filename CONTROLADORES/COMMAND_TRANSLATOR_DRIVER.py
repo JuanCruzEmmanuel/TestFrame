@@ -13,7 +13,7 @@ Scripts que cumple la funcion de lectura de los comandos en smva3
 ######IMPORTS DRIVERS
 from CONTROLADORES.driver import DRIVER
 from CONTROLADORES.ReleDriver import TorreRele
-
+from CONTROLADORES.styles import LIGHT_STYLE, DARK_STYLE  # Si lo pones en un archivo externo
 class COMMAND_TRANSLATOR:
     def __init__(self,win):
         """
@@ -40,6 +40,12 @@ class COMMAND_TRANSLATOR:
                 elif "serial" in cmd:
                     self.win.stacks.setCurrentWidget(self.win.asoconfig)
                     self.win.command_box.setText(f"Desplazado a configuracion")
+            elif "debug" in CMD.lower():
+                if "theme" in CMD.lower():
+                    if "light" in CMD.lower():
+                        self.win.setStyleSheet(LIGHT_STYLE)
+                    elif "dark" in CMD.lower():
+                        self.win.setStyleSheet(DARK_STYLE)
             else:
                 self.win.command_box.setText(f"No se pudo decodificar el comando: {CMD}")
         except:

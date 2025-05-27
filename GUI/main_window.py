@@ -29,6 +29,7 @@ from CONTROLADORES.LOGIC_RUN_PROTOCOLO import configurar_logica_run_protocolo
 
 #OTROS IMPORTS
 from CONTROLADORES.COMMAND_TRANSLATOR_DRIVER import COMMAND_TRANSLATOR
+from CONTROLADORES.styles import LIGHT_STYLE, DARK_STYLE  # Si lo pones en un archivo externo
 
 class MainWindow(QMainWindow):
     def __init__(self,database = None,version = "0.0.0"):
@@ -71,8 +72,25 @@ class MainWindow(QMainWindow):
         #SHORTCUTS
         self.show_command = QShortcut(QKeySequence("Ctrl+Ñ"), self).activated.connect(self.hide_or_show_commnad_pallet)
         self.main_menu = QShortcut(QKeySequence("Ctrl+M"), self).activated.connect(self.move_to_main)
+
+        # Atajo para alternar tema
+        #self.toggle_theme_shortcut = QShortcut(QKeySequence("Ctrl+T"), self).activated.connect(self.toggle_theme)
+
         #OTROS
         self.comand_translator = COMMAND_TRANSLATOR(win=self)
+
+        # Tema
+        #self.dark_mode = False
+        #self.setStyleSheet(LIGHT_STYLE)
+
+    def toggle_theme(self):
+        if self.dark_mode:
+            self.setStyleSheet(LIGHT_STYLE)
+            self.dark_mode = False
+        else:
+            self.setStyleSheet(DARK_STYLE)
+            self.dark_mode = True
+
 
     def move_to_main(self):
         self.stacks.setCurrentWidget(self.main)
