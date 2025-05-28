@@ -1,31 +1,120 @@
 # styles.py (opcional para mantener limpio el código)
 LIGHT_STYLE = """
 QWidget {
-    background-color: #ffffff;
+    background-color: #fafafa;
     color: #000000;
 }
 QPushButton {
-    background-color: #f0f0f0;
-    border: 1px solid #cccccc;
+    background-color: #e4e5f1;
+    border: 1px solid #484b6a;
+    font: 75 12pt "MS Shell Dlg 2";
+}
+QPushButton:hover {
+    background-color: #d2d3db;
+    border: 1px solid #484b6a; /* Accent al pasar el mouse */
+    color: #fafafa;
     font: 75 12pt "MS Shell Dlg 2";
 }
 QPushButton:pressed {
-    background-color: #e9e9e9;
-    border: 1px solid #444444;
+    background-color: #484b6a;
+    border: 1px solid #fafafa;
     font: 75 12pt "MS Shell Dlg 2";
 }
+
 QComboBox {
-    background-color: rgb(255, 255, 255);
+    background-color: #e4e5f1;
     font: 75 12pt "MS Shell Dlg 2";
+    color: #484b6a;
 }
-QFrame {
-    background-color: rgb(238, 238, 238);
-}
+/* entrada texto */
 QTextEdit {
-    background-color: rgb(238, 238, 238);
+    background-color: #e4e5f1;
     font: 75 12pt "MS Shell Dlg 2";
-    color: rgb(50, 50, 50);
+    color: #484b6a;
 }
+QLineEdit {
+    background-color: #e4e5f1;
+    font: 75 12pt "MS Shell Dlg 2";
+    color: #484b6a;
+}
+/* tablas */
+QTableWidget {
+    background-color: #fafafa;
+    color: #484b6a;
+    gridline-color: #484b6a;
+    font: 75 12pt "MS Shell Dlg 2";
+    selection-background-color: #e4e5f1;
+    selection-color: #e4e5f1;
+    alternate-background-color: #3a3a3a;
+}
+QHeaderView::section {
+    background-color: #e4e5f1;
+    color: #484b6a;
+    padding: 4px;
+    border: 1px solid #fafafa;
+    font-weight: bold;
+}
+QTableWidget::item:selected {
+    background-color: #e4e5f1;  /* color de fondo al seleccionar */
+    color: #000000;             /* texto al seleccionar */
+}
+
+/* Scrollbar Vertical */
+QScrollBar:vertical {
+    background: #d2d3db;
+    width: 12px;
+    margin: 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: #9394a5;
+    min-height: 20px;
+    border-radius: 6px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #484b6a;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    background: none;
+    height: 0px;
+}
+
+QScrollBar::add-page:vertical,
+QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+/* Scrollbar Horizontal */
+QScrollBar:horizontal {
+    background: #d2d3db;
+    height: 12px;
+    margin: 0px;
+}
+
+QScrollBar::handle:horizontal {
+    background: #9394a5;
+    min-width: 20px;
+    border-radius: 6px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background: #484b6a;
+}
+
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal {
+    background: none;
+    width: 0px;
+}
+
+QScrollBar::add-page:horizontal,
+QScrollBar::sub-page:horizontal {
+    background: none;
+}
+
 """
 
 DARK_STYLE = """
@@ -58,6 +147,11 @@ QComboBox {
     color: #E0E0E0;
 }
 QTextEdit {
+    background-color: #444444;
+    font: 75 12pt "MS Shell Dlg 2";
+    color: #E0E0E0;
+}
+QLineEdit {
     background-color: #444444;
     font: 75 12pt "MS Shell Dlg 2";
     color: #E0E0E0;
