@@ -80,8 +80,8 @@ class MainWindow(QMainWindow):
         self.comand_translator = COMMAND_TRANSLATOR(win=self)
 
         # Tema
-        #self.dark_mode = False
-        #self.setStyleSheet(LIGHT_STYLE)
+        self.dark_mode = False
+        self.setStyleSheet(LIGHT_STYLE) #Por defecto modo claro
 
     def toggle_theme(self):
         if self.dark_mode:
