@@ -50,6 +50,8 @@ class COMMAND_TRANSLATOR:
                         self.win.setStyleSheet(PURPLE_MODE)
                     elif "orange" in CMD.lower():
                         self.win.setStyleSheet(ORANGE_BLUE_MODE)
+            elif "dash" in CMD.lower():
+                self.win.stacks.setCurrentWidget(self.win.dashboard)
             else:
                 self.win.command_box.setText(f"No se pudo decodificar el comando: {CMD}")
         except:

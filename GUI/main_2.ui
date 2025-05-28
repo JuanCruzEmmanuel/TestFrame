@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stacks">
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="main">
        <widget class="QFrame" name="Contenedor">
@@ -1125,6 +1125,15 @@ p, li { white-space: pre-wrap; }
             <height>241</height>
            </rect>
           </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <attribute name="horizontalHeaderDefaultSectionSize">
+           <number>140</number>
+          </attribute>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>true</bool>
+          </attribute>
           <column>
            <property name="text">
             <string>Order</string>
@@ -1238,6 +1247,9 @@ p, li { white-space: pre-wrap; }
               <width>811</width>
               <height>321</height>
              </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
             </property>
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
@@ -1519,6 +1531,19 @@ p, li { white-space: pre-wrap; }
          </widget>
         </widget>
        </widget>
+      </widget>
+      <widget class="QWidget" name="dashboard">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QWidget" name="dash_widget" native="true">
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <layout class="QVBoxLayout" name="dash_layout"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
