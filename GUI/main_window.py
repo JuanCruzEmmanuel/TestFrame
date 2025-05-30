@@ -569,6 +569,7 @@ class WorkerThread(QThread):
                     self.database.subir_paso_protocolo_y_protocolo(id_protocolo = self.BLOQUE["ProtocoloID"],resultado_bloque = self.BLOQUE["Resultado"],pasos = self.BLOQUE["Pasos"]) #Se sube el archivo previo
                 self.terminado.emit()
 
+        self._smva_archivo = False #Cuando termine debo cerrar
     def completarConNC(self,i,j):
         """
         Se encarga de completar el protocolo local con NC y OK\n
