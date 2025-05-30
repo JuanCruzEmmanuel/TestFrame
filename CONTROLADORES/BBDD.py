@@ -16,12 +16,17 @@ class SMVA_DB():
         self.ID_PROTOCOLOS_BLOQUE_CREADO = None
         self.saltos_protocolo = {}
         self.SALTOS_CONDICIONALES = {}
-        self.test = True
+        self.test = False
         self.cursor = self.connect()
         self.USUARIO_SMVA = None
     def close(self):
         self.cursor.close()
 
+    def setUser(self,usuario):
+        """
+        Funcion que setea el usuario
+        """
+        self.USUARIO_SMVA=usuario
     def connect(self):
         """
         FUNCION QUE SE ENCARGA DE CONECTAR A LA BD y se puede trabajar directamente con CURSORES
@@ -324,8 +329,11 @@ class SMVA_DB():
 
 
         print("Se inicializa la subida de archivos")
-        print(resultado_bloque)
-        print(pasos)
+        #print(resultado_bloque)
+        #print(pasos)
+        N=0
+        T_INICIO =""
+        T_FIN = ""
         for paso in pasos:
             id_paso = paso["id_paso"] #El id del paso
             estado_paso = paso["Estado"] #Estado de paso
@@ -333,13 +341,17 @@ class SMVA_DB():
             criterio_paso = paso["CriterioPass"]
             id_mediciones = paso["mediciones_idmediciones"]
             timestamp = paso["TimeStamp"]
-            self.cursor.execute(f"""UPDATE {self._DATABASE}.pasos SET Estado = ?, CriterioPass = ?, TimeStamp = ? WHERE idpasos = ?""",(estado_paso,criterio_paso,timestamp,id_paso)) #Actualizo el paso
+            if N==0:
+                T_INICIO=paso["TimeStamp"] #Tiempo de inicio
+            self.cursor.execute(f"""UPDATE {self._DATABASE}.pasos SET CriterioPass = ?, Estado = ?, CriterioPass = ?, TimeStamp = ? WHERE idpasos = ?""",(estado_paso, estado_paso,criterio_paso,timestamp,id_paso)) #Actualizo el paso
             #Actualizar el valor medido
             #Para ello primero debo pedir el id que relaciona mediciones con su valor (totalmente ineficiente)
             self.cursor.execute(f"""SELECT valuemedicion_idvaluemedicion FROM {self._DATABASE}.mediciones WHERE idmediciones={id_mediciones}""")
             id_value_mediciones = self.cursor.fetchall()[0][0] #ID value mediciones
             self.cursor.execute(f"""UPDATE {self._DATABASE}.valuemedicion SET ValorMedido = ?, EstadoMedicion = ?, TimeStamp = ? WHERE idvaluemedicion = ?""",(resultado_paso,estado_paso,timestamp,id_value_mediciones)) #Actualizo el paso
+            N+=1
         #Una vez termine esto, se debe actualizar 
+        T_FIN=paso["TimeStamp"] #Tiempo de fin
         if resultado_bloque=="ABORT":
             _PASADA_ = "INCOMPLETO"
         elif resultado_bloque!="ABORT":
@@ -347,7 +359,7 @@ class SMVA_DB():
         else:
             _PASADA_ = "INCOMPLETO"
         #Tambien se debe guardar info del operador, se debe agregar esa info
-        self.cursor.execute(f"""UPDATE {self._DATABASE}.protocolo SET Resultado = ?, Pasadas = ? WHERE idprotocolo = ?""",(resultado_bloque,_PASADA_,id_protocolo))
+        self.cursor.execute(f"""UPDATE {self._DATABASE}.protocolo SET StartTime = ?, EndTime=  ?, Resultado = ?, Pasadas = ?, Aprobador =? WHERE idprotocolo = ?""",(T_INICIO,T_FIN,resultado_bloque,_PASADA_,self.USUARIO_SMVA,id_protocolo))
         print("Se subio")
 
 
