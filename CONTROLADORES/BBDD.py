@@ -18,7 +18,7 @@ class SMVA_DB():
         self.SALTOS_CONDICIONALES = {}
         self.test = True
         self.cursor = self.connect()
-        
+        self.USUARIO_SMVA = None
     def close(self):
         self.cursor.close()
 

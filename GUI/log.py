@@ -20,6 +20,7 @@ class LogWindow(QMainWindow):
         
     def login(self,debug =False):
         User = self.User.text()  # Se lee el usuario
+        self.datos.USUARIO_SMVA = User
         Pass = self.Pass.text() #Se lee la constraseña
         if Pass[0] =="*":
             if Pass[-1]=="*":
