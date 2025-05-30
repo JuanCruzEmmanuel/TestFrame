@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stacks">
       <property name="currentIndex">
-       <number>3</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="main">
        <widget class="QFrame" name="Contenedor">
@@ -1291,7 +1291,7 @@ p, li { white-space: pre-wrap; }
              <enum>QAbstractItemView::ScrollPerItem</enum>
             </property>
             <property name="showGrid">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="gridStyle">
              <enum>Qt::DashDotDotLine</enum>

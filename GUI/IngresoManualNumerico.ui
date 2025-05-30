@@ -17,7 +17,7 @@
    <item>
     <widget class="QFrame" name="Contenedor">
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(238, 238, 238);</string>
+      <string notr="true"/>
      </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -97,13 +97,7 @@ font: 26pt &quot;Arial&quot;;</string>
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">
-background-color: rgb(220, 220, 220);
-font: 75 13pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(0, 0, 0);
-
-border : 2px solid black;   
-border-radius : 10px;</string>
+       <string notr="true"/>
       </property>
       <property name="text">
        <string>SALTAR</string>
@@ -119,13 +113,7 @@ border-radius : 10px;</string>
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">
-background-color: rgb(220, 220, 220);
-font: 75 13pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(0, 0, 0);
-
-border : 2px solid black;   
-border-radius : 10px;</string>
+       <string notr="true"/>
       </property>
       <property name="text">
        <string>ABORTAR</string>
@@ -173,8 +161,7 @@ border-radius : 10px;</string>
        <bool>false</bool>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(252, 252, 252);
-font: 26pt &quot;Arial&quot;;</string>
+       <string notr="true"/>
       </property>
       <property name="text">
        <string/>
@@ -202,8 +189,7 @@ font: 26pt &quot;Arial&quot;;</string>
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(252, 252, 252);
-font: 26pt &quot;Arial&quot;;</string>
+       <string notr="true"/>
       </property>
       <property name="text">
        <string/>
@@ -219,8 +205,7 @@ font: 26pt &quot;Arial&quot;;</string>
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(252, 252, 252);
-font: 26pt &quot;Arial&quot;;</string>
+       <string notr="true"/>
       </property>
       <property name="text">
        <string/>
@@ -257,7 +242,7 @@ font: 26pt &quot;Arial&quot;;</string>
        <bool>false</bool>
       </property>
       <property name="styleSheet">
-       <string notr="true">font: 75 14pt &quot;MS Shell Dlg 2&quot;;</string>
+       <string notr="true"/>
       </property>
       <property name="text">
        <string>MINIMO</string>
@@ -297,7 +282,7 @@ font: 26pt &quot;Arial&quot;;</string>
        <bool>false</bool>
       </property>
       <property name="styleSheet">
-       <string notr="true">font: 75 14pt &quot;MS Shell Dlg 2&quot;;</string>
+       <string notr="true"/>
       </property>
       <property name="text">
        <string>MAXIMO</string>
@@ -316,13 +301,7 @@ font: 26pt &quot;Arial&quot;;</string>
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">
-background-color: rgb(220, 220, 220);
-font: 75 13pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(0, 0, 0);
-
-border : 2px solid black;   
-border-radius : 10px;</string>
+       <string notr="true"/>
       </property>
       <property name="text">
        <string>ENVIAR</string>
@@ -338,9 +317,7 @@ border-radius : 10px;</string>
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(255, 255, 255);
-font: 87 11pt &quot;Arial&quot;;
-color: rgb(0, 0, 0);</string>
+       <string notr="true"/>
       </property>
      </widget>
     </widget>

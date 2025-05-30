@@ -42,7 +42,7 @@
     <item>
      <widget class="QFrame" name="Contenedor">
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(238, 238, 238);</string>
+       <string notr="true"/>
       </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -60,13 +60,7 @@
         </rect>
        </property>
        <property name="styleSheet">
-        <string notr="true">
-background-color: rgb(220, 220, 220);
-font: 75 13pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(0, 0, 0);
-
-border : 2px solid black;   
-border-radius : 10px;</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>AUTO OK</string>
@@ -82,9 +76,7 @@ border-radius : 10px;</string>
         </rect>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(255, 255, 255);
-font: 87 11pt &quot;Arial&quot;;
-color: rgb(0, 0, 0);</string>
+        <string notr="true"/>
        </property>
       </widget>
       <widget class="QPushButton" name="Enviar">
@@ -97,13 +89,7 @@ color: rgb(0, 0, 0);</string>
         </rect>
        </property>
        <property name="styleSheet">
-        <string notr="true">
-background-color: rgb(220, 220, 220);
-font: 75 13pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(0, 0, 0);
-
-border : 2px solid black;   
-border-radius : 10px;</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>ENVIAR</string>
@@ -119,13 +105,7 @@ border-radius : 10px;</string>
         </rect>
        </property>
        <property name="styleSheet">
-        <string notr="true">
-background-color: rgb(220, 220, 220);
-font: 75 13pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(0, 0, 0);
-
-border : 2px solid black;   
-border-radius : 10px;</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>SALTAR</string>
@@ -141,13 +121,7 @@ border-radius : 10px;</string>
         </rect>
        </property>
        <property name="styleSheet">
-        <string notr="true">
-background-color: rgb(220, 220, 220);
-font: 75 13pt &quot;MS Shell Dlg 2&quot;;
-color: rgb(0, 0, 0);
-
-border : 2px solid black;   
-border-radius : 10px;</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>ABORTAR</string>
@@ -163,9 +137,7 @@ border-radius : 10px;</string>
         </rect>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(255, 255, 255);
-font: 87 11pt &quot;Arial&quot;;
-color: rgb(0, 0, 0);</string>
+        <string notr="true"/>
        </property>
       </widget>
      </widget>
