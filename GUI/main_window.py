@@ -26,6 +26,7 @@ from CONTROLADORES.LOGIC_MAIN_WINDOWS import configurar_logica_pagina_principal
 from CONTROLADORES.LOGIC_ADD_CONFIG import configurar_logica_agregar_config
 from CONTROLADORES.LOGIC_ADD_SERIAL_NUMBER import configurar_logica_agregar_serial_number
 from CONTROLADORES.LOGIC_RUN_PROTOCOLO import configurar_logica_run_protocolo
+from CONTROLADORES.LOGIC_DASHBOARD import configurar_logica_dashboard
 
 #OTROS IMPORTS
 from CONTROLADORES.COMMAND_TRANSLATOR_DRIVER import COMMAND_TRANSLATOR
@@ -66,6 +67,7 @@ class MainWindow(QMainWindow):
         configurar_logica_agregar_config(self) #Botones de asociar config
         configurar_logica_agregar_serial_number(self) #Botones asociados a la configuracion del numero de serie
         configurar_logica_run_protocolo(self) #Botones asociados a run Protocolo
+        configurar_logica_dashboard(self)
         #configurar_logica_run_page(self.run_protocolo, self.stacks, self.database)
         #self.runProtocolo = run(database=self.database)
 
@@ -82,6 +84,7 @@ class MainWindow(QMainWindow):
         # Tema
         self.dark_mode = False
         self.setStyleSheet(LIGHT_STYLE) #Por defecto modo claro
+
 
     def toggle_theme(self):
         if self.dark_mode:
@@ -208,6 +211,13 @@ class WorkerThread(QThread):
         self.J_BLOQUE = "NO_SALTO"
         self.I_MANUAL = None
         self.J_MANUAL = None
+
+        self._smva_archivo = False
+        
+    def setsmvafile(self):
+                
+        # Cargar Archivo
+        self._smva_archivo = True
 
 
     def pausarProtocolo(self):
@@ -473,7 +483,8 @@ class WorkerThread(QThread):
                     pass #No hace nada
                 else:#Debe enviarse la señal de la base de datos
                     aux = self.protocolo[i-1]
-                    self.database.subir_paso_protocolo_y_protocolo(id_protocolo = aux["ProtocoloID"],resultado_bloque = aux["Resultado"],pasos = aux["Pasos"]) #Se sube el archivo previo
+                    if not self._smva_archivo: #En caso de ser el testeo no subir nada
+                        self.database.subir_paso_protocolo_y_protocolo(id_protocolo = aux["ProtocoloID"],resultado_bloque = aux["Resultado"],pasos = aux["Pasos"]) #Se sube el archivo previo
                     ID_BLOQUE_EJECUCION = self.protocolo[i]["ProtocoloID"] #Debo actualizar el bloque ID ejecucion
                     
             self.UpdateTablaBloque.emit()
@@ -483,7 +494,7 @@ class WorkerThread(QThread):
             if not self.running:
                 self.detenido.emit()
                 return
-            self.secuenciaBloque.emit(self.protocolo[i]["ordenSecuencia"])
+            self.secuenciaBloque.emit(str(self.protocolo[i]["ordenSecuencia"]))
             self.bloqueNombre.emit(self.protocolo[i]["Nombre"])
             self.progreso.emit(f"Ejecutando bloque {i + 1} de {len(self.protocolo)}")
             #for paso in self.protocolo[i]["Pasos"]:
@@ -554,7 +565,8 @@ class WorkerThread(QThread):
         while self.wait_until_response: #Si no agrego el loop nunca envia porque sale del protoloco
             if not self.wait_until_response:
                 print("¿Confirmado por chayanne?")
-                self.database.subir_paso_protocolo_y_protocolo(id_protocolo = self.BLOQUE["ProtocoloID"],resultado_bloque = self.BLOQUE["Resultado"],pasos = self.BLOQUE["Pasos"]) #Se sube el archivo previo
+                if not self._smva_archivo: #En caso de ser el testeo no subir nada
+                    self.database.subir_paso_protocolo_y_protocolo(id_protocolo = self.BLOQUE["ProtocoloID"],resultado_bloque = self.BLOQUE["Resultado"],pasos = self.BLOQUE["Pasos"]) #Se sube el archivo previo
                 self.terminado.emit()
 
     def completarConNC(self,i,j):
@@ -580,7 +592,8 @@ class WorkerThread(QThread):
                 sleep(0.1)
                 j+=1#Incremento indice paso
             self.UpdateTablaBloque.emit()
-            self.database.subir_paso_protocolo_y_protocolo(id_protocolo = self.protocolo[i]["ProtocoloID"],resultado_bloque = self.protocolo[i]["Resultado"],pasos = self.protocolo[i]["Pasos"]) #Se sube el archivo previo
+            if not self._smva_archivo: #En caso de ser el testeo no subir nada
+                self.database.subir_paso_protocolo_y_protocolo(id_protocolo = self.protocolo[i]["ProtocoloID"],resultado_bloque = self.protocolo[i]["Resultado"],pasos = self.protocolo[i]["Pasos"]) #Se sube el archivo previo
             i+=1#Incremento indice bloque
         with open("_TEMPS_/protocolo_a_ejecutar.json", "w", encoding="utf-8") as file:
             json.dump(self.protocolo,file,indent=4)
