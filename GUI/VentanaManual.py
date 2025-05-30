@@ -3,9 +3,10 @@ import sys
 import os
 import json
 from PyQt5.QtWidgets import QTableWidgetItem
+from CONTROLADORES.styles import LIGHT_STYLE
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 class Ventana_Manual(QtWidgets.QDialog):
-    def __init__(self,protocolo = None,MODO_FUNCIONAMIENTO = "AUTOMATICO"):
+    def __init__(self,protocolo = None,MODO_FUNCIONAMIENTO = "AUTOMATICO",style="light"):
         super().__init__()
         uic.loadUi("GUI/Manual.ui", self)  # Reemplaza con el nombre real del archivo .ui
         self.protocolo = protocolo
@@ -26,7 +27,8 @@ class Ventana_Manual(QtWidgets.QDialog):
         self.j = None
         self.MANUAL.clicked.connect(self.MODO_MANUAL)
         self.AUTOMATICO.clicked.connect(self.MODO_AUTOMATICO)
-    
+        if style=="light":
+            self.setStyleSheet(LIGHT_STYLE)
     def MODO_MANUAL(self):
         self.MODO="MANUAL"
     def MODO_AUTOMATICO(self):

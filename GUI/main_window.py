@@ -256,12 +256,12 @@ class WorkerThread(QThread):
         item = self.TIPO_ITEM[paso["Tipo_Item"]]()
 
     def ingresoManual(self):
-        print("Indicador_11")
+        #print("Indicador_11")
         FLAG_PAUSA_SUPERIOR = False
         #print("INGRESO A MANUAL")
         # Emitir señal para abrir el popup en el hilo principal
         if not self.PAUSE_SUPERIOR: 
-            print("Indicador_12")
+            #print("Indicador_12")
             if self.PASO["Tipo_Item"]=="IngresoManual":
                 if self.PASO["Tipo_Respuesta"]!="NUMERICO":
                     self.abrirPopup.emit(self.paso_ejecucion)
@@ -270,19 +270,19 @@ class WorkerThread(QThread):
         else: #En caso que si exista la pausa superior
             FLAG_PAUSA_SUPERIOR=True
             while FLAG_PAUSA_SUPERIOR: #Mientra este activo, se va a mantener aca
-                print("Indicador_3")
+                #print("Indicador_3")
                 if not self.PAUSE_SUPERIOR: #Pero no quiero que muestre nada hasta que se salga de la seleccion
-                    print("Indicador_4")
+                    #print("Indicador_4")
                     if self.I_MANUAL == None: #Solo me interesa evaluar si se ha seleccionado algun valor distinto de None
                         print("Se continua al siguiente paso....")
                         if self.PASO["Tipo_Item"]=="IngresoManual":
-                            print("Indicador_14")
+                            #print("Indicador_14")
                             if self.PASO["Tipo_Respuesta"]!="NUMERICO":
-                                print("Indicador_15")
+                                #print("Indicador_15")
                                 self.abrirPopup.emit(self.paso_ejecucion)
                                 FLAG_PAUSA_SUPERIOR =False
                             else:
-                                print("Indicador_13")
+                                #print("Indicador_13")
                                 self.abrirPopupNumerico.emit([self.PASO["Nombre"],self.PASO["ResultadoMinimo"],self.PASO["ResultadoMaximo"]]) #Emito esta señal para ingreso numerico
                                 FLAG_PAUSA_SUPERIOR=False
                     else: #Se ha seleccionado saltar.....
@@ -499,22 +499,22 @@ class WorkerThread(QThread):
             self.progreso.emit(f"Ejecutando bloque {i + 1} de {len(self.protocolo)}")
             #for paso in self.protocolo[i]["Pasos"]:
             while j < len(self.protocolo[i]["Pasos"]):
-                print("Indicador_7")
+                #print("Indicador_7")
                 if self.FLAG_MANUAL_SALTO:#Se ha activado la variable de estado desde manual
-                    print("Indicador_8")
+                    #print("Indicador_8")
                     i = self.I_MANUAL
                     j = self.J_MANUAL
                     self.FLAG_MANUAL_SALTO = False #desactivo la variable para que el protocolo continue de manera normal
 
                 while self.PAUSE_SUPERIOR:
-                    print("Indicador_9")
+                    #print("Indicador_9")
                     if self.I_MANUAL !=None:
                         i = self.I_MANUAL
                         j = self.J_MANUAL
                         sleep(1)
 
                 while self.pausa:
-                    print("Indicador_10")
+                    #print("Indicador_10")
                     if self.PAUSE_SUPERIOR: #En el caso que ya se encuentre en pausa y se pida saltar...... debo asegurarme de ir a donde he solicitado
                         while self.PAUSE_SUPERIOR:
                             if self.I_MANUAL !=None:

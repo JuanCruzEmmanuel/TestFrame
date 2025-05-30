@@ -1,12 +1,13 @@
 from PyQt5.QtWidgets import QMainWindow,QApplication,QDialog
 from PyQt5.QtCore import pyqtSignal
+from CONTROLADORES.styles import LIGHT_STYLE
 import sys
 from PyQt5 import uic
 
 class IngresoManualNumerico(QDialog):
     Mensaje_enviado = pyqtSignal(str) #Señal que se encarga de emitir el resultado correcto
     sgn_saltar = pyqtSignal(bool) #Señal para controla el salto
-    def __init__(self,texto="EMPTY",min=0,max=0):
+    def __init__(self,texto="EMPTY",min=0,max=0,style ="light"):
         super().__init__() #Llamo a todas las funciones y metodos de la clase QDialog
         uic.loadUi(r'GUI\IngresoManualNumerico.ui', self)  # Carga el archivo log.ui
         self.__TEXTO__PANTALLA = texto #Seteo estos atributos de manera "oculta"
@@ -18,7 +19,8 @@ class IngresoManualNumerico(QDialog):
         self.ValMax.setText(str(self.__VAL_MAX))
         self.Enviar.clicked.connect(self.sendMensaje)
         self.BotonSaltar.clicked.connect(self.saltar_manual)
-
+        if style =="light":
+            self.setStyleSheet(LIGHT_STYLE)
     def setMensaje(self,text,min,max):
         """
         Setea los parametros que van a verse en pantalla

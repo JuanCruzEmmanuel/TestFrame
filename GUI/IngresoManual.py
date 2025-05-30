@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow,QApplication
 from PyQt5.QtCore import pyqtSignal
+from CONTROLADORES.styles import LIGHT_STYLE
 import sys
 from PyQt5 import uic
 
@@ -7,7 +8,7 @@ from PyQt5 import uic
 class ingresoManual(QMainWindow):
     Mensaje_enviado = pyqtSignal(str)  # Señal personalizada
     sgn_saltar = pyqtSignal(bool) #Señal para controla el salto
-    def __init__(self, mensaje_protocolo = "NO HAY MENSAJE"):
+    def __init__(self, mensaje_protocolo = "NO HAY MENSAJE",style="light"):
         super().__init__()
         uic.loadUi(r'GUI\IngresoManual.ui', self)  # Carga el archivo log.ui
         self.texto = mensaje_protocolo
@@ -16,6 +17,8 @@ class ingresoManual(QMainWindow):
         self.Enviar.clicked.connect(self.sendMensaje)
         self.resultado = None
         self.Saltar.clicked.connect(self.saltar_manual)
+        if style =="light":
+            self.setStyleSheet(LIGHT_STYLE)
     def setMensaje(self,text):
 
         self.texto = text
