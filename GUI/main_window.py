@@ -15,7 +15,7 @@ from GUI.VentanaManual import Ventana_Manual
 
 #IMPORTO LIBRERIAS EN CASO DE AGREGAR SHORTCUTS Y SECUENCIAS
 from PyQt5.QtGui import QKeySequence,QColor, QBrush
-from PyQt5.QtWidgets import QShortcut, QTableWidgetItem
+from PyQt5.QtWidgets import QShortcut, QTableWidgetItem,QFileDialog
 
 #IMPORTO CONTROLADORES DE INSTRUMENTO
 from CONTROLADORES.DriverInstrumentosSMVA import driverInstrumentos
@@ -85,6 +85,7 @@ class MainWindow(QMainWindow):
         self.dark_mode = False
         self.setStyleSheet(LIGHT_STYLE) #Por defecto modo claro
 
+        self.test_btn.clicked.connect(self.abrir_buscador_archivo)
 
     def toggle_theme(self):
         if self.dark_mode:
@@ -94,7 +95,12 @@ class MainWindow(QMainWindow):
             self.setStyleSheet(DARK_STYLE)
             self.dark_mode = True
 
-
+    def abrir_buscador_archivo(self):
+        archivo, _ = QFileDialog.getOpenFileName(self, "Seleccionar archivo", "", "Todos los archivos (*.SMVA)")
+        if archivo:
+            print("Archivo seleccionado:", archivo)
+            CMD = f"load,smva,{archivo}"
+            self.comand_translator.translate(CMD=CMD)
     def move_to_main(self):
         self.stacks.setCurrentWidget(self.main)
     
@@ -252,7 +258,7 @@ class WorkerThread(QThread):
     def ejecutarPaso(self, paso):
         self.PASO = paso #Configuro el self.PASO
         self.paso_ejecucion = paso["Nombre"]
-        sleep(1)  # Pausa antes de ejecutar cada paso
+        sleep(0.3)  # Pausa antes de ejecutar cada paso
         item = self.TIPO_ITEM[paso["Tipo_Item"]]()
 
     def ingresoManual(self):
@@ -461,7 +467,7 @@ class WorkerThread(QThread):
                 if self.I_MANUAL !=None:
                     i = self.I_MANUAL
                     j = self.J_MANUAL
-                sleep(1)
+                sleep(0.5)
 
             while self.pausa:
                 if self.PAUSE_SUPERIOR: #En el caso que ya se encuentre en pausa y se pida saltar...... debo asegurarme de ir a donde he solicitado
@@ -490,7 +496,7 @@ class WorkerThread(QThread):
             self.UpdateTablaBloque.emit()
             while self.pausa:
                 print("Debo ingresar¡?")
-                sleep(1)
+                sleep(0.5)
             if not self.running:
                 self.detenido.emit()
                 return
@@ -511,7 +517,7 @@ class WorkerThread(QThread):
                     if self.I_MANUAL !=None:
                         i = self.I_MANUAL
                         j = self.J_MANUAL
-                        sleep(1)
+                        sleep(0.5)
 
                 while self.pausa:
                     #print("Indicador_10")
@@ -520,7 +526,7 @@ class WorkerThread(QThread):
                             if self.I_MANUAL !=None:
                                 i = self.I_MANUAL
                                 j = self.J_MANUAL
-                    sleep(1)
+                    sleep(0.5)
                 if self.MODO == "MANUAL": #Nunca hemos salido del modo manual, por lo que nuevamente se debe re ingresar; esto a su vez debe nuevamente preguntar si se ha o no realizado una accion
                     self.abrirManual.emit()
 
@@ -529,7 +535,7 @@ class WorkerThread(QThread):
                     if self.I_MANUAL !=None:
                         i = self.I_MANUAL
                         j = self.J_MANUAL
-                        sleep(1)
+                        sleep(0.5)
 
                 self.I_MANUAL = None
                 self.J_MANUAL = None  
@@ -547,7 +553,7 @@ class WorkerThread(QThread):
                 N = 0
                 while self.pausa:
                     print("INGRESEEE")
-                    sleep(1)
+                    sleep(0.1)
 
                 while not self.running:
                     if N == 0:
@@ -557,7 +563,7 @@ class WorkerThread(QThread):
                 self.secuenciaPaso.emit(self.protocolo[i]["Pasos"][j]["OrdenDeSecuencia"])
                 self.ejecutarPaso(self.protocolo[i]["Pasos"][j])
                 j+=1 #Incremento el indice
-                sleep(0.5)  # Simula el tiempo de ejecución del paso
+                sleep(0.1)  # Simula el tiempo de ejecución del paso
             i+=1 #incremento el indice del bloque
         self.wait_until_response =True #Si no pongo una variable, en el ultimo paso sale del loop sin que yo lo permita
 

@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stacks">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="main">
        <widget class="QFrame" name="Contenedor">
@@ -479,6 +479,19 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="text">
           <string>COMMAND</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="test_btn">
+         <property name="geometry">
+          <rect>
+           <x>1070</x>
+           <y>430</y>
+           <width>111</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>TEST</string>
          </property>
         </widget>
        </widget>

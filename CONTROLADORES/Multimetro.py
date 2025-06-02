@@ -137,8 +137,7 @@ class Fluke8845:
         else:
             fetch = "FETCh3?"
         if self.range != ":AUTO ON":
-            self.range = f" 1E{int(self.range) + 1}" #el rangeo 1 seria 1E2 y asi .....
-
+            self.range = f" 1E{int(self.range) - 2}" #el rangeo 1 seria 1E-1 y asi .....
         scpiCommands = ["*CLS\r\n",
                         f"CONF:VOLT:{self.AC_DC}\r\n",
                         f"VOLT:{self.AC_DC}:NPLC 10\r\n",

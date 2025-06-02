@@ -243,3 +243,5 @@ def convertir_comando(comando):
                 COMANDO +="--run pni --nfrec 120 --dinamica 60/30 --vol 1.0"
     return COMANDO
         
+
+#print(convertir_comando(comando="MFLDCVolt_____Range4"))

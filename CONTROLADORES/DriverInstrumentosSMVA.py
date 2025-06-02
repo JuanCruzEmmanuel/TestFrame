@@ -128,3 +128,8 @@ class driverInstrumentos:
         #VAL = float(VAL)
 
         return VAL
+
+if __name__ =="__main__":
+    print("\n\r")
+    driver = driverInstrumentos()
+    driver.readComando("MFLDCVolt_____Range4")

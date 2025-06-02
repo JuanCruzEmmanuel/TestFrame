@@ -749,6 +749,7 @@ def DRIVER(cmd:str):
     medicion de resistencia con multimetro multimetro --run resistance
     :return: El resultado de la medicion, o un OK en caso que sea de configuracion
     """
+    print(cmd)
     controlador_especifico = { #Simulador de switch case
         "multimetro":multimetro,
         "Multimetro":multimetro,
@@ -807,7 +808,8 @@ if __name__ == "__main__":
     #DRIVER(cmd = "PS8 --run RESP --frec 40 --amplitud 1.0 --baseline 1000 --lead LA")
 
     #Arritmias
-    DRIVER(cmd = "PS8 --run supraventricular --arr ATC")
+    #DRIVER(cmd = "PS8 --run supraventricular --arr ATC")
+    DRIVER(cmd = "mul --run voltage --range 1")
     #print(DRIVER("osc --vscale 2 --vpos 0 --run medicion --pos 1"))
     
     
