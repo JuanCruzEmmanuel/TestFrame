@@ -219,6 +219,7 @@ def psu(CMD:list):
     #INCICALIZO UN SWITCH CASE CON DICCIONARIO DE ACCIONES
     set = {
         "volt":instru.set_voltage,
+        "current": instru.set_current,
         "on":instru.power_on,
         "off":instru.power_off
     }
@@ -629,8 +630,26 @@ def prosim8(CMD):
             for key, value in args_dic.items():
                 if key in ["arr", "arritmia","type","tipo","ARRITMIA","ARRHY","ARRIT"]:
                     instru.ConductionArrythmia(param = value)
-        elif args_dic["run"] =="MARCAPASO":
-            pass
+        elif args_dic["run"].lower() in ["marcapaso","pacer"]: #pacer marcapaso
+            for key, value in args_dic.items():
+                if key in ["width", "ancho"]:
+                    ancho = value
+                    for key, value in args_dic.items():
+                        if key in ["polaridad","polarity"]:
+                            instru.setPacerPolarity(polarity = value)
+                        if key in ["chamber","camara"]:
+                            instru.setPacerChamber(chamber = value)
+                    instru.setPacerChamber(chamber = value) #Seteo el ancho
+                elif key in ["amplitud", "amp"]:
+                    amplitud = value
+                    for key, value in args_dic.items():
+                        if key in ["polaridad","polarity"]:
+                            instru.setPacerPolarity(polarity = value)
+                        if key in ["chamber","camara"]:
+                            instru.setPacerChamber(chamber = value)
+                    instru.setPacerAmplitude(ampl = value) #Seteo la amplitud
+                if key in ["wave"]:
+                    instru.setPacerWidth(width= ancho)
         elif args_dic["run"].lower() =="afib":
             for key, value in args_dic.items():
                 if key.lower() in ["granulacion","gran","granularity"]:
@@ -698,6 +717,12 @@ def prosim8(CMD):
                     instru.NIBPENVELOPE(shift=value)
                 elif key.lower() in ["dinamica","dynamic","d"]:
                     instru.NIBPDYNAMIC(shift=value)
+                elif key.lower() in ["arate","afrec"]: #Frecuencia adulto, no se bien como hacerlo
+                    instru.setHeartRate(rate=value)
+                    instru.NormalRate()
+                elif key.lower() in ["nrate","nfrec"]: #Frecuencia adulto, no se bien como hacerlo
+                    instru.setHeartRate(rate=value)
+                    instru.NeoRate()
             instru.NIBP(at=True)
 
         elif args_dic["run"].lower() in ["gc","co"]: #PNI

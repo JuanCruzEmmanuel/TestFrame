@@ -20,7 +20,8 @@ Special thanks to Joe Sachers and Benoit Frigon
 class PSU:
 
     """
-    PSU is an object for controlling an Array/Protek power supply. This class allows setting the voltage, reading current, and controlling the power state of the PSU.
+    PSU is an object for controlling an Array/Protek power supply. This class allows setting the voltage, reading current, and controlling the power state of the PSU.\n
+    Import notation is that PSU always send three parameters such us power limit, volt limit, current limit and setter volt
 
     :param address: (0-255) Local address for controlling multiple PSUs on the same port.
     :param port: Serial port to connect to the PSU (e.g., "COM1", "/dev/ttyUSB0").
@@ -47,7 +48,7 @@ class PSU:
     FRAME_LENGHT = 26
     OFFSET_CHECKSUM = 25
     OFSET_PAYLOAD = 3
-    GLOBAL_VARIABLES = "PSU_GLOBAL.json"
+    GLOBAL_VARIABLES = "_TEMPS_\PSU_GLOBAL.json"
 
     def __init__(self, address, port, baudrate, error=False):
         """
@@ -71,6 +72,10 @@ class PSU:
         except:
             self._voltage = 0
 
+        try:
+            self.self._max_current = self.datos["CURRENT"]
+        except:
+            self.self._max_current = 0
 
         try:
                 self.on = self.datos["ONOFF"]
@@ -118,6 +123,29 @@ class PSU:
 
         self.set_parameters()
 
+    def set_current(self,current):
+
+        """
+        :param volt: set current in [mA]
+        :return: None
+        """
+        if not os.path.exists(self.GLOBAL_VARIABLES):
+            self.datos["CURRENT"] = current 
+
+
+            with open (self.GLOBAL_VARIABLES,"w") as file:
+                json.dump(self.datos,file,indent =4)
+        else:
+            self.datos["CURRENT"] = current 
+
+            with open (self.GLOBAL_VARIABLES,"w") as file:
+                json.dump(self.datos,file,indent =4)
+
+
+        self._max_current = int(current)
+
+        self.set_parameters()
+         
     def update(self):
         MODEL_DIC ={
             "3644A":18000,
@@ -203,10 +231,13 @@ class PSU:
         self.send(self.SET_CMD, data)
 
     def get_info(self):
-
-        data = self.send(self.INFO_CMD)
+        """
+        Function used to get information about power supply\n\n
+        Saved model parameter in their *pivate* attribute
+        """
+        data = self.send(self.INFO_CMD) #Send INFO_CMD to serial port and recive the data about psu
     
-        self.model = data[9:14].decode()
+        self.model = data[9:14].decode() #Model infomation is between from 10th to 15th position (python less 1 position)
 
     def power_on(self):
         #AA : HEADER  BYTE 1
@@ -218,6 +249,7 @@ class PSU:
         #01 : ON + LOCAL CONTROL BYTE 4
 
         """
+        Function used to power on the PSU. In a first step send 03 4-byte and them send 01 4-byte\n
         AA : HEADER  BYTE 1
         00 : ADDRESS BYTE 2
         82 : POWER SUPPLY CONTROL BYTE 3
