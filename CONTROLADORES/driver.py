@@ -2,12 +2,13 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from CONTROLADORES.Multimetro import Fluke45, Fluke8845
-from CONTROLADORES.psu364x import PSU
+from CONTROLADORES.DCPOWERSUPPLY import PSU
 from CONTROLADORES.IMPULSE7000 import IMPULSE7000
 from CONTROLADORES.ESA620 import ESA620
 from CONTROLADORES.OSCILOSCOPIO import TEKTRONIX
 from CONTROLADORES.PROSIM8 import PROSIM8
 from CONTROLADORES.GUIAPRESION import GUIAPRESION
+from CONTROLADORES.CARGAPROGRAMABLE import Load
 import serial
 import time
 from datetime import datetime
