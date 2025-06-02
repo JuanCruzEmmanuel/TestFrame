@@ -131,5 +131,5 @@ class driverInstrumentos:
 
 if __name__ =="__main__":
     print("\n\r")
-    driver = driverInstrumentos()
-    driver.readComando("MFLDCVolt_____Range4")
+    #driver = driverInstrumentos()
+    #print(driver.readComando("FAEREAD_AMPI"))

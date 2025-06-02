@@ -809,7 +809,7 @@ if __name__ == "__main__":
 
     #Arritmias
     #DRIVER(cmd = "PS8 --run supraventricular --arr ATC")
-    DRIVER(cmd = "mul --run voltage --range 1")
+    #print(DRIVER(cmd = "psu --get volt"))
     #print(DRIVER("osc --vscale 2 --vpos 0 --run medicion --pos 1"))
     
     

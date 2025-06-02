@@ -116,20 +116,25 @@ def convertir_comando(comando):
         COMANDO+="PSU "
         if "FAESETLIMI" in comando: #SETEA EL LIMETE DE CORRIENTE
             value = comando.split("FAESETLIMI")[1]
-            COMANDO+=f"--set current={value} --on true"
-        elif "FAEON": #ENCIENDE LA FUENTE
-            COMANDO+="--on true"
-        elif "FAEOFF": #APAGA LA FUENTE
-            COMANDO+="--off true"
+            COMANDO+=f"--set current={value} --set on"
+        elif "FAEON" in comando: #ENCIENDE LA FUENTE
+            COMANDO+="--set on"
+        elif "FAEOFF" in comando: #APAGA LA FUENTE
+            COMANDO+="--set off"
         elif "FAESETVOLT" in comando:
             value = comando.split("FAESETVOLT")[1]
-            COMANDO+=f"--set volt={value} --on true"
+            COMANDO+=f"--set volt={int(value)/1000} --set on"
         elif "FAEREAD_AMPI" in comando:
             COMANDO+=f"--get current=True"
         elif "FAEREAD_VOLT" in comando:
             COMANDO+=f"--get volt=True"
         elif "FAEREAD_POT" in comando:
             COMANDO+=f"--get power=True"
+        elif "FAESETVAL" in comando:
+            numerico = comando.split(":")[1]
+            volt,maxI,maxV = numerico.split(",")
+            volt = int(volt)/1000
+            COMANDO+=f"--set current={maxI} --set volt={volt} --set off"
     elif "PS8" in comando[0:3]: #Prosim 8
         COMANDO = "PS8 "
         #COMANDOS RELACIONADOS AL ECG

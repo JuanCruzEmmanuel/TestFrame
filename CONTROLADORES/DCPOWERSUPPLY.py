@@ -61,7 +61,6 @@ class PSU:
                 self.datos = json.load(file)
         except:
             self.datos = {}
-        self.datos = {}
         self.address = address
         self.serial = serial.Serial(port=port, baudrate=baudrate)
         self._max_current = 0  # in mA
@@ -73,9 +72,9 @@ class PSU:
             self._voltage = 0
 
         try:
-            self.self._max_current = self.datos["CURRENT"]
+            self._max_current = self.datos["CURRENT"]
         except:
-            self.self._max_current = 0
+            self._max_current = 0
 
         try:
                 self.on = self.datos["ONOFF"]
@@ -163,7 +162,10 @@ class PSU:
         max_current = self._max_power/max_voltage
 
         self._max_voltage = max_voltage
-        self._max_current = int(max_current*10000)
+        try:
+            self._max_current = self.datos["CURRENT"]
+        except:
+            self._max_current = int(max_current*10000)
 
     def send(self, command, parameters=None):
         if self.serial is None or not self.serial.is_open:
@@ -320,14 +322,14 @@ class PSU:
         
         """
 
-        if ON:
+        """if ON:
             data = self.send(self.READ_CMD,ONOFF = "ON")
         else:
-            data = self.send(self.READ_CMD,ONOFF = "OFF")
-
+            data = self.send(self.READ_CMD,ONOFF = "OFF")"""
+        data = self.send(self.READ_CMD)
         self.CURRENT = float(struct.unpack_from('<H', data, 3)[0]) / 1000  # Conversión de la corriente a A
 
-        return self.CURRENT
+        return self.CURRENT/1000 #Devuelve valor en mA
 
     def get_voltage(self,ON = False):
 
@@ -337,15 +339,15 @@ class PSU:
         return: Set in VOLTAGE attribute the meassure value of voltage in VOLTS. Return this value
         
         """
-        if ON:
+        """if ON:
             data = self.send(self.READ_CMD,ONOFF = "ON")
         else:
-            data = self.send(self.READ_CMD,ONOFF = "OFF")
+            data = self.send(self.READ_CMD,ONOFF = "OFF")"""
 
-        data = self.send(self.READ_CMD,ONOFF="ON")
+        data = self.send(self.READ_CMD)
         self.VOLTAGE = float(struct.unpack_from('<L', data, 5)[0]) / 1000 # en voltios
 
-        return self.VOLTAGE
+        return 1000*self.VOLTAGE #Devuelve valor de tension en mV
     
     def get_power(self,ON = False):
 
@@ -355,11 +357,11 @@ class PSU:
         return: Set in POWER attribute the meassure value of POWER in WATTS. Return this value
         
         """
-        if ON:
+        """if ON:
             data = self.send(self.READ_CMD,ONOFF = "ON")
         else:
-            data = self.send(self.READ_CMD,ONOFF = "OFF")
-        data = self.send(self.READ_CMD,ONOFF="ON")
+            data = self.send(self.READ_CMD,ONOFF = "OFF")"""
+        data = self.send(self.READ_CMD)
         self.POWER = float(struct.unpack_from('<H', data, 9)[0]) / 100  # En watts
         return self.POWER       
     
