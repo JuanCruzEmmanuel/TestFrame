@@ -64,37 +64,39 @@ def convertir_comando(comando):
         if "Resist" in comando:
             if "2Wire" in comando:
                 if "Range" in comando:
-                    if "1" in  comando:
+                    numerico = comando.split("Range")[1]
+                    if "1" in  numerico:
                         COMANDO+="--run resistance --range 1"
-                    elif "2" in comando:
+                    elif "2" in numerico:
                         COMANDO+="--run resistance --range 2"
-                    elif "3" in comando:
+                    elif "3" in numerico:
                         COMANDO+="--run resistance --range 3"
-                    elif "4" in comando:
+                    elif "4" in numerico:
                         COMANDO+="--run resistance --range 4"
-                    elif "5" in comando:
+                    elif "5" in numerico:
                         COMANDO+="--run resistance --range 5"
-                    elif "6" in comando:
+                    elif "6" in numerico:
                         COMANDO+="--run resistance --range 6"
-                    elif "7" in comando:
+                    elif "7" in numerico:
                         COMANDO+="--run resistance --range 7"
                     else:
                         pass
             if "4Wire" in comando:
                 if "Range" in comando:
-                    if "1" in  comando:
+                    numerico = comando.split("Range")[1]
+                    if "1" in  numerico:
                         COMANDO+="--run resistance --4H true --range 1"
-                    elif "2" in comando:
+                    elif "2" in numerico:
                         COMANDO+="--run resistance --4H true --range 2"
-                    elif "3" in comando:
+                    elif "3" in numerico:
                         COMANDO+="--run resistance --4H true --range 3"
-                    elif "4" in comando:
+                    elif "4" in numerico:
                         COMANDO+="--run resistance --4H true --range 4"
-                    elif "5" in comando:
+                    elif "5" in numerico:
                         COMANDO+="--run resistance --4H true --range 5"
-                    elif "6" in comando:
+                    elif "6" in numerico:
                         COMANDO+="--run resistance --4H true --range 6"
-                    elif "7" in comando:
+                    elif "7" in numerico:
                         COMANDO+="--run resistance --4H true --range 7"
                     else:
                         pass
