@@ -111,14 +111,16 @@ SISTEMA MEDICIONES/
 │ ├── IMPULSE7000.py                     # Instrumento de impulsos
 │ └── ...                                # Otros drivers e interfaces
 ├── .idea/                                
-├── Documentación y protocolos/          # Archivos SMVA y Excel
+├── MANUALES/                            # Documentacion
 ├── GUI/                                 # Controla las distintas interfaces de usuario
 │ ├── main_window.py                     # Stacked windows: main, configuración, protocolo
 │ ├── IngresoManual.py                   # Ejecuta ingreso manual
 │ ├── IngresoManualNumerico.py           # Ejecuta ingreso numérico
-│ └── VentanaManual.py                  # Controla los saltos manuales
+│ └── VentanaManual.py                   # Controla los saltos manuales
+├── _TEMP_/                              # Archivos temporales
+├── recursos/                            # Archivos, iconos y otros que se van a utilizar en la interfaz de usuario
 ```
 
 ---
 # INSTALACION DE LIBRERIAS
-PARA ISNTALAR LAS LIBRERIAS DE MANUERA AUTOMATICA SIMPLEMENTE REALIZAR pip install requirements.txt
+PARA INSTALAR LAS LIBRERIAS DE MANUERA AUTOMATICA SIMPLEMENTE REALIZAR pip install requirements.txt
