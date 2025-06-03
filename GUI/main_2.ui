@@ -39,7 +39,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="main">
        <property name="sizePolicy">
@@ -538,7 +538,7 @@
            <property name="geometry">
             <rect>
              <x>930</x>
-             <y>760</y>
+             <y>660</y>
              <width>201</width>
              <height>51</height>
             </rect>
@@ -608,7 +608,7 @@ p, li { white-space: pre-wrap; }
            <property name="geometry">
             <rect>
              <x>1130</x>
-             <y>760</y>
+             <y>660</y>
              <width>111</width>
              <height>51</height>
             </rect>
@@ -618,6 +618,9 @@ p, li { white-space: pre-wrap; }
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
            </property>
            <property name="text">
             <string>TEST</string>
@@ -845,7 +848,7 @@ p, li { white-space: pre-wrap; }
                 <enum>Qt::DotLine</enum>
                </property>
                <attribute name="horizontalHeaderVisible">
-                <bool>true</bool>
+                <bool>false</bool>
                </attribute>
                <attribute name="horizontalHeaderCascadingSectionResizes">
                 <bool>false</bool>
