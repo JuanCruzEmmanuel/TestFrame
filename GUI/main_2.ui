@@ -39,7 +39,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="main">
        <property name="sizePolicy">
@@ -551,6 +551,9 @@
            </property>
            <property name="styleSheet">
             <string notr="true">font: 20pt &quot;MS Shell Dlg 2&quot;;</string>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
            </property>
            <property name="html">
             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -1471,7 +1474,7 @@ p, li { white-space: pre-wrap; }
              <bool>true</bool>
             </attribute>
             <attribute name="verticalHeaderVisible">
-             <bool>true</bool>
+             <bool>false</bool>
             </attribute>
             <attribute name="verticalHeaderHighlightSections">
              <bool>true</bool>
