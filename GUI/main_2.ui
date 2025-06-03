@@ -39,7 +39,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="main">
        <property name="sizePolicy">
@@ -1438,10 +1438,10 @@ p, li { white-space: pre-wrap; }
              <enum>QAbstractItemView::ScrollPerItem</enum>
             </property>
             <property name="showGrid">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="gridStyle">
-             <enum>Qt::DashDotDotLine</enum>
+             <enum>Qt::SolidLine</enum>
             </property>
             <property name="sortingEnabled">
              <bool>false</bool>
@@ -1455,9 +1455,6 @@ p, li { white-space: pre-wrap; }
             <property name="rowCount">
              <number>9</number>
             </property>
-            <attribute name="horizontalHeaderVisible">
-             <bool>false</bool>
-            </attribute>
             <attribute name="horizontalHeaderDefaultSectionSize">
              <number>129</number>
             </attribute>
@@ -1474,10 +1471,10 @@ p, li { white-space: pre-wrap; }
              <bool>true</bool>
             </attribute>
             <attribute name="verticalHeaderVisible">
-             <bool>false</bool>
+             <bool>true</bool>
             </attribute>
             <attribute name="verticalHeaderHighlightSections">
-             <bool>false</bool>
+             <bool>true</bool>
             </attribute>
             <row/>
             <row/>

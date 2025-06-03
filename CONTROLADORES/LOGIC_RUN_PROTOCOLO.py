@@ -80,7 +80,7 @@ def mostrar_bloques_protocolo(win):
         win.TablaBloques.setItem(row, 1, QTableWidgetItem(str(values["ProtocoloID"])))
         win.TablaBloques.setItem(row, 2, QTableWidgetItem(values["Nombre"]))
         win.TablaBloques.setItem(row, 3, QTableWidgetItem(values["Resultado"]))
-        win.TablaBloques.setItem(row, 4, QTableWidgetItem(" "))
+        win.TablaBloques.setItem(row, 4, QTableWidgetItem(values["Operador"]))
 
 def getProtocoloEjecutar(win):
     return win.protocolo_a_ejecutar

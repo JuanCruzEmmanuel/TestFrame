@@ -84,7 +84,6 @@ class MainWindow(QMainWindow):
         # Tema
         self.dark_mode = False
         self.setStyleSheet(LIGHT_STYLE) #Por defecto modo claro
-
         self.test_btn.clicked.connect(self.abrir_buscador_archivo)
 
     def toggle_theme(self):
@@ -135,7 +134,7 @@ class MainWindow(QMainWindow):
     @pyqtSlot(list)
     def mostrar_pasos_protocolo(self, lista_pasos_ejecutados):
         self.TablaPasos.setRowCount(len(lista_pasos_ejecutados))
-
+        self.TablaPasos.setHorizontalHeaderLabels(["Orden", "Nombre", "Estado", "Rango Minimo", "Rango Maximo","Resultado"])
         for row, values in enumerate(lista_pasos_ejecutados):
             estado = values["Estado"]
             color = QColor(135, 226, 64) if estado == "OK" else QColor(226, 88, 64)
@@ -461,7 +460,7 @@ class WorkerThread(QThread):
         i = 0 #Indice de bloque
         #for bloque_idx, bloque in enumerate(self.protocolo):
         while i < len(self.protocolo):
-
+            self.protocolo[i]["Operador"]=self.database.USUARIO_SMVA #Cargo al inicio de cada bloque
             if self.FLAG_MANUAL_SALTO:#Se ha activado la variable de estado desde manual
                 i = self.I_MANUAL
                 j = self.J_MANUAL
