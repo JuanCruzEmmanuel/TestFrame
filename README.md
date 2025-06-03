@@ -96,3 +96,27 @@ Se dividirá en diferentes tópicos: Interfaz Gráfica, Funciones, Instrumentos,
 ## SECCIÓN INTELIGENCIA ARTIFICIAL
 
 En proceso de planificación.
+
+
+# ESTRUCTURA DEL PROYECTO
+
+SISTEMA MEDICIONES/
+├── main.py # Punto de entrada principal
+├── requirements.txt # Dependencias del proyecto
+├── README.md # Descripción general (este documento)
+├── CONTROLADORES/ # Módulos de control de hardware y lógica
+│ ├── BBDD.py # Acceso a base de datos
+│ ├── CARGAPROGRAMABLE.py # Control de carga electrónica
+│ ├── DCPOWERSUPPLY.py # Fuente DC
+│ ├── IMPULSE7000.py # Instrumento de impulsos
+│ └── ... # Otros drivers e interfaces
+├── .idea/ # Configuración de PyCharm (opcional en repo)
+├── Documentación y protocolos/ # Archivos SMVA y Excel
+├── GUI/ # Controla las distintas interfaces de usuario
+│ ├── main_window.py # Stacked windows: main, configuración, protocolo
+│ ├── IngresoManual.py # Ejecuta ingreso manual
+│ ├── IngresoManualNumerico.py # Ejecuta ingreso numérico
+│ └── VentanaManual.py # Controla los saltos manuales
+
+# INSTALACION DE LIBRERIAS
+PARA ISNTALAR LAS LIBRERIAS DE MANUERA AUTOMATICA SIMPLEMENTE REALIZAR pip install requirements.txt

@@ -15,7 +15,7 @@ from GUI.VentanaManual import Ventana_Manual
 
 #IMPORTO LIBRERIAS EN CASO DE AGREGAR SHORTCUTS Y SECUENCIAS
 from PyQt5.QtGui import QKeySequence,QColor, QBrush
-from PyQt5.QtWidgets import QShortcut, QTableWidgetItem
+from PyQt5.QtWidgets import QShortcut, QTableWidgetItem,QFileDialog
 
 #IMPORTO CONTROLADORES DE INSTRUMENTO
 from CONTROLADORES.DriverInstrumentosSMVA import driverInstrumentos
@@ -85,6 +85,7 @@ class MainWindow(QMainWindow):
         self.dark_mode = False
         self.setStyleSheet(LIGHT_STYLE) #Por defecto modo claro
 
+        self.test_btn.clicked.connect(self.abrir_buscador_archivo)
 
     def toggle_theme(self):
         if self.dark_mode:
@@ -94,7 +95,12 @@ class MainWindow(QMainWindow):
             self.setStyleSheet(DARK_STYLE)
             self.dark_mode = True
 
-
+    def abrir_buscador_archivo(self):
+        archivo, _ = QFileDialog.getOpenFileName(self, "Seleccionar archivo", "", "Todos los archivos (*.SMVA)")
+        if archivo:
+            print("Archivo seleccionado:", archivo)
+            CMD = f"load,smva,{archivo}"
+            self.comand_translator.translate(CMD=CMD)
     def move_to_main(self):
         self.stacks.setCurrentWidget(self.main)
     
@@ -222,7 +228,6 @@ class WorkerThread(QThread):
 
     def pausarProtocolo(self):
         self.pausa = True
-
     def pausaSuperior(self):
         """
         Pausa un nivel superior el protocolo
@@ -252,7 +257,7 @@ class WorkerThread(QThread):
     def ejecutarPaso(self, paso):
         self.PASO = paso #Configuro el self.PASO
         self.paso_ejecucion = paso["Nombre"]
-        sleep(1)  # Pausa antes de ejecutar cada paso
+        sleep(0.3)  # Pausa antes de ejecutar cada paso
         item = self.TIPO_ITEM[paso["Tipo_Item"]]()
 
     def ingresoManual(self):
@@ -274,7 +279,7 @@ class WorkerThread(QThread):
                 if not self.PAUSE_SUPERIOR: #Pero no quiero que muestre nada hasta que se salga de la seleccion
                     #print("Indicador_4")
                     if self.I_MANUAL == None: #Solo me interesa evaluar si se ha seleccionado algun valor distinto de None
-                        print("Se continua al siguiente paso....")
+                        #print("Se continua al siguiente paso....")
                         if self.PASO["Tipo_Item"]=="IngresoManual":
                             #print("Indicador_14")
                             if self.PASO["Tipo_Respuesta"]!="NUMERICO":
@@ -286,13 +291,13 @@ class WorkerThread(QThread):
                                 self.abrirPopupNumerico.emit([self.PASO["Nombre"],self.PASO["ResultadoMinimo"],self.PASO["ResultadoMaximo"]]) #Emito esta señal para ingreso numerico
                                 FLAG_PAUSA_SUPERIOR=False
                     else: #Se ha seleccionado saltar.....
-                        print("Se ha seleccionado saltar a otro paso....")
+                        #print("Se ha seleccionado saltar a otro paso....")
                         FLAG_PAUSA_SUPERIOR=False
                         self.FLAG_MANUAL_SALTO = True #Activa esta variable de estado para poder avisarle al run que existe un salto obligado
                         
                 else:
-                    print("Reposo")
-                    sleep(1) #Descanso 1 segundo para no consumir recursos innecesariamente.
+                    #print("Reposo")
+                    sleep(1.5) #Descanso 1 segundo para no consumir recursos innecesariamente.
 
                                        
 
@@ -340,8 +345,12 @@ class WorkerThread(QThread):
         self.listaPasos.append(self.PASO)
         self.pasosUpdate.emit(self.listaPasos) #manda la de lista
         self.running = True
-        self.continuarProtocolo()
-        self.continuarSuperior()
+        if self.MODO == "MANUAL": #En caso que sea manual, es decir no hubo un cambio de estado, no debe seguir ejecutando pasos
+            pass
+        else:
+            #En caso que haya alguna bandera de continuar, si.....
+            self.continuarProtocolo()
+            self.continuarSuperior()
         self.wait_until_response = False #Variable que me va a controlar solo el envio de los datos
 
     def programacionInstrumento(self):
@@ -357,7 +366,7 @@ class WorkerThread(QThread):
         t = float(self.PASO["Tiempo_Medicion"]) / 1000  # Para pasarlo a segundos
         sleep(t)
         variable_flag = False #Variable para controlar si entron una variable *mister obvio*
-        print("Ingreso a medición")
+        #print("Ingreso a medición")
         if "<<" in self.PASO["Comandos"]:
             variable_flag = True
             #Tiene que guardar el dato en un xml
@@ -489,8 +498,8 @@ class WorkerThread(QThread):
                     
             self.UpdateTablaBloque.emit()
             while self.pausa:
-                print("Debo ingresar¡?")
-                sleep(1)
+                #print("Debo ingresar¡?")
+                sleep(0.5)
             if not self.running:
                 self.detenido.emit()
                 return
@@ -504,7 +513,7 @@ class WorkerThread(QThread):
                     #print("Indicador_8")
                     i = self.I_MANUAL
                     j = self.J_MANUAL
-                    self.FLAG_MANUAL_SALTO = False #desactivo la variable para que el protocolo continue de manera normal
+                    self.FLAG_MANUAL_SALTO = True #desactivo la variable para que el protocolo continue de manera normal
 
                 while self.PAUSE_SUPERIOR:
                     #print("Indicador_9")
@@ -523,9 +532,8 @@ class WorkerThread(QThread):
                     sleep(1)
                 if self.MODO == "MANUAL": #Nunca hemos salido del modo manual, por lo que nuevamente se debe re ingresar; esto a su vez debe nuevamente preguntar si se ha o no realizado una accion
                     self.abrirManual.emit()
-
                 while self.PAUSE_SUPERIOR:
-                    print("Ingrese debido a que seguimos en modo manual")
+                    #print("Ingrese debido a que seguimos en modo manual")
                     if self.I_MANUAL !=None:
                         i = self.I_MANUAL
                         j = self.J_MANUAL
@@ -546,7 +554,7 @@ class WorkerThread(QThread):
 
                 N = 0
                 while self.pausa:
-                    print("INGRESEEE")
+                    #print("INGRESEEE")
                     sleep(1)
 
                 while not self.running:
@@ -557,7 +565,7 @@ class WorkerThread(QThread):
                 self.secuenciaPaso.emit(self.protocolo[i]["Pasos"][j]["OrdenDeSecuencia"])
                 self.ejecutarPaso(self.protocolo[i]["Pasos"][j])
                 j+=1 #Incremento el indice
-                sleep(0.5)  # Simula el tiempo de ejecución del paso
+                sleep(0.1)  # Simula el tiempo de ejecución del paso
             i+=1 #incremento el indice del bloque
         self.wait_until_response =True #Si no pongo una variable, en el ultimo paso sale del loop sin que yo lo permita
 

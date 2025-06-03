@@ -10,6 +10,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from CONTROLADORES.ReleDriver import TorreRele
 from CONTROLADORES.driver import DRIVER
 from CONTROLADORES.controlVariables import equation
+from CONTROLADORES.OLD_COMMAND import convertir_comando
 
 class driverInstrumentos:
     def __init__(self,BASE_DATO = None):
@@ -80,7 +81,11 @@ class driverInstrumentos:
                             INST = instrumentos[CMD[0:3]](CMD = CMD[4:])
                         else:
                             #print(CMD[3:])
-                            INST = instrumentos[CMD[0:3]](CMD = CMD[3:])
+                            try:
+                                CMD_traducido = convertir_comando(comando=CMD) #Debe ingresar todo el comando...... y este se encarga solo en convertirlo en formato que DRIVER lo lea 
+                                INST = DRIVER(cmd=CMD_traducido) #Esto me deberia devoler el resultado
+                            except:
+                                INST = instrumentos[CMD[0:3]](CMD = CMD[3:])
                         return INST,"NO_SALTO","NO_SALTO"
                     except:
                         return "OK","NO_SALTO","NO_SALTO"
@@ -97,7 +102,11 @@ class driverInstrumentos:
                             INST = instrumentos[CMD[0:3]](CMD = CMD[4:])  
                         else:
                             #print(CMD[3:])
-                            INST = instrumentos[CMD[0:3]](CMD = CMD[3:])
+                            try:
+                                CMD_traducido = convertir_comando(comando=CMD) #Debe ingresar todo el comando...... y este se encarga solo en convertirlo en formato que DRIVER lo lea 
+                                INST = DRIVER(cmd=CMD_traducido) #Esto me deberia devoler el resultado
+                            except:
+                                INST = instrumentos[CMD[0:3]](CMD = CMD[3:])
                         return INST,i,j
                     except:
                         return "OK",i,j
@@ -119,3 +128,8 @@ class driverInstrumentos:
         #VAL = float(VAL)
 
         return VAL
+
+if __name__ =="__main__":
+    print("\n\r")
+    #driver = driverInstrumentos()
+    #print(driver.readComando("FAEREAD_AMPI"))

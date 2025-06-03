@@ -1,4 +1,5 @@
 from openpyxl import load_workbook
+from openpyxl.utils import column_index_from_string, get_column_letter
 import json
 import os
 """
@@ -8,7 +9,7 @@ Convierte el protocolo excel y lo convierte en formato .SMVA
 def excel_to_smva(PATH):
 
     #wb = load_workbook(r"_TEMPS_\test_archivo_smva3.xlsx")
-    wb = load_workbook(PATH)
+    wb = load_workbook(PATH,data_only=True)
     ws = wb.active 
     ultima_fila = ws.max_row
     fila_num = 1
@@ -110,7 +111,13 @@ def excel_to_smva(PATH):
         fila_num += 1
         if all(encontrados.values()):
             break
+    if encontrados["descripcion"]==False:
+        col_letra_actual = coord["Nombre"][0]
+        col_num = column_index_from_string(col_letra_actual)  # 'A' -> 1
+        col_nueva_letra = get_column_letter(col_num + 1)      # 1 + 1 -> 2 -> 'B'
 
+        # Ahora lo usás
+        coord["descripcion"] = [col_nueva_letra, coord["Nombre"][1]]
     #print("\nCoordenadas encontradas:")
     #print(coord)
     bloques = []
@@ -220,7 +227,7 @@ def excel_to_smva(PATH):
     with open(SAVE_PATH,"w") as file:
         json.dump(bloques,file,indent=2,ensure_ascii=True)
         
-#excel_to_smva(PATH=r"C:\Users\juanc\Desktop\SISTEMA MEDICIONES\_TEMPS_\test_archivo_smva3.xlsx")
+#excel_to_smva(PATH=r"C:\Users\Desarrollo-LucasB\Downloads\PCA - Protocolo de calibración de puesto para placa NP209 PLACA FRONTAL DEFI 3850 con limpieza de relés V1-0.xlsx")
 
 
 def load_smva_file(PATH,basedato=None): #La base de dato para controlar los saltos

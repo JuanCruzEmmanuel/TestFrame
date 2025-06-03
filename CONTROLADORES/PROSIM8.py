@@ -217,9 +217,13 @@ class PROSIM8:
 
         self.PACER_AMP = ampl
 
+        cmd = f"TVPAMPL={self.PACER_CHAMBER},{self.PACER_AMP}"
+        self.sendCommand(cmd)
     def setPacerWidth(self,width):
         self.PACER_WIDTH = width
 
+        cmd = f"TVPWID={self.PACER_CHAMBER},{self.PACER_WIDTH}"
+        self.sendCommand(cmd)
     def setHeartRate(self,rate):
         """
         SETEA LA FRECUENCIA DE LATIDOS\n
@@ -250,7 +254,9 @@ class PROSIM8:
         cmd = f"NSRA={self.HEARTRATE}"
         self.sendCommand(cmd)
 
-
+    def NeoRate(self):
+        cmd =f"NSRN={self.HEARTRATE}"
+        self.sendCommand(cmd)
     def truncar_dos_decimales(self,valor):
         return int(valor * 100) / 100
 
@@ -582,13 +588,15 @@ class PROSIM8:
             "DOS":"DOS",
             "AtrioVentricular":"AVS",
             "Atrio-Ventricular":"AVS",
-            "SinCaputra":"NCP",
-            "Sin-Captura":"NPC",
-            "NonCapture":"NPC",
-            "Non-Capture":"NPC",
-            "NPC":"NPC",
+            "SinCaptura":"NCP",
+            "Sin-Captura":"NCP",
+            "NonCapture":"NCP",
+            "Non-Capture":"NCP",
+            "NCP":"NCP",
             "Sin-Funcion":"NFN",
-            "Non-Function":"NFN"
+            "Non-Function":"NFN",
+            "NFN":"NFN",
+            "SinFuncion":"NFN"
         }
 
         try:

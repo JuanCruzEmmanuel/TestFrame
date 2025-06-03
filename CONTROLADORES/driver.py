@@ -219,6 +219,7 @@ def psu(CMD:list):
     #INCICALIZO UN SWITCH CASE CON DICCIONARIO DE ACCIONES
     set = {
         "volt":instru.set_voltage,
+        "current": instru.set_current,
         "on":instru.power_on,
         "off":instru.power_off
     }
@@ -629,8 +630,26 @@ def prosim8(CMD):
             for key, value in args_dic.items():
                 if key in ["arr", "arritmia","type","tipo","ARRITMIA","ARRHY","ARRIT"]:
                     instru.ConductionArrythmia(param = value)
-        elif args_dic["run"] =="MARCAPASO":
-            pass
+        elif args_dic["run"].lower() in ["marcapaso","pacer"]: #pacer marcapaso
+            for key, value in args_dic.items():
+                if key in ["width", "ancho"]:
+                    ancho = value
+                    for key, value in args_dic.items():
+                        if key in ["polaridad","polarity"]:
+                            instru.setPacerPolarity(polarity = value)
+                        if key in ["chamber","camara"]:
+                            instru.setPacerChamber(chamber = value)
+                    instru.setPacerChamber(chamber = value) #Seteo el ancho
+                elif key in ["amplitud", "amp"]:
+                    amplitud = value
+                    for key, value in args_dic.items():
+                        if key in ["polaridad","polarity"]:
+                            instru.setPacerPolarity(polarity = value)
+                        if key in ["chamber","camara"]:
+                            instru.setPacerChamber(chamber = value)
+                    instru.setPacerAmplitude(ampl = value) #Seteo la amplitud
+                if key in ["wave"]:
+                    instru.setPacerWidth(width= ancho)
         elif args_dic["run"].lower() =="afib":
             for key, value in args_dic.items():
                 if key.lower() in ["granulacion","gran","granularity"]:
@@ -698,6 +717,12 @@ def prosim8(CMD):
                     instru.NIBPENVELOPE(shift=value)
                 elif key.lower() in ["dinamica","dynamic","d"]:
                     instru.NIBPDYNAMIC(shift=value)
+                elif key.lower() in ["arate","afrec"]: #Frecuencia adulto, no se bien como hacerlo
+                    instru.setHeartRate(rate=value)
+                    instru.NormalRate()
+                elif key.lower() in ["nrate","nfrec"]: #Frecuencia adulto, no se bien como hacerlo
+                    instru.setHeartRate(rate=value)
+                    instru.NeoRate()
             instru.NIBP(at=True)
 
         elif args_dic["run"].lower() in ["gc","co"]: #PNI
@@ -724,6 +749,7 @@ def DRIVER(cmd:str):
     medicion de resistencia con multimetro multimetro --run resistance
     :return: El resultado de la medicion, o un OK en caso que sea de configuracion
     """
+    print(cmd)
     controlador_especifico = { #Simulador de switch case
         "multimetro":multimetro,
         "Multimetro":multimetro,
@@ -782,7 +808,8 @@ if __name__ == "__main__":
     #DRIVER(cmd = "PS8 --run RESP --frec 40 --amplitud 1.0 --baseline 1000 --lead LA")
 
     #Arritmias
-    DRIVER(cmd = "PS8 --run supraventricular --arr ATC")
+    #DRIVER(cmd = "PS8 --run supraventricular --arr ATC")
+    #print(DRIVER(cmd = "psu --get volt"))
     #print(DRIVER("osc --vscale 2 --vpos 0 --run medicion --pos 1"))
     
     
