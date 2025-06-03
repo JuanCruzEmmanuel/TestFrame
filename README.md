@@ -73,7 +73,7 @@ Se dividirá en diferentes tópicos: Interfaz Gráfica, Funciones, Instrumentos,
 - **Actualizar datos en ejecución:**
   - Copia y actualiza los datos de pasos de protocolo.
   - Subir protocolo cuando se realiza alguna pausa, se aborta o se finaliza (pendiente).
-
+---
 ## INSTRUMENTOS MIGRADOS
 
 - Torre de rele.
@@ -92,14 +92,14 @@ Se dividirá en diferentes tópicos: Interfaz Gráfica, Funciones, Instrumentos,
 - Robot SZGH T750 (pendiente).
 - Robot PM9000.
 - Sumulador Guia de Presiones
-
+---
 ## SECCIÓN INTELIGENCIA ARTIFICIAL
 
 En proceso de planificación.
-
+---
 
 # ESTRUCTURA DEL PROYECTO
-
+```
 SISTEMA MEDICIONES/
 ├── main.py # Punto de entrada principal
 ├── requirements.txt # Dependencias del proyecto
@@ -117,6 +117,8 @@ SISTEMA MEDICIONES/
 │ ├── IngresoManual.py # Ejecuta ingreso manual
 │ ├── IngresoManualNumerico.py # Ejecuta ingreso numérico
 │ └── VentanaManual.py # Controla los saltos manuales
+```
 
+---
 # INSTALACION DE LIBRERIAS
 PARA ISNTALAR LAS LIBRERIAS DE MANUERA AUTOMATICA SIMPLEMENTE REALIZAR pip install requirements.txt
