@@ -1,6 +1,8 @@
 pyserial==3.5
-pyvisa
+pyvisa==1.14.1
 PyQt5==5.15.11
 numpy==2.2.4
 pyodbc==5.2.0
 sympy==1.13.3
+PyQtWebEngine==5.15.7
+openpyxl==3.1.2
