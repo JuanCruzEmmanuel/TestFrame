@@ -566,6 +566,7 @@ class WorkerThread(QThread):
                 j+=1 #Incremento el indice
                 sleep(0.1)  # Simula el tiempo de ejecución del paso
             i+=1 #incremento el indice del bloque
+            self.listaPasos = [] #Reinicia la lista para no entorpecer la vista
         self.wait_until_response =True #Si no pongo una variable, en el ultimo paso sale del loop sin que yo lo permita
 
 
