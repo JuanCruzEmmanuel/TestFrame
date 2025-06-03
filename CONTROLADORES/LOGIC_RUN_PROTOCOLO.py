@@ -100,9 +100,9 @@ def cambiar_manual(win):
     app.exec_()
     #print(app.i,app.j)
     if win.FLAG_MANUAL_SALTO:
-        print("Indicador_1")
+        #print("Indicador_1")
         if app.i == None:
-            print("Indicador_5")
+            #print("Indicador_5")
             if win.NUMERICO_TEXTO=="TEXTO": #En el caso que se haya saltado desde manual texto
                 win.mostrarPopup(mensaje=win.temp_msg)
             else: #En caso que se haya saltado desde manual numerico
@@ -111,15 +111,15 @@ def cambiar_manual(win):
             if app.MODO =="AUTOMATICO":
                 win.cambiar_automatico()
         else:
-            print("Indicador_16")
+            #print("Indicador_16")
             win.worker.setBloquePasoManual(i = app.i, j= app.j)
             win.worker.continuarSuperior()
             if app.MODO =="AUTOMATICO":
                 win.cambiar_automatico()
-        print("Indicador_6")
+        #print("Indicador_6")
         win.FLAG_MANUAL_SALTO=False #Debo desactivar la bandera
     else:
-        print("Indicador_2")
+        #print("Indicador_2")
         win.worker.setBloquePasoManual(i = app.i, j= app.j)
         win.worker.continuarSuperior()
         if app.MODO =="AUTOMATICO":
