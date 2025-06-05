@@ -27,6 +27,13 @@ class SMVA_DB():
         Funcion que setea el usuario
         """
         self.USUARIO_SMVA=usuario
+
+    def get_cursor(self):
+        """
+        Funcion que devuelve el cursor apuntando a la base de datos
+
+        """
+        return self.cursor
     def connect(self):
         """
         FUNCION QUE SE ENCARGA DE CONECTAR A LA BD y se puede trabajar directamente con CURSORES
