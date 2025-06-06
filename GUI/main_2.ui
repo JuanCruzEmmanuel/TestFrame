@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1287</width>
-    <height>857</height>
+    <height>876</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -627,6 +627,28 @@ p, li { white-space: pre-wrap; }
            </property>
            <property name="text">
             <string>TEST</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="TO_DASH">
+           <property name="geometry">
+            <rect>
+             <x>930</x>
+             <y>600</y>
+             <width>111</width>
+             <height>51</height>
+            </rect>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="text">
+            <string>TO DASH</string>
            </property>
           </widget>
          </widget>
@@ -1718,15 +1740,36 @@ p, li { white-space: pre-wrap; }
                     <widget class="QListWidget" name="listWidget_Partes"/>
                    </item>
                    <item>
-                    <widget class="QListWidget" name="listWidget_Tipos"/>
+                    <widget class="QListWidget" name="listWidget_Tipos">
+                     <item>
+                      <property name="text">
+                       <string>PPP</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>PCF</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>PPM</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>PSA</string>
+                      </property>
+                     </item>
+                    </widget>
                    </item>
                    <item>
-                    <widget class="QTableWidget" name="listWidget_Version">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Maximum">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
+                    <widget class="QListWidget" name="listWidget_Version"/>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="DASHBOARD_btn">
+                     <property name="text">
+                      <string>DASHBOARD</string>
                      </property>
                     </widget>
                    </item>
@@ -1779,6 +1822,23 @@ p, li { white-space: pre-wrap; }
                                   <verstretch>0</verstretch>
                                  </sizepolicy>
                                 </property>
+                                <property name="readOnly">
+                                 <bool>true</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="0">
+                               <widget class="QLabel" name="Fecha_label">
+                                <property name="text">
+                                 <string>FECHA:</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="0">
+                               <widget class="QLabel" name="Pasan_label">
+                                <property name="text">
+                                 <string>PASAN:</string>
+                                </property>
                                </widget>
                               </item>
                               <item row="1" column="1">
@@ -1792,19 +1852,15 @@ p, li { white-space: pre-wrap; }
                                 <property name="text">
                                  <string/>
                                 </property>
+                                <property name="readOnly">
+                                 <bool>true</bool>
+                                </property>
                                </widget>
                               </item>
                               <item row="2" column="0">
                                <widget class="QLabel" name="NoPasa_label">
                                 <property name="text">
                                  <string>NO PASAN:</string>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="1" column="0">
-                               <widget class="QLabel" name="Pasan_label">
-                                <property name="text">
-                                 <string>PASAN:</string>
                                 </property>
                                </widget>
                               </item>
@@ -1816,19 +1872,8 @@ p, li { white-space: pre-wrap; }
                                   <verstretch>0</verstretch>
                                  </sizepolicy>
                                 </property>
-                               </widget>
-                              </item>
-                              <item row="0" column="0">
-                               <widget class="QLabel" name="Fecha_label">
-                                <property name="text">
-                                 <string>FECHA:</string>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="3" column="0">
-                               <widget class="QLabel" name="Incompleto_label">
-                                <property name="text">
-                                 <string>INCOMPLETO:</string>
+                                <property name="readOnly">
+                                 <bool>true</bool>
                                 </property>
                                </widget>
                               </item>
@@ -1840,11 +1885,35 @@ p, li { white-space: pre-wrap; }
                                   <verstretch>0</verstretch>
                                  </sizepolicy>
                                 </property>
+                                <property name="readOnly">
+                                 <bool>true</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="3" column="0">
+                               <widget class="QLabel" name="Incompleto_label">
+                                <property name="text">
+                                 <string>INCOMPLETO:</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="4" column="1">
+                               <widget class="QPushButton" name="NEXT_PAGE_btn">
+                                <property name="text">
+                                 <string>SIGUIENTE</string>
+                                </property>
                                </widget>
                               </item>
                              </layout>
                             </item>
                            </layout>
+                          </widget>
+                         </item>
+                         <item row="1" column="0">
+                          <widget class="QPushButton" name="TO_MAIN_btn">
+                           <property name="text">
+                            <string>VOLVER</string>
+                           </property>
                           </widget>
                          </item>
                         </layout>
