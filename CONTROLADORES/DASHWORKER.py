@@ -2,10 +2,11 @@ from PyQt5.QtCore import QThread, pyqtSignal
 from datetime import datetime
 
 class DashboardWorker(QThread):
-    finished = pyqtSignal(list, list, dict, dict)  # tiempo, operadores, resultados
+    finished = pyqtSignal(object, list, list, dict, dict)  # # estado_win, tiempo, operadores, resultados, resultados_hoy
 
-    def __init__(self, cursor, base_de_datos, placa, version,nombre_equipo,tipo):
-        super().__init__()
+    def __init__(self,ESTADO_self, cursor, base_de_datos, placa, version,nombre_equipo,tipo):
+        super().__init__()  # ✅ LLAMADA NECESARIA AL CONSTRUCTOR DE QThread
+        self.win = ESTADO_self
         self.cursor = cursor
         self.db = base_de_datos
         self.placa = placa
@@ -104,4 +105,4 @@ class DashboardWorker(QThread):
                 lista_ejecutados_hoy["INCOMPLETO"] += 1
             else:
                 lista_ejecutados_hoy["PASA"] += 1
-        self.finished.emit(tiempo, operadores, resultado,lista_ejecutados_hoy)
+        self.finished.emit(self.win,tiempo, operadores, resultado,lista_ejecutados_hoy)
