@@ -11,6 +11,7 @@ def configurar_logica_pagina_principal(win):
     win.UpdateBoton.clicked.connect(lambda: update(win))
     win.EjecutarBoton.clicked.connect(lambda: ejecutar_fila_seleccionada(win))
     win.command_btn.clicked.connect(lambda: ejecutar_comando(win))
+    win.TO_DASH.clicked.connect(lambda: to_dashboard(win))
     mostrar_todos_los_datos(win)
 
 def mostrar_todos_los_datos(win):
@@ -109,3 +110,6 @@ def ejecutar_comando(win):
 
     CMD = win.command_box.toPlainText()
     win.comand_translator.translate(CMD=CMD)
+
+def to_dashboard(win):
+    win.stacks.setCurrentWidget(win.dashboard_2)
