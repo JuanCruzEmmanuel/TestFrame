@@ -37,7 +37,7 @@ class MainWindow(QMainWindow):
     def __init__(self,database = None,version = "0.0.0"):
         super().__init__()
         self.database = database
-        uic.loadUi('gui/main_2.ui', self)
+        uic.loadUi('gui/main_responsive.ui', self)
         self.HIDE_COMMAND = True
         self.hide_or_show_commnad_pallet()
         #No se si me conviene inicializar las cosas(como para ilustrar o simplemente comentarlas)
