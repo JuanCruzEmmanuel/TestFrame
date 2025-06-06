@@ -26,7 +26,8 @@ from CONTROLADORES.LOGIC_MAIN_WINDOWS import configurar_logica_pagina_principal
 from CONTROLADORES.LOGIC_ADD_CONFIG import configurar_logica_agregar_config
 from CONTROLADORES.LOGIC_ADD_SERIAL_NUMBER import configurar_logica_agregar_serial_number
 from CONTROLADORES.LOGIC_RUN_PROTOCOLO import configurar_logica_run_protocolo
-from CONTROLADORES.LOGIC_DASHBOARD import configurar_logica_dashboard
+#from CONTROLADORES.LOGIC_DASHBOARD import configurar_logica_dashboard
+from CONTROLADORES.LOGIC_DASHBOARD2 import configurar_logica_dashboard2
 
 #OTROS IMPORTS
 from CONTROLADORES.COMMAND_TRANSLATOR_DRIVER import COMMAND_TRANSLATOR
@@ -67,7 +68,8 @@ class MainWindow(QMainWindow):
         configurar_logica_agregar_config(self) #Botones de asociar config
         configurar_logica_agregar_serial_number(self) #Botones asociados a la configuracion del numero de serie
         configurar_logica_run_protocolo(self) #Botones asociados a run Protocolo
-        configurar_logica_dashboard(self)
+        #configurar_logica_dashboard(self)
+        configurar_logica_dashboard2(self)
         #configurar_logica_run_page(self.run_protocolo, self.stacks, self.database)
         #self.runProtocolo = run(database=self.database)
 
