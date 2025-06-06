@@ -329,11 +329,11 @@ class PSU:
         data = self.send(self.READ_CMD)
         self.CURRENT = float(struct.unpack_from('<H', data, 3)[0]) / 1000  # Conversión de la corriente a A
 
-        return self.CURRENT/1000 #Devuelve valor en mA
+        return self.CURRENT #Devuelve valor en mA
 
     def get_voltage(self,ON = False):
 
-        """
+        """d
         param ON :*bool* TURN ON/OFF PSU
 
         return: Set in VOLTAGE attribute the meassure value of voltage in VOLTS. Return this value

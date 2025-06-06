@@ -47,9 +47,9 @@ class TorreRele:
     Entonces este codigo DEBE poder saber si el comando es de configuracion o de cierre o apertura de los reles, a su vez, esta informacion es muy importante que la guarde todo el tiempo.
     """
     #Bajo mi interpretacion la torre de rele debe ser lo principal al crearse un objeto. Luego esta debe ir pasando como "señal" a los siguientes. Para eso debemos establecer todos los metodos para su control optimo
-    def __init__(self):
+    def __init__(self,port="COM13"):
         self.RELES = Rele() #Creo una instancia de rele
-        self.port = "COM13"
+        self.port = port
         self.serial = None
         self.__CONFLAG = False
         self.__NPLACAS = 8
@@ -57,7 +57,7 @@ class TorreRele:
         """
         Establecer conexion con el puerto. Esto para poder crear el objeto muy temprano en la ejecucion. Pero Sin la necesidad de usarse.
         """
-        self.serial = serial.Serial(port = self.port, baudrate=9600,timeout=1)
+        self.serial = serial.Serial(port = self.port, baudrate=9600,timeout=10)
         self.__CONFLAG = True #creo una bandera de precaucion
         return "OK"
     def setPort(self,port):
