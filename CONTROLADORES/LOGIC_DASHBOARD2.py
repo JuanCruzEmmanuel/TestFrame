@@ -15,7 +15,7 @@ def configurar_logica_dashboard2(win):
     for widget in [win.imagen1, win.imagen2, win.imagen3,win.imagen4]: #Funcion que le agrega layout para muestrear luego los dashes
         layout = QVBoxLayout()
         widget.setLayout(layout)
-        win.cursor = win.database.get_cursor() #Le solicito a la base de datos el cursor ----> puntero que direcciona a la base de datos
+    win.cursor = win.database.get_cursor() #Le solicito a la base de datos el cursor ----> puntero que direcciona a la base de datos
 
     win._dic_equipos = { #Lista de equipos con su respectivo NP
             "DESFIBRILADOR 3850":{
@@ -146,7 +146,7 @@ def cuando_termina_dashboard(win,tiempo,operadores,resultado,resultados_hoy):
     try:
         fig1 = Figure(figsize=(4, 3))
         fig1.patch.set_alpha(0)
-        ax1 = fig1.add_subplot(111)
+        fig1.patch.set_alpha(0)
         ax1.set_facecolor('none')  # Fondo del área del gráfico transparente
         tiempo_array = np.array(win.TIEMPO_DASH)
         q_low, q_high = np.percentile(tiempo_array, [5, 95])  # o [1, 99]
@@ -192,32 +192,34 @@ def cuando_termina_dashboard(win,tiempo,operadores,resultado,resultados_hoy):
     win.mostrar_grafico_en_widget(win.imagen3, fig3)
 
     ###fig4
-    fig4 = Figure(figsize=(4, 3))
-    fig4.patch.set_facecolor('none')  # O 'white'
-    ax4 = fig4.add_subplot(111)
-    ax4.set_facecolor('none')  # Fondo del área del gráfico transparente
-    hoy = datetime.today()
-    hoy_formateado = hoy.strftime("%Y-%m-%d")  # Esto es un string
-    win.PASAN_TEXT.setText(str(resultados_hoy["PASA"]))
-    win.NOPASAN_TEXT.setText(str(resultados_hoy["NO PASA"]))
-    win.INCOMPLETO_TEXT.setText(str(resultados_hoy["INCOMPLETO"]))
-    win.FECHA_TEXT.setText(hoy_formateado)
-    labels = list(resultados_hoy.keys())
-    values = list(resultados_hoy.values())
-    colors = ['green', 'red', 'orange']
+    try: #En caso que no haya nada diario cargado
+        fig4 = Figure(figsize=(4, 3))
+        fig4.patch.set_facecolor('none')  # O 'white'
+        ax4 = fig4.add_subplot(111)
+        ax4.set_facecolor('none')  # Fondo del área del gráfico transparente
+        hoy = datetime.today()
+        hoy_formateado = hoy.strftime("%Y-%m-%d")  # Esto es un string
+        win.PASAN_TEXT.setText(str(resultados_hoy["PASA"]))
+        win.NOPASAN_TEXT.setText(str(resultados_hoy["NO PASA"]))
+        win.INCOMPLETO_TEXT.setText(str(resultados_hoy["INCOMPLETO"]))
+        win.FECHA_TEXT.setText(hoy_formateado)
+        labels = list(resultados_hoy.keys())
+        values = list(resultados_hoy.values())
+        colors = ['green', 'red', 'orange']
 
-    ax4.pie(
-        values,
-        labels=labels,
-        autopct='%1.1f%%',
-        colors=colors,
-        startangle=140
-    )
-    ax4.set_title(f"Resultados de hoy {hoy_formateado}")
-    ax4.axis('equal')  # Para que sea un círculo
-    fig4.tight_layout()
-    win.mostrar_grafico_en_widget(win.imagen4, fig4)
-
+        ax4.pie(
+            values,
+            labels=labels,
+            autopct='%1.1f%%',
+            colors=colors,
+            startangle=140
+        )
+        ax4.set_title(f"Resultados de hoy {hoy_formateado}")
+        ax4.axis('equal')  # Para que sea un círculo
+        fig4.tight_layout()
+        win.mostrar_grafico_en_widget(win.imagen4, fig4)
+    except:
+        pass
 def mostrar_grafico_en_widget(widget, figura: Figure):
     # Eliminar cualquier gráfico anterior
     for i in reversed(range(widget.layout().count())):

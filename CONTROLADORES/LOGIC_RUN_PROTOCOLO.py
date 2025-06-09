@@ -4,7 +4,7 @@ from datetime import datetime
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from PyQt5.QtWidgets import QApplication, QDialog, QTableWidgetItem
+from PyQt5.QtWidgets import QVBoxLayout, QDialog, QTableWidgetItem
 from PyQt5.QtCore import QEventLoop, QThread, pyqtSignal, pyqtSlot,Qt
 from PyQt5.QtGui import QColor, QBrush
 from PyQt5 import uic
@@ -29,7 +29,8 @@ def configurar_logica_run_protocolo(win):
     win.temp_msg = None
     win.lista_valores_temp =None
     win.FLAG_MANUAL_SALTO = False
-
+    win.tiempo_paso = 0 #Variable que controla para graficar tiempo entre paso
+    win.tiempo_total = 0 #Variable que controla para graficar tiempo total
     ###########
     win.NUMERICO_TEXTO = None
 
@@ -53,12 +54,18 @@ def configurar_logica_run_protocolo(win):
     win.mostrarPopupNumerico = lambda lista: mostrarPopupNumerico(win, lista)
     win.procesarResultadoPopup = lambda valor: procesarResultadoPopup(win, valor)    
 
-    
+    win.set_tiempo = lambda tiempo_paso,tiempo_total : set_tiempo(win,tiempo_paso,tiempo_total)
     #FUNCION BOTONES
     win.Manual.clicked.connect(lambda: cambiar_manual(win))
 
     #SHORTCUTS (los nombres son meramente ilustrativos)
     win.shortcut_manual = QShortcut(QKeySequence("space"), win).activated.connect(lambda: cambiar_manual(win))
+    
+    #####CONTROL DE WIGDETS
+    for widget in [win.imagen_progreso1, win.imagen_progreso2]: #Funcion que le agrega layout para muestrear luego los dashes
+        layout = QVBoxLayout()
+        widget.setLayout(layout)
+    
 def cargarDatos(win):
     with open("_TEMPS_/protocolo_a_ejecutar.json", "r", encoding="utf-8", errors="ignore") as file:
         N = 0 #He visto que en la PC endurancia existe un error "raro" y creo que esta podria solucionar ese error
@@ -90,14 +97,16 @@ def resetPasosEnEjecucion(win):
 
 def cambiar_automatico(win):
     win.worker.selectModo(modo="AUTOMATICO")
-
+    win.graph_auto = True
 def cambiar_manual(win):
+    win.graph_auto = False
     win.worker.selectModo(modo="MANUAL")
     win.worker.pausarProtocolo() #Pausa la ejecucion
     win.worker.pausaSuperior()
     app = Ventana_Manual(protocolo=win.protocolo_a_ejecutar,MODO_FUNCIONAMIENTO="MANUAL")
 
     app.exec_()
+    win.update_graph() #En caso manual, que grafique despues
     #print(app.i,app.j)
     if win.FLAG_MANUAL_SALTO:
         #print("Indicador_1")
@@ -184,4 +193,11 @@ def procesarResultadoPopup(win, valor):
     print(f"Resultado recibido desde popup: {valor}")
     #self.loop.quit()
     win.worker.manejarResultado(valor)  # Pasar el resultado al hilo secundario
-
+@pyqtSlot(list,list)
+def set_tiempo(win,tiempo_paso,tiempo_total):
+    win.tiempo_paso =tiempo_paso
+    #print(win.tiempo_paso)
+    win.tiempo_total = tiempo_total
+    #print(win.tiempo_total)
+    if win.graph_auto: #Para que no se lagge
+        win.update_graph()
