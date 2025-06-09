@@ -51,9 +51,9 @@ class ToggleSwitch(QWidget):
         p.setFont(font)
 
         if self._checked:
-            p.drawText(QRectF(5, 4, 20, 20), Qt.AlignCenter, "🌙")
+            p.drawText(QRectF(5, 4, 20, 20), Qt.AlignCenter, "☀️")
         else:
-            p.drawText(QRectF(self.width() - 25, 4, 20, 20), Qt.AlignCenter, "☀️")
+            p.drawText(QRectF(self.width() - 25, 4, 20, 20), Qt.AlignCenter, "🌙")
 
         # Handle
         p.setBrush(QColor("white"))
