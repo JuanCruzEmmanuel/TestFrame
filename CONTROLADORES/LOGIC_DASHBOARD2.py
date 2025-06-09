@@ -151,10 +151,18 @@ def cuando_termina_dashboard(win,tiempo,operadores,resultado,resultados_hoy):
         tiempo_array = np.array(win.TIEMPO_DASH)
         q_low, q_high = np.percentile(tiempo_array, [5, 95])  # o [1, 99]
         tiempo_filtrado = tiempo_array[(tiempo_array >= q_low) & (tiempo_array <= q_high)]
-        ax1.hist(tiempo_filtrado, bins=7, color='skyblue', edgecolor='black')
-        ax1.set_title("Histograma duracion protocolo (h)")
-        ax1.set_xlabel("Duración (horas)")
-        ax1.set_ylabel("Cantidad")
+        if win.dark_mode:
+            ax1.hist(tiempo_filtrado, bins=7, color='skyblue', edgecolor='white')
+            ax1.set_title("Histograma duracion protocolo (h)", color = "white")
+            ax1.set_xlabel("Duración (horas)",color = "white")
+            ax1.set_ylabel("Cantidad",color = "white")
+            ax1.tick_params(axis='x', colors='white')
+            ax1.tick_params(axis='y', colors='white')
+        else:
+            ax1.hist(tiempo_filtrado, bins=7, color='skyblue', edgecolor='black')
+            ax1.set_title("Histograma duracion protocolo (h)")
+            ax1.set_xlabel("Duración (horas)")
+            ax1.set_ylabel("Cantidad")
         ax1.grid(True)
         fig1.tight_layout()
         win.mostrar_grafico_en_widget(win.imagen1, fig1)
@@ -166,11 +174,20 @@ def cuando_termina_dashboard(win,tiempo,operadores,resultado,resultados_hoy):
     fig2.patch.set_alpha(0)
     ax2 = fig2.add_subplot(111)
     ax2.set_facecolor('none')  # Fondo del área del gráfico transparente
-    ax2.bar(operador_count.keys(), operador_count.values(), color='orange', edgecolor='black')
-    ax2.set_title("Cantidad totales por Operador protocolos seleccionado")
-    ax2.set_xlabel("Operador")
-    ax2.set_ylabel("Cantidad")
-    ax2.set_xticklabels(operador_count.keys(), rotation=45, ha='right')
+    if win.dark_mode:
+        ax2.bar(operador_count.keys(), operador_count.values(), color='orange', edgecolor='white')
+        ax2.set_title("Cantidad totales por Operador protocolos seleccionado",color = "white")
+        ax2.set_xlabel("Operador",color = "white")
+        ax2.set_ylabel("Cantidad",color = "white")
+        ax2.set_xticklabels(operador_count.keys(), rotation=45, ha='right')
+        ax2.tick_params(axis='x', colors='white')
+        ax2.tick_params(axis='y', colors='white')
+    else:
+        ax2.bar(operador_count.keys(), operador_count.values(), color='orange', edgecolor='black')
+        ax2.set_title("Cantidad totales por Operador protocolos seleccionado")
+        ax2.set_xlabel("Operador")
+        ax2.set_ylabel("Cantidad")
+        ax2.set_xticklabels(operador_count.keys(), rotation=45, ha='right')
     ax2.grid(axis='y')
     fig2.tight_layout()
     win.mostrar_grafico_en_widget(win.imagen2, fig2)
@@ -183,10 +200,18 @@ def cuando_termina_dashboard(win,tiempo,operadores,resultado,resultados_hoy):
     fig3.patch.set_facecolor('none')  # O 'white'
     ax3 = fig3.add_subplot(111)
     ax3.set_facecolor('none')  # Fondo del área del gráfico transparente
-    ax3.bar(labels, counts, color=['green', 'red', 'orange'])
-    ax3.set_title("Resultados totales de Protocolos seleccionado")
-    ax3.set_xlabel("Resultado")
-    ax3.set_ylabel("Cantidad")
+    if win.dark_mode:
+        ax3.bar(labels, counts, color=['green', 'red', 'orange'])
+        ax3.set_title("Resultados totales de Protocolos seleccionado",color='white')
+        ax3.set_xlabel("Resultado",color='white')
+        ax3.set_ylabel("Cantidad",color='white')
+        ax3.tick_params(axis='x', colors='white')
+        ax3.tick_params(axis='y', colors='white')
+    else:
+        ax3.bar(labels, counts, color=['green', 'red', 'orange'])
+        ax3.set_title("Resultados totales de Protocolos seleccionado")
+        ax3.set_xlabel("Resultado")
+        ax3.set_ylabel("Cantidad")
     ax3.grid(axis='y', linestyle='--', alpha=0.6)
     fig3.tight_layout()
     win.mostrar_grafico_en_widget(win.imagen3, fig3)
@@ -214,8 +239,14 @@ def cuando_termina_dashboard(win,tiempo,operadores,resultado,resultados_hoy):
             colors=colors,
             startangle=140
         )
-        ax4.set_title(f"Resultados de hoy {hoy_formateado}")
-        ax4.axis('equal')  # Para que sea un círculo
+        if win.dark_mode:
+            ax4.set_title(f"Resultados de hoy {hoy_formateado}",color="white")
+            ax4.axis('equal')  # Para que sea un círculo
+            ax4.tick_params(axis='x', colors='white')
+            ax4.tick_params(axis='y', colors='white')
+        else:
+            ax4.set_title(f"Resultados de hoy {hoy_formateado}")
+            ax4.axis('equal')  # Para que sea un círculo  
         fig4.tight_layout()
         win.mostrar_grafico_en_widget(win.imagen4, fig4)
     except:
