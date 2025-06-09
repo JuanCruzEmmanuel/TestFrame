@@ -27,8 +27,8 @@ from CONTROLADORES.LOGIC_MAIN_WINDOWS import configurar_logica_pagina_principal
 from CONTROLADORES.LOGIC_ADD_CONFIG import configurar_logica_agregar_config
 from CONTROLADORES.LOGIC_ADD_SERIAL_NUMBER import configurar_logica_agregar_serial_number
 from CONTROLADORES.LOGIC_RUN_PROTOCOLO import configurar_logica_run_protocolo
-#from CONTROLADORES.LOGIC_DASHBOARD import configurar_logica_dashboard
 from CONTROLADORES.LOGIC_DASHBOARD2 import configurar_logica_dashboard2
+from CONTROLADORES.LIGHT_DARK_MODE_TOGGLE import ToggleSwitch
 
 #OTROS IMPORTS
 from CONTROLADORES.COMMAND_TRANSLATOR_DRIVER import COMMAND_TRANSLATOR
@@ -44,12 +44,6 @@ class MainWindow(QMainWindow):
         #No se si me conviene inicializar las cosas(como para ilustrar o simplemente comentarlas)
         #FUNCIONES QUE SE CARGAN EN configurar_logica_pagina_principal() para los siguientes botones:
 
-        #self.tablaProtocoolo
-        #self.updateBoton(update)
-        #self.apFiltroNombre(filtrar_tabla_por_nombre) ----> self.tipoVigencia || self.tipoItem
-        #self.EjecutarBoton(ejecutar_fila_seleccionada)
-        #self.mostrar_todos_los_datos(self) -----> self.tablaProtocoolo
-
         self.id_seleccionado = None  #El ID del protocolo que se utilizara
         self.config_seleccionada = None # Se utiliza en LOGIC_ADD_CONFIG
         self.id_protocolos_nuevo = None # Va a ser util a la hora de cargar el numero de serie
@@ -58,7 +52,8 @@ class MainWindow(QMainWindow):
         self.stacks.setCurrentWidget(self.main)
         self._vigencia = "Vigente"
         self._tipo = "Mostrar Todo"
-
+        self.toggle = ToggleSwitch(on_toggle=self.toggle_theme, parent=self)
+        self.TOGGLE.addWidget(self.toggle, alignment=Qt.AlignRight)
         self.datos = self.cargar_datos_json()
 
         self.protocolo_a_ejecutar=None #La creo para que sea mas visible desde el main, aunque el importante esta luego
@@ -69,17 +64,12 @@ class MainWindow(QMainWindow):
         configurar_logica_agregar_config(self) #Botones de asociar config
         configurar_logica_agregar_serial_number(self) #Botones asociados a la configuracion del numero de serie
         configurar_logica_run_protocolo(self) #Botones asociados a run Protocolo
-        #configurar_logica_dashboard(self)
         configurar_logica_dashboard2(self)
-        #configurar_logica_run_page(self.run_protocolo, self.stacks, self.database)
-        #self.runProtocolo = run(database=self.database)
+
 
         #SHORTCUTS
         self.show_command = QShortcut(QKeySequence("Ctrl+Ñ"), self).activated.connect(self.hide_or_show_commnad_pallet)
         self.main_menu = QShortcut(QKeySequence("Ctrl+M"), self).activated.connect(self.move_to_main)
-
-        # Atajo para alternar tema
-        #self.toggle_theme_shortcut = QShortcut(QKeySequence("Ctrl+T"), self).activated.connect(self.toggle_theme)
 
         #OTROS
         self.comand_translator = COMMAND_TRANSLATOR(win=self)
@@ -89,14 +79,13 @@ class MainWindow(QMainWindow):
         self.setStyleSheet(LIGHT_STYLE) #Por defecto modo claro
         self.test_btn.clicked.connect(self.abrir_buscador_archivo)
 
-    def toggle_theme(self):
-        if self.dark_mode:
-            self.setStyleSheet(LIGHT_STYLE)
-            self.dark_mode = False
-        else:
+    def toggle_theme(self, dark: bool):
+        if dark:
             self.setStyleSheet(DARK_STYLE)
             self.dark_mode = True
-
+        else:
+            self.setStyleSheet(LIGHT_STYLE)
+            self.dark_mode = False
     def abrir_buscador_archivo(self):
         archivo, _ = QFileDialog.getOpenFileName(self, "Seleccionar archivo", "", "Todos los archivos (*.SMVA)")
         if archivo:
