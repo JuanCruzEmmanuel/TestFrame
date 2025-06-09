@@ -146,7 +146,7 @@ def cuando_termina_dashboard(win,tiempo,operadores,resultado,resultados_hoy):
     try:
         fig1 = Figure(figsize=(4, 3))
         fig1.patch.set_alpha(0)
-        fig1.patch.set_alpha(0)
+        ax1 = fig1.add_subplot(111)
         ax1.set_facecolor('none')  # Fondo del área del gráfico transparente
         tiempo_array = np.array(win.TIEMPO_DASH)
         q_low, q_high = np.percentile(tiempo_array, [5, 95])  # o [1, 99]
