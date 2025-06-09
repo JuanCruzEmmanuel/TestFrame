@@ -4,7 +4,7 @@ import time
 
 class SMVA_DB():
     _DATABASE = "dbfeas_smva_2_0_v1"
-    _DATABASE = "db_feas_2"
+    #_DATABASE = "db_feas_2"
     def __init__(self):
         
         self.user = None
@@ -18,7 +18,7 @@ class SMVA_DB():
         self.saltos_protocolo = {}
         self.SALTOS_CONDICIONALES = {}
         self.test = False
-        self.cursor = self.connect_2()
+        self.cursor = self.connect()
         self.USUARIO_SMVA = None
     def close(self):
         self.cursor.close()
