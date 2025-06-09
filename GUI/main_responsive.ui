@@ -83,7 +83,7 @@
                         <item row="0" column="0">
                          <widget class="QTableWidget" name="tablaProtocolo">
                           <attribute name="horizontalHeaderDefaultSectionSize">
-                           <number>130</number>
+                           <number>40</number>
                           </attribute>
                           <attribute name="horizontalHeaderMinimumSectionSize">
                            <number>100</number>
