@@ -92,7 +92,7 @@ from GUI.log import LogWindow
 from CONTROLADORES.BBDD import SMVA_DB
 
 def main():
-    __VERSION__ = "1.1.0"
+    __VERSION__ = "1.2.0"
     database = SMVA_DB() #Cargo la base de datos
     app = QApplication(sys.argv)
 
