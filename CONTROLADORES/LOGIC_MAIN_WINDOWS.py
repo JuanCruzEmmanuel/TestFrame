@@ -20,7 +20,12 @@ def mostrar_todos_los_datos(win):
     tabla.setRowCount(len(datos))
     tabla.setColumnCount(6)
     tabla.setHorizontalHeaderLabels(["ID", "Nombre", "Ver", "Tipo", "Vigente", "Comentario"])
-
+    tabla.setColumnWidth(1, 350)  # "Nombre"
+    tabla.setColumnWidth(5, 250)  # "Comentario"
+    tabla.setColumnWidth(0, 20)  
+    tabla.setColumnWidth(2, 20)  
+    tabla.setColumnWidth(3, 20) 
+    tabla.setColumnWidth(4, 20)
     for row, (id_, values) in enumerate(datos.items()):
 
         tabla.setItem(row, 0, QTableWidgetItem(id_))  # ID

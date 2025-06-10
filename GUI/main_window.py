@@ -1,18 +1,19 @@
 # ui/main_window.py
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5 import uic
-from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot,Qt
+from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot,Qt,QObject
 import json
 import sys
 import os
 from time import sleep
 from datetime import datetime
+##GRAFICOS
 
-#IMPORTO LOS POPUPS
-from GUI.IngresoManual import ingresoManual
-from GUI.IngresoManualNumerico import IngresoManualNumerico
-from GUI.VentanaManual import Ventana_Manual
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
+#IMPORTO CALCULOS MATEMATICOS
+import numpy as np
 #IMPORTO LIBRERIAS EN CASO DE AGREGAR SHORTCUTS Y SECUENCIAS
 from PyQt5.QtGui import QKeySequence,QColor, QBrush
 from PyQt5.QtWidgets import QShortcut, QTableWidgetItem,QFileDialog
@@ -26,8 +27,8 @@ from CONTROLADORES.LOGIC_MAIN_WINDOWS import configurar_logica_pagina_principal
 from CONTROLADORES.LOGIC_ADD_CONFIG import configurar_logica_agregar_config
 from CONTROLADORES.LOGIC_ADD_SERIAL_NUMBER import configurar_logica_agregar_serial_number
 from CONTROLADORES.LOGIC_RUN_PROTOCOLO import configurar_logica_run_protocolo
-#from CONTROLADORES.LOGIC_DASHBOARD import configurar_logica_dashboard
 from CONTROLADORES.LOGIC_DASHBOARD2 import configurar_logica_dashboard2
+from CONTROLADORES.LIGHT_DARK_MODE_TOGGLE import ToggleSwitch
 
 #OTROS IMPORTS
 from CONTROLADORES.COMMAND_TRANSLATOR_DRIVER import COMMAND_TRANSLATOR
@@ -37,17 +38,11 @@ class MainWindow(QMainWindow):
     def __init__(self,database = None,version = "0.0.0"):
         super().__init__()
         self.database = database
-        uic.loadUi('gui/main_2.ui', self)
+        uic.loadUi('gui/main_responsive.ui', self)
         self.HIDE_COMMAND = True
         self.hide_or_show_commnad_pallet()
         #No se si me conviene inicializar las cosas(como para ilustrar o simplemente comentarlas)
         #FUNCIONES QUE SE CARGAN EN configurar_logica_pagina_principal() para los siguientes botones:
-
-        #self.tablaProtocoolo
-        #self.updateBoton(update)
-        #self.apFiltroNombre(filtrar_tabla_por_nombre) ----> self.tipoVigencia || self.tipoItem
-        #self.EjecutarBoton(ejecutar_fila_seleccionada)
-        #self.mostrar_todos_los_datos(self) -----> self.tablaProtocoolo
 
         self.id_seleccionado = None  #El ID del protocolo que se utilizara
         self.config_seleccionada = None # Se utiliza en LOGIC_ADD_CONFIG
@@ -57,7 +52,8 @@ class MainWindow(QMainWindow):
         self.stacks.setCurrentWidget(self.main)
         self._vigencia = "Vigente"
         self._tipo = "Mostrar Todo"
-
+        self.toggle = ToggleSwitch(on_toggle=self.toggle_theme, parent=self)
+        self.TOGGLE.addWidget(self.toggle, alignment=Qt.AlignRight)
         self.datos = self.cargar_datos_json()
 
         self.protocolo_a_ejecutar=None #La creo para que sea mas visible desde el main, aunque el importante esta luego
@@ -68,34 +64,28 @@ class MainWindow(QMainWindow):
         configurar_logica_agregar_config(self) #Botones de asociar config
         configurar_logica_agregar_serial_number(self) #Botones asociados a la configuracion del numero de serie
         configurar_logica_run_protocolo(self) #Botones asociados a run Protocolo
-        #configurar_logica_dashboard(self)
         configurar_logica_dashboard2(self)
-        #configurar_logica_run_page(self.run_protocolo, self.stacks, self.database)
-        #self.runProtocolo = run(database=self.database)
+
 
         #SHORTCUTS
         self.show_command = QShortcut(QKeySequence("Ctrl+Ñ"), self).activated.connect(self.hide_or_show_commnad_pallet)
         self.main_menu = QShortcut(QKeySequence("Ctrl+M"), self).activated.connect(self.move_to_main)
 
-        # Atajo para alternar tema
-        #self.toggle_theme_shortcut = QShortcut(QKeySequence("Ctrl+T"), self).activated.connect(self.toggle_theme)
-
         #OTROS
         self.comand_translator = COMMAND_TRANSLATOR(win=self)
-
+        self.graph_auto = True
         # Tema
         self.dark_mode = False
         self.setStyleSheet(LIGHT_STYLE) #Por defecto modo claro
         self.test_btn.clicked.connect(self.abrir_buscador_archivo)
 
-    def toggle_theme(self):
-        if self.dark_mode:
-            self.setStyleSheet(LIGHT_STYLE)
-            self.dark_mode = False
-        else:
+    def toggle_theme(self, dark: bool):
+        if dark:
             self.setStyleSheet(DARK_STYLE)
             self.dark_mode = True
-
+        else:
+            self.setStyleSheet(LIGHT_STYLE)
+            self.dark_mode = False
     def abrir_buscador_archivo(self):
         archivo, _ = QFileDialog.getOpenFileName(self, "Seleccionar archivo", "", "Todos los archivos (*.SMVA)")
         if archivo:
@@ -147,6 +137,28 @@ class MainWindow(QMainWindow):
                 self.TablaPasos.setItem(row, col, item)  # Insertar en la tabla
         self.TablaPasos.scrollToBottom()#Creo que esto me mueve hacia abajo el scroll
 
+    def update_graph(self):
+        # Lanzamos el hilo sin bloquear la GUI
+        self.graficador_thread = GraficadorThread(self.tiempo_paso, self.tiempo_total)
+        self.graficador_thread.graficos_listos.connect(self.mostrar_graficos)
+        self.graficador_thread.start()
+
+    def mostrar_graficos(self, fig1, fig2):
+        # Ya estás en el hilo principal acá, así que podés actualizar los widgets
+        self.mostrar_grafico_en_widget(self.imagen_progreso1, fig1)
+        self.mostrar_grafico_en_widget(self.imagen_progreso2, fig2)
+            
+
+    def mostrar_grafico_en_widget(self, widget, figura: Figure):
+        """
+        Actualiza los graficos en el widget seleccionado
+        """
+        for i in reversed(range(widget.layout().count())):
+            widget.layout().itemAt(i).widget().setParent(None)
+
+        canvas = FigureCanvas(figura)
+        widget.layout().addWidget(canvas)
+        canvas.draw()
 ###########################PONOGO EL INICIAR EJECUCION ACA POR UNA CUESTION DE FACILIDAD###################################
     def iniciarEjecucion(self):
         if self.worker is not None and self.worker.isRunning():
@@ -164,6 +176,7 @@ class MainWindow(QMainWindow):
         self.worker.UpdateTablaBloque.connect(self.cargarDatos) #Conecta la señal a actualizar tabla
         self.worker.abrirPopupNumerico.connect(self.mostrarPopupNumerico)
         self.worker.abrirManual.connect(self.cambiar_manual)
+        self.worker.tiempos_signal.connect(self.set_tiempo)
         self.worker.start()
         self.descripcionPaso.setText("Ejecutando protocolo...")
 
@@ -185,6 +198,7 @@ class WorkerThread(QThread):
     pasosUpdate = pyqtSignal(list) #Señal con la lista de pasos actualizada (lista de lista)
     abrirPopupNumerico = pyqtSignal(list) #Señal para control windows numerica
     abrirManual = pyqtSignal() #Abre la ventana de avanzar manual o saltar paso
+    tiempos_signal = pyqtSignal(list,list) #Emite tiempo paso, tiempo  total
     def __init__(self, protocolo,N_PROTOCOLO_ID = 0,database = None):
         super().__init__()
         self.database = database # SE AGREGA UN AUX DE LA BASE DE DATOS POR LAS DUDAS
@@ -221,6 +235,12 @@ class WorkerThread(QThread):
 
         self._smva_archivo = False
         
+        #CONTROLES DE TIEMPO
+        
+        self.tiempo_incial = 0
+        self.tiempo_previo = 0 #controla la medicion anterior
+        self.tiempo_paso= [] #Guarda la variable que mide el tiempo entre pasos
+        self.tiempo_total = [] #Guarda las variables que mide con respecto al incial
     def setsmvafile(self):
                 
         # Cargar Archivo
@@ -334,7 +354,8 @@ class WorkerThread(QThread):
             self.PASO["Resultado"]=valor
             self.PASO["Estado"] = "OK"
         #Le agrego el horario de ejecucion
-        self.PASO["TimeStamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S") #Para completar con la hora de la medicion
+        tiempo_mecion = datetime.now().strftime("%Y-%m-%d %H:%M:%S") #Para completar con la hora de la medicion
+        self.PASO["TimeStamp"] = tiempo_mecion
         with open("_TEMPS_/protocolo_a_ejecutar.json", "w", encoding="utf-8") as file:
             json.dump(self.protocolo,file,indent=4)
             
@@ -342,9 +363,22 @@ class WorkerThread(QThread):
             self.BLOQUE["Resultado"] ="NO PASA"
         else:
             self.BLOQUE["Resultado"] ="PASA"
+        if self.tiempo_incial == 0: #Para hacer comparaciones
+            self.tiempo_incial=datetime.strptime(tiempo_mecion,"%Y-%m-%d %H:%M:%S").timestamp() / 60  # tiempo en minutos
+            self.tiempo_paso.append(0) #inicio con cero
+            self.tiempo_total.append(0) #inicio con cero
+            self.tiempo_previo = self.tiempo_incial
+        else:
+            tiempo_actual = datetime.strptime(tiempo_mecion,"%Y-%m-%d %H:%M:%S").timestamp() / 60  # tiempo en minutos
+            delta_paso = tiempo_actual - self.tiempo_previo
+            delta_total = tiempo_actual-self.tiempo_incial
+            self.tiempo_previo = tiempo_actual #actualizo la variable
+            self.tiempo_paso.append(delta_paso) #actualizo la variable
+            self.tiempo_total.append(delta_total) #actualizo la variable
 
         self.listaPasos.append(self.PASO)
         self.pasosUpdate.emit(self.listaPasos) #manda la de lista
+        self.tiempos_signal.emit(self.tiempo_paso, self.tiempo_total) #Emito la señal de tiempo
         self.running = True
         if self.MODO == "MANUAL": #En caso que sea manual, es decir no hubo un cambio de estado, no debe seguir ejecutando pasos
             pass
@@ -561,12 +595,13 @@ class WorkerThread(QThread):
                 while not self.running:
                     if N == 0:
                         self.detenido.emit()
-
+                
                 self.progreso.emit(f"Ejecutando paso: {self.protocolo[i]['Pasos'][j]['Nombre']}") #Cambie las comillas dobles por comillas simples para evitar errores del f-string
                 self.secuenciaPaso.emit(self.protocolo[i]["Pasos"][j]["OrdenDeSecuencia"])
                 self.ejecutarPaso(self.protocolo[i]["Pasos"][j])
                 j+=1 #Incremento el indice
                 sleep(0.1)  # Simula el tiempo de ejecución del paso
+                
             i+=1 #incremento el indice del bloque
             self.listaPasos = [] #Reinicia la lista para no entorpecer la vista
         self.wait_until_response =True #Si no pongo una variable, en el ultimo paso sale del loop sin que yo lo permita
@@ -612,3 +647,32 @@ class WorkerThread(QThread):
     def stop(self):
         # Detiene la ejecución del hilo
         self.running = False
+        
+#Grafico en otro hilo para que funcione todo mejor! lo debo pasar a otro script para que sea mas ordenado
+class GraficadorThread(QThread):
+    graficos_listos = pyqtSignal(Figure, Figure)  # Señal para devolver los gráficos
+
+    def __init__(self, tiempo_paso, tiempo_total):
+        super().__init__()
+        self.tiempo_paso = tiempo_paso
+        self.tiempo_total = tiempo_total
+
+    def run(self):
+        fig1 = self.generar_figura(self.tiempo_paso, "Tiempo entre pasos")
+        fig2 = self.generar_figura(self.tiempo_total, "Tiempo total")
+        self.graficos_listos.emit(fig1, fig2)  # Emitimos los gráficos listos
+
+    def generar_figura(self, data, titulo):
+        fig = Figure(figsize=(4, 3))
+        fig.patch.set_alpha(0)
+        ax = fig.add_subplot(111)
+        ax.set_facecolor('none')
+        X = range(len(data))
+        Y = np.array(data)
+        ax.plot(X, Y)
+        ax.set_title(titulo)
+        ax.set_xlabel("Pasos")
+        ax.set_ylabel("Tiempo")
+        ax.grid(True)
+        fig.tight_layout()
+        return fig

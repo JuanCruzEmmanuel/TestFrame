@@ -4,6 +4,7 @@ import time
 
 class SMVA_DB():
     _DATABASE = "dbfeas_smva_2_0_v1"
+    #_DATABASE = "db_feas_2"
     def __init__(self):
         
         self.user = None
@@ -56,6 +57,29 @@ class SMVA_DB():
         cursor = cnxn.cursor()
 
         return cursor
+    
+    def connect_2(self):
+        
+            """
+            FUNCION QUE SE ENCARGA DE CONECTAR A LA BD y se puede trabajar directamente con CURSORES
+            :RETURN cursor: Cursor de manejo BD
+            """
+            if self.test:
+                IP = "127.0.0.1"
+            else:
+                IP = "127.0.0.1"
+            cnxn = pyodbc.connect(
+            r'DRIVER=MySQL ODBC 3.51 Driver;'
+            rf'Server={IP};'
+            r'Database=db_feas_2;'
+            r'Port=3306;'
+            r'UID=root;'
+            )   
+
+            cnxn.autocommit = True  # Desactivar múltiples conjuntos de resultados
+            cursor = cnxn.cursor()
+
+            return cursor    
 
     def set_test(self):
         """
@@ -689,24 +713,24 @@ class SMVA_DB():
         Funcion que simula el metodo almacenado en la base de datos para consultar pasos y mediciones.\n
         :id: ID protocolo creado
         """
-        query_pasos = """
+        query_pasos = f"""
             SELECT count(*) 
-            FROM dbfeas_smva_2_0_v1.pasos 
+            FROM {self._DATABASE}.pasos 
             WHERE protocolo_idprotocolo IN (
                 SELECT idprotocolo 
-                FROM dbfeas_smva_2_0_v1.protocolo 
+                FROM {self._DATABASE}.protocolo 
                 WHERE protocolos_idProtocolos = ?
             )
         """
-        query_mediciones = """
+        query_mediciones = f"""
             SELECT count(valuemedicion_idvaluemedicion) 
-            FROM dbfeas_smva_2_0_v1.mediciones 
+            FROM {self._DATABASE}.mediciones 
             WHERE idmediciones IN (
                 SELECT mediciones_idmediciones 
-                FROM dbfeas_smva_2_0_v1.pasos 
+                FROM {self._DATABASE}.pasos 
                 WHERE protocolo_idprotocolo IN (
                     SELECT idprotocolo 
-                    FROM dbfeas_smva_2_0_v1.protocolo 
+                    FROM {self._DATABASE}.protocolo 
                     WHERE protocolos_idProtocolos = ?
                 )
             )
