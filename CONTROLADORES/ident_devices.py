@@ -1,14 +1,21 @@
 from serial.tools import list_ports
-import serial, os
+import serial, os, json
+
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-JSON_FILE = os.path.join(BASE_DIR, "devices.json")
+print(BASE_DIR)
+JSON_FILE = os.path.join(BASE_DIR, "_TEMPS_\devices.json")
+print(JSON_FILE)
 
 def ident_devices():
     used_ports = list_ports.comports()
 
+    if os.path.exists(JSON_FILE):
+        return
+
     for port in used_ports:
         baudrates = (9600, 38400, 115200)
+        found_devices = []
 
         for baudrate in baudrates:
             try:
@@ -27,14 +34,29 @@ def ident_devices():
                 connection.write("IDENT\r".encode())
                 respuesta = connection.readline().decode()
 
-                
+                if not respuesta == "":
+                    device_info = {
+                        "port": port.device,
+                        "device": respuesta
+                        }
+                    found_devices.append(device_info)
+
                 if connection and connection.is_open:
                     connection.close()
 
-                print(f"Respuesta de el puerto {port.device} a {baudrate} baudios: {respuesta}")
-
             except serial.SerialException as e:
-                print("Conexion fallida con {} a {} baudios".format(port.device,baudrate))
+                print(f"Error de conexión: {e}")
+                pass
+
+        if found_devices:
+            try:
+                with open(JSON_FILE, "w") as file:
+                    json.dump(found_devices, file, indent=4)
+            except IOError as e:
+                print(f"Error al escribir el archivo JSON: {e}")
+
+
+
 
 
 
