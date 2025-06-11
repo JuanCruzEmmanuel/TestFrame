@@ -12,8 +12,9 @@ def configurar_logica_pagina_principal(win):
     win.EjecutarBoton.clicked.connect(lambda: ejecutar_fila_seleccionada(win))
     win.command_btn.clicked.connect(lambda: ejecutar_comando(win))
     win.TO_DASH.clicked.connect(lambda: to_dashboard(win))
-    mostrar_todos_los_datos(win)
-
+    mostrar_todos_los_datos(win) #Muestro todo los datos
+    filtrar_tabla_por_nombre(win) #Lo filtro con los valores actuales
+    
 def mostrar_todos_los_datos(win):
     datos = win.datos
     tabla = win.tablaProtocolo
