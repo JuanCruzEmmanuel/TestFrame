@@ -103,7 +103,7 @@ class CONTROLADOR_INSTURMENTO:
         except:
             port = port #Caso simplemete para evitar problemas en el except; tambien se podria agregar un pass aunque asi es mas elegante
         # Identificar el modelo de multímetro
-        inst,NS= ident(port=port, instr=instrument_type)
+        inst,NS= self.ident(port=port, instr=instrument_type)
         if "45" in inst and "88" not in inst:
             instr = Fluke45(port=port, baudrate=9600)
         else:
@@ -205,7 +205,7 @@ class CONTROLADOR_INSTURMENTO:
         instr.stop()
 
         if LOGFLAG:
-            LOG(valor=result,nombre_log=LOGNAME)
+            self.LOG(valor=result,nombre_log=LOGNAME)
         return result
     def psu(self,CMD:list):
         port = next((COM for COM in CMD if "port" in COM.lower()), "COM4") #Se busca si encuentra el port si no lo localiza usa el valor por defecto
