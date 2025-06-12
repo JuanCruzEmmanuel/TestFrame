@@ -30,7 +30,7 @@ def configurar_logica_run_protocolo(win):
     win.FLAG_MANUAL_SALTO = False
     win.tiempo_paso = 0 #Variable que controla para graficar tiempo entre paso
     win.tiempo_total = 0 #Variable que controla para graficar tiempo total
-    win.DEVICES_POOL = {} # Variable que Controla los equipos encendidos
+    win.DEVICE_POOL = {} # Variable que Controla los equipos encendidos
     ###########
     win.NUMERICO_TEXTO = None
 

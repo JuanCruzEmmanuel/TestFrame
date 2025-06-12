@@ -164,7 +164,7 @@ class MainWindow(QMainWindow):
         if self.worker is not None and self.worker.isRunning():
             self.descripcionPaso.setText("Ya se está ejecutando un protocolo.")
             return
-        self.worker = WorkerThread(self.protocolo_a_ejecutar,database=self.database)
+        self.worker = WorkerThread(self.protocolo_a_ejecutar,database=self.database,DEVICE_POOL=self.DEVICE_POOL)
         self.worker.progreso.connect(self.actualizarLog)
         self.worker.terminado.connect(self.finalizarEjecucion)
         self.worker.detenido.connect(self.protocoloDetenido)
