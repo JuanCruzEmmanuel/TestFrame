@@ -343,14 +343,22 @@ class CONTROLADOR_INSTURMENTO:
         
         return meas
     def esa620(self,CMD:list):
-        port = next((COM for COM in CMD if "port" in COM.lower()), "COM22") #Se busca si encuentra el port si no lo localiza usa el valor por defecto
+        if "ESA620" in self.DEVICE_POOL.keys():
+            instru =self.DEVICE_POOL["ESA620"] #Dejo el instrumento guaraddito
+        else:
+            port = next((COM for COM in CMD if "port" in COM.lower()), "COM22") #Se busca si encuentra el port si no lo localiza usa el valor por defecto
+            try:
+                port = port.split(" ")[1]   #En caso de encontrar port debo tomar el valor del COM
+                instru = ESA620(port = port)
+                time.sleep(1.5)
+                self.DEVICE_POOL["ESA620"] = instru #Guardo el instrumento
+            except:
+                port = port
+                instru = ESA620(port = port)
+                time.sleep(1.5)
+                self.DEVICE_POOL["ESA620"] = instru #Guardo el instrumento
         try:
-            port = port.split(" ")[1]   #En caso de encontrar port debo tomar el valor del COM
-        except:
-            port = port
-        try:
-            instru = ESA620(port = port)
-            time.sleep(1.5)
+            
             run = {
                 "mainVoltage":instru.voltMeasure,
                 "MainVoltage":instru.voltMeasure,
@@ -448,9 +456,9 @@ class CONTROLADOR_INSTURMENTO:
             exc = run[ejecutar]()
 
             
-            instru.LOCAL()
-            instru.close()
-            time.sleep(1)
+            #instru.LOCAL()
+            #instru.close()
+            #time.sleep(1)
             return exc
         except:
             return "-101"
