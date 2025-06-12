@@ -13,12 +13,13 @@ from CONTROLADORES.controlVariables import equation
 from CONTROLADORES.OLD_COMMAND import convertir_comando
 
 class driverInstrumentos:
-    def __init__(self,BASE_DATO = None):
+    def __init__(self,BASE_DATO = None, DEVICE_POOL={}):
         self.resultado = ""
         self.comando = ""
         self.torreRele = TorreRele() #Creo el objeto
         #self.SALTO_CONFICIONAL = SALTO_CONDICIONAL
         self.BASE_DATO = BASE_DATO
+        self.DEVICE_POOL = DEVICE_POOL
     def readComando(self,CMD,SALTO_CONDICIONAL = False,):
         """
         El SMVA en LabVIEW leia las primeras 3 letras y de ahi determinaba el instru\n
@@ -70,7 +71,7 @@ class driverInstrumentos:
         if CMD !="" and CMD !=" ": #En el caso que el comando siga, se debera analizar
             if i == "NO_SALTO": #Lo que me devuelva esto, debe ser coherente, por eso debe devolver la misma longitud
                 if CMD[0]=="*":
-                    return DRIVER(cmd = CMD[1:]),"NO_SALTO","NO_SALTO"
+                    return DRIVER.run(cmd = CMD[1:]),"NO_SALTO","NO_SALTO"
                 else:
                     try:
                         if CMD[3]=="_": #Algunos instrumentos por ejemplo las fuentes no se hicieron con comandos de _, por lo que se debe tener ec onsideracion esto tipo de configuracion
@@ -83,7 +84,7 @@ class driverInstrumentos:
                             #print(CMD[3:])
                             try:
                                 CMD_traducido = convertir_comando(comando=CMD) #Debe ingresar todo el comando...... y este se encarga solo en convertirlo en formato que DRIVER lo lea 
-                                INST = DRIVER(cmd=CMD_traducido) #Esto me deberia devoler el resultado
+                                INST = DRIVER.run(cmd=CMD_traducido) #Esto me deberia devoler el resultado
                             except:
                                 INST = instrumentos[CMD[0:3]](CMD = CMD[3:])
                         return INST,"NO_SALTO","NO_SALTO"
@@ -91,7 +92,7 @@ class driverInstrumentos:
                         return "OK","NO_SALTO","NO_SALTO"
             else:
                 if CMD[0]=="*":
-                    return DRIVER(cmd = CMD[1:]),i,j
+                    return DRIVER.run(cmd = CMD[1:]),i,j
                 else:
                     try:
                         if CMD[3]=="_": #Algunos instrumentos por ejemplo las f.,uentes no se hicieron con comandos de _, por lo que se debe tener ec onsideracion esto tipo de configuracion
@@ -104,7 +105,7 @@ class driverInstrumentos:
                             #print(CMD[3:])
                             try:
                                 CMD_traducido = convertir_comando(comando=CMD) #Debe ingresar todo el comando...... y este se encarga solo en convertirlo en formato que DRIVER lo lea 
-                                INST = DRIVER(cmd=CMD_traducido) #Esto me deberia devoler el resultado
+                                INST = DRIVER.run(cmd=CMD_traducido) #Esto me deberia devoler el resultado
                             except:
                                 INST = instrumentos[CMD[0:3]](CMD = CMD[3:])
                         return INST,i,j
@@ -121,11 +122,8 @@ class driverInstrumentos:
             VAL = CMD.split("(")[1]
             if ")" in VAL:
                 VAL = VAL.split(")")[0]
-
         else:
             VAL = 0
-
-        #VAL = float(VAL)
 
         return VAL
 

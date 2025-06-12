@@ -199,8 +199,9 @@ class WorkerThread(QThread):
     abrirPopupNumerico = pyqtSignal(list) #Señal para control windows numerica
     abrirManual = pyqtSignal() #Abre la ventana de avanzar manual o saltar paso
     tiempos_signal = pyqtSignal(list,list) #Emite tiempo paso, tiempo  total
-    def __init__(self, protocolo,N_PROTOCOLO_ID = 0,database = None):
+    def __init__(self, protocolo,N_PROTOCOLO_ID = 0,database = None, DEVICE_POOL={}):
         super().__init__()
+        self.DEVICE_POOL = DEVICE_POOL # VARIABLE QUE CONTROLA
         self.database = database # SE AGREGA UN AUX DE LA BASE DE DATOS POR LAS DUDAS
         self.N_PROTOCOLO_ID = N_PROTOCOLO_ID
         self.protocolo = protocolo # Recibo el Json cargado
@@ -220,7 +221,7 @@ class WorkerThread(QThread):
         self.listaPasos = []
         self.PAUSE_SUPERIOR = False
         self.pausa = False
-        self.driverInstrumento = driverInstrumentos(BASE_DATO=self.database)
+        self.driverInstrumento = driverInstrumentos(BASE_DATO=self.database,DEVICE_POOL=self.DEVICE_POOL)
         #FLAG GLOBALES Y AUXILIARES
         self.wait_until_response = False
         self.VERIFICACION_FLAG = False #bandera para controlar la verificacion
@@ -279,7 +280,7 @@ class WorkerThread(QThread):
         self.PASO = paso #Configuro el self.PASO
         self.paso_ejecucion = paso["Nombre"]
         sleep(0.3)  # Pausa antes de ejecutar cada paso
-        item = self.TIPO_ITEM[paso["Tipo_Item"]]()
+        self.TIPO_ITEM[paso["Tipo_Item"]]()
 
     def ingresoManual(self):
         #print("Indicador_11")
