@@ -98,8 +98,17 @@ def ident_devices(debug=False,JSON_FILE=JSON_FILE_PATH):
         except IOError as e:
             print(f"Error al escribir el archivo JSON: {e}")
 
+def verify_connection(key, instrument, device_pool):
+    if instrument and device_pool != None:
+        with open (JSON_FILE_PATH,"r") as file:
+            data = json.load(file)
+        if key in data.keys():
+            instru = instrument(port=data[key]["port"])
+            device_pool["ESA620"] = instru
+        else:
+            raise Exception(f"No se encuentra el instrumento {key}")
+    return instru
 
 
-
-
-ident_devices(debug=True, JSON_FILE=JSON_FILE_PATH)
+if __name__ == "__main__":
+    ident_devices(debug=True, JSON_FILE=JSON_FILE_PATH)
