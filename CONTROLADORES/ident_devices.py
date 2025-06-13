@@ -1,11 +1,9 @@
 from serial.tools import list_ports
-import serial, os, json, struct
-from DCPOWERSUPPLY import PSU
-
+import serial, os, json, sys
+from CONTROLADORES.DCPOWERSUPPLY import PSU
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 JSON_FILE_PATH = os.path.join(BASE_DIR, "_TEMPS_\devices.json")
-
 
 def ident_devices(debug=False,JSON_FILE=JSON_FILE_PATH):
     used_ports = list_ports.comports()
@@ -18,7 +16,7 @@ def ident_devices(debug=False,JSON_FILE=JSON_FILE_PATH):
         for p in used_ports:
             print(p.description)
 
-    found_devices = []
+    found_devices = {}
 
     for port in used_ports:
         baudrates = (9600, 38400, 115200)
@@ -53,15 +51,6 @@ def ident_devices(debug=False,JSON_FILE=JSON_FILE_PATH):
                     respuesta = rta_2
 
                 # Intento identificar Fuente Array/Protek
-                if connection and connection.is_open:
-                    connection.close()
-                    try:
-                        psu = PSU(0,port.device,baudrate)
-                        rta_3 = psu.get_info()
-                        print(rta_3)
-                    except:
-                        pass
-
 
 
                 if debug:
@@ -78,11 +67,12 @@ def ident_devices(debug=False,JSON_FILE=JSON_FILE_PATH):
                         device = "Desconocido"
 
                     device_info = {
-                        "port": port.device,
-                        "baudrate": baudrate,
-                        "device": device
-                        }
-                    found_devices.append(device_info)
+                                    "port":port.device,
+                                    "baudrate":baudrate,
+                                    "id":1
+                                }
+                    
+                    found_devices[device]=device_info
 
                 if connection and connection.is_open:
                     connection.close()
