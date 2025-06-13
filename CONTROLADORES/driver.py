@@ -15,7 +15,7 @@ import time
 from datetime import datetime
 import json
 
-__version__ ="1.2.3"
+__version__ ="1.3.0"
 
 __autor__ ="Juan Cruz Noya & Julian Font"
 
@@ -43,6 +43,7 @@ Version 1.2.1   Se implementa la funcion LOCAL() en esa620() antes de cerrar el 
 Version 1.2.2   Se corrige un error, en donde la instruccion LOCAL() se ejecutaba despues de cerrar el puerto
 Version 1.2.3   Se agrega el PROSIM8
 Version 1.2.4   Se agrega codigo de guia de presion
+Version 1.3.0   Se comienza a trabajar en la gestion dinamica de puertos de conexion de los instrumentos. ESA620 terminado.
 """
 
 
@@ -352,8 +353,13 @@ class CONTROLADOR_INSTURMENTO:
         if "ESA620" in self.DEVICE_POOL.keys():
             instru = self.DEVICE_POOL["ESA620"] #Dejo el instrumento guaraddito
         else:
-            with open (JSON_FILE_PATH,"r") as file:
-                data = json.load(file)
+            if os.path.exists(JSON_FILE_PATH):
+                with open (JSON_FILE_PATH,"r") as file:
+                    data = json.load(file)
+            else:
+                ident_devices()
+                with open (JSON_FILE_PATH,"r") as file:
+                    data = json.load(file)
             if "ESA620" in data.keys():
                 instru = ESA620(port=data["ESA620"]["port"])
                 if instru.ident():
