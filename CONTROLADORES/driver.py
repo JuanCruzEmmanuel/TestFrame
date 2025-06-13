@@ -9,6 +9,7 @@ from CONTROLADORES.OSCILOSCOPIO import TEKTRONIX
 from CONTROLADORES.PROSIM8 import PROSIM8
 from CONTROLADORES.GUIAPRESION import GUIAPRESION
 from CONTROLADORES.CARGAPROGRAMABLE import Load
+from CONTROLADORES.ident_devices import ident_devices, verify_connection
 import serial
 import time
 from datetime import datetime
@@ -43,6 +44,11 @@ Version 1.2.2   Se corrige un error, en donde la instruccion LOCAL() se ejecutab
 Version 1.2.3   Se agrega el PROSIM8
 Version 1.2.4   Se agrega codigo de guia de presion
 """
+
+
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+JSON_FILE_PATH = os.path.join(BASE_DIR, "_TEMPS_\devices.json")
+
 class CONTROLADOR_INSTURMENTO:
     def __init__(self,DEVICE_POOL={}):
         self.DEVICE_POOL = DEVICE_POOL
@@ -344,19 +350,22 @@ class CONTROLADOR_INSTURMENTO:
         return meas
     def esa620(self,CMD:list):
         if "ESA620" in self.DEVICE_POOL.keys():
-            instru =self.DEVICE_POOL["ESA620"] #Dejo el instrumento guaraddito
+            instru = self.DEVICE_POOL["ESA620"] #Dejo el instrumento guaraddito
         else:
-            port = next((COM for COM in CMD if "port" in COM.lower()), "COM22") #Se busca si encuentra el port si no lo localiza usa el valor por defecto
-            try:
-                port = port.split(" ")[1]   #En caso de encontrar port debo tomar el valor del COM
-                instru = ESA620(port = port)
-                time.sleep(1.5)
-                self.DEVICE_POOL["ESA620"] = instru #Guardo el instrumento
-            except:
-                port = port
-                instru = ESA620(port = port)
-                time.sleep(1.5)
-                self.DEVICE_POOL["ESA620"] = instru #Guardo el instrumento
+            with open (JSON_FILE_PATH,"r") as file:
+                data = json.load(file)
+            if "ESA620" in data.keys():
+                instru = ESA620(port=data["ESA620"]["port"])
+                if instru.ident():
+                    self.DEVICE_POOL["ESA620"] = instru
+                else:
+                    instru.close()
+                    ident_devices()
+                    instru = verify_connection(key="ESA620", instrument=ESA620, device_pool=self.DEVICE_POOL)
+            else:
+                ident_devices()
+                instru = verify_connection(key="ESA620", instrument=ESA620, device_pool=self.DEVICE_POOL)
+
         try:
             
             run = {
