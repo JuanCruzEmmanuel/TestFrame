@@ -630,6 +630,7 @@ class WorkerThread(QThread):
             while j < len(self.protocolo[i]["Pasos"]):
                 self.protocolo[i]["Pasos"][j]["Resultado"]="NC"
                 self.protocolo[i]["Pasos"][j]["Estado"]="OK"
+                self.protocolo[i]["Pasos"][j]["CriterioPass"]="NC"
                 self.protocolo[i]["Pasos"][j]["TimeStamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S") #Para completar con la hora de la medicion
                 self.listaPasos.append(self.protocolo[i]["Pasos"][j]) #Esto puede salir muy mal, voy a updatear este paso
                 self.pasosUpdate.emit(self.listaPasos) #para que se grafique
