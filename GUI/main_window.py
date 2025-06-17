@@ -438,7 +438,6 @@ class WorkerThread(QThread):
         #sleep(1)  # Pausa al ingresar a calibración
 
     def verificacion(self):
-        print("Ingreso a verificación")
         COMANDO_SPLIT = self.PASO["Comandos"].split("-") #separo por los guiones P.E. ;VERIFICAR:BLOQUE"32"-PASO"2"-"PROSIM8"
         COMANDO_DIC = {} #Es necesario trabajar los datos de manera eficiente
         for splited in COMANDO_SPLIT:
@@ -640,6 +639,10 @@ class WorkerThread(QThread):
                 j+=1#Incremento indice paso
             if "PASS" in self.BLOQUE["Resultado"]:
                 self.BLOQUE["Resultado"] ="PASS" #Debo agregar que el resultado del bloque sea PASA ya que se ha completado con 
+            elif "NO PASS" in self.BLOQUE["Resultado"]:
+                self.BLOQUE["Resultado"] ="NO PASS"
+            else:
+                self.BLOQUE["Resultado"] ="PASS"
             self.UpdateTablaBloque.emit()
             if not self._smva_archivo: #En caso de ser el testeo no subir nada
                 self.database.subir_paso_protocolo_y_protocolo(id_protocolo = self.protocolo[i]["ProtocoloID"],resultado_bloque = self.protocolo[i]["Resultado"],pasos = self.protocolo[i]["Pasos"]) #Se sube el archivo previo
