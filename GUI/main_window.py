@@ -617,7 +617,7 @@ class WorkerThread(QThread):
         self._smva_archivo = False #Cuando termine debo cerrar
     def completarConNC(self,i,j):
         """
-        Se encarga de completar el protocolo local con NC y OK\n
+        Esta funcion se encarga de completar el protocolo local con NC y OK\n
         :i: Indice de bloque\n
         :j: Indice de paso
         """
