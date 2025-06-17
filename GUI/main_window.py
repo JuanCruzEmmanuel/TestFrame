@@ -360,9 +360,9 @@ class WorkerThread(QThread):
             json.dump(self.protocolo,file,indent=4)
             
         if self.PASO["Estado"] == "NO OK":
-            self.BLOQUE["Resultado"] ="NO PASA"
+            self.BLOQUE["Resultado"] ="NO PASS"
         else:
-            self.BLOQUE["Resultado"] ="PASA"
+            self.BLOQUE["Resultado"] ="PASS"
         if self.tiempo_incial == 0: #Para hacer comparaciones
             self.tiempo_incial=datetime.strptime(tiempo_mecion,"%Y-%m-%d %H:%M:%S").timestamp() / 60  # tiempo en minutos
             self.tiempo_paso.append(0) #inicio con cero
@@ -638,10 +638,13 @@ class WorkerThread(QThread):
                     self.protocolo[i]["Resultado"]="PASA"
                 sleep(0.1)
                 j+=1#Incremento indice paso
+            if "PASS" in self.BLOQUE["Resultado"]:
+                self.BLOQUE["Resultado"] ="PASS" #Debo agregar que el resultado del bloque sea PASA ya que se ha completado con 
             self.UpdateTablaBloque.emit()
             if not self._smva_archivo: #En caso de ser el testeo no subir nada
                 self.database.subir_paso_protocolo_y_protocolo(id_protocolo = self.protocolo[i]["ProtocoloID"],resultado_bloque = self.protocolo[i]["Resultado"],pasos = self.protocolo[i]["Pasos"]) #Se sube el archivo previo
             i+=1#Incremento indice bloque
+            
         with open("_TEMPS_/protocolo_a_ejecutar.json", "w", encoding="utf-8") as file:
             json.dump(self.protocolo,file,indent=4)
 
