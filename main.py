@@ -92,6 +92,12 @@ from GUI.log import LogWindow
 from CONTROLADORES.BBDD import SMVA_DB
 
 def main():
+    """
+    FUNCION DE MAS ALTO NIVEL DEL SMVA3\n
+    CONTIENE LA VERSION DE COMPILACION\n
+    LA PANTALLA DE LOG\n
+    INGRESO A LA APLICACION, es decir al main_windows.py
+    """
     __VERSION__ = "1.2.2"
     database = SMVA_DB() #Cargo la base de datos
     app = QApplication(sys.argv)
