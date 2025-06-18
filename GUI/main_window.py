@@ -586,6 +586,7 @@ class WorkerThread(QThread):
                     self.J_BLOQUE = "NO_SALTO"
                     self.I_BLOQUE = "NO_SALTO"
                     self.VERIFICACION_FLAG = False # Esto tal vez deba ser un arreglo tupla (False, False)
+                    self.UpdateTablaBloque.emit() # Veo de hacer un emit.... puede salir mal
 
                 N = 0
                 while self.pausa:
@@ -621,13 +622,12 @@ class WorkerThread(QThread):
         :i: Indice de bloque\n
         :j: Indice de paso
         """
-        #EMITO LAS SEÑALES PARA ACTUALIZAR
-        #self.UpdateTablaBloque.emit()
-        #self.pasosUpdate.emit(self.listaPasos) #manda la de lista
-        #self.tiempos_signal.emit(self.tiempo_paso, self.tiempo_total) #Emito la señal de tiempo
         n=0 #Indica inicio
+        if j!=0:
+            j-=1 #Hay que fijarse si esto funciona.....
         while i <=self.I_BLOQUE: #Tengo que recorrer desde el i ingresado hasta I_BLOQUE de salto
             """Esto quiere decir que si estoy en el bloque 6 y tengo que ir hasta el bloque 7, va a recorrer inclusive hasta ese valor"""
+            self.protocolo[i]["Operador"]=self.database.USUARIO_SMVA #Cargo al inicio de cada bloque
             self.bloqueNombre.emit(self.protocolo[i]["Nombre"]) #Para que muestre el nombre del bloque actual
             if n!=0:
                 #En caso que se cambie el bloque......
@@ -654,14 +654,9 @@ class WorkerThread(QThread):
                 self.BLOQUE["Resultado"] ="PASS" #Debo agregar que el resultado del bloque sea PASA ya que se ha completado con 
             else:
                 self.BLOQUE["Resultado"] ="PASS"
-            self.UpdateTablaBloque.emit()
             if not self._smva_archivo: #En caso de ser el testeo no subir nada
                 self.database.subir_paso_protocolo_y_protocolo(id_protocolo = self.protocolo[i]["ProtocoloID"],resultado_bloque = self.protocolo[i]["Resultado"],pasos = self.protocolo[i]["Pasos"]) #Se sube el archivo previo
             i+=1#Incremento indice bloque
-            #n+=1
-            #self.UpdateTablaBloque.emit()
-            #self.pasosUpdate.emit(self.listaPasos) #manda la de lista
-            #self.tiempos_signal.emit(self.tiempo_paso, self.tiempo_total) #Emito la señal de tiempo
         with open("_TEMPS_/protocolo_a_ejecutar.json", "w", encoding="utf-8") as file:
             json.dump(self.protocolo,file,indent=4)
 
