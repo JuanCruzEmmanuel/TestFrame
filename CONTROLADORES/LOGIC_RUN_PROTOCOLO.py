@@ -1,13 +1,12 @@
 import json
-from time import sleep
-from datetime import datetime
+#from time import sleep
+#from datetime import datetime
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from PyQt5.QtWidgets import QVBoxLayout, QDialog, QTableWidgetItem
 from PyQt5.QtCore import QEventLoop, QThread, pyqtSignal, pyqtSlot,Qt
-from PyQt5.QtGui import QColor, QBrush
-from PyQt5 import uic
+#from PyQt5.QtGui import QColor, QBrush
 from GUI.IngresoManual import ingresoManual
 from GUI.IngresoManualNumerico import IngresoManualNumerico
 from CONTROLADORES.DriverInstrumentosSMVA import driverInstrumentos
@@ -31,6 +30,7 @@ def configurar_logica_run_protocolo(win):
     win.FLAG_MANUAL_SALTO = False
     win.tiempo_paso = 0 #Variable que controla para graficar tiempo entre paso
     win.tiempo_total = 0 #Variable que controla para graficar tiempo total
+    win.DEVICE_POOL = {} # Variable que Controla los equipos encendidos
     ###########
     win.NUMERICO_TEXTO = None
 

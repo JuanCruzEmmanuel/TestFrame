@@ -259,6 +259,11 @@ class ESA620:
 
         self._ident=self.serial.readline().decode()
 
+        if "ESA 620" in self._ident:
+            return True
+        else:
+            return False
+
     #Llamados por el comando --run del Driver
     def protectiveEarthResistance(self):
 
