@@ -583,6 +583,7 @@ class WorkerThread(QThread):
                         self.completarConNC(i=i,j=j) #Funcion que se encarga de completarlo solo
                     i = int(self.I_BLOQUE)
                     j = int(self.J_BLOQUE)
+                    self.BLOQUE = self.protocolo[i] #Tengo que actualizar la variable que me controla los bloques
                     self.J_BLOQUE = "NO_SALTO"
                     self.I_BLOQUE = "NO_SALTO"
                     self.VERIFICACION_FLAG = False # Esto tal vez deba ser un arreglo tupla (False, False)
