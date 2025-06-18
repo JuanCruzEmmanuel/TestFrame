@@ -13,7 +13,8 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 #IMPORTO CALCULOS MATEMATICOS
-import numpy as np
+#import numpy as np
+from numpy import array
 #IMPORTO LIBRERIAS EN CASO DE AGREGAR SHORTCUTS Y SECUENCIAS
 from PyQt5.QtGui import QKeySequence,QColor, QBrush
 from PyQt5.QtWidgets import QShortcut, QTableWidgetItem,QFileDialog
@@ -29,7 +30,7 @@ from CONTROLADORES.LOGIC_ADD_SERIAL_NUMBER import configurar_logica_agregar_seri
 from CONTROLADORES.LOGIC_RUN_PROTOCOLO import configurar_logica_run_protocolo
 from CONTROLADORES.LOGIC_DASHBOARD2 import configurar_logica_dashboard2
 from CONTROLADORES.LIGHT_DARK_MODE_TOGGLE import ToggleSwitch
-from CONTROLADORES.MAIN_GRAFICADOR_THREAD import GraficadorThread
+#from CONTROLADORES.MAIN_GRAFICADOR_THREAD import GraficadorThread
 #OTROS IMPORTS
 from CONTROLADORES.COMMAND_TRANSLATOR_DRIVER import COMMAND_TRANSLATOR
 from CONTROLADORES.styles import LIGHT_STYLE, DARK_STYLE  # Si lo pones en un archivo externo
@@ -620,12 +621,21 @@ class WorkerThread(QThread):
         :i: Indice de bloque\n
         :j: Indice de paso
         """
+        #EMITO LAS SEÑALES PARA ACTUALIZAR
+        #self.UpdateTablaBloque.emit()
+        #self.pasosUpdate.emit(self.listaPasos) #manda la de lista
+        #self.tiempos_signal.emit(self.tiempo_paso, self.tiempo_total) #Emito la señal de tiempo
         n=0 #Indica inicio
         while i <=self.I_BLOQUE: #Tengo que recorrer desde el i ingresado hasta I_BLOQUE de salto
             """Esto quiere decir que si estoy en el bloque 6 y tengo que ir hasta el bloque 7, va a recorrer inclusive hasta ese valor"""
             self.bloqueNombre.emit(self.protocolo[i]["Nombre"]) #Para que muestre el nombre del bloque actual
             if n!=0:
-                j=0 #Reincio la variable
+                #En caso que se cambie el bloque......
+                self.listaPasos = [] #Reinicia la lista para no entorpecer la vista
+                self.pasosUpdate.emit(self.listaPasos) #manda la de lista
+                self.UpdateTablaBloque.emit()
+                #self.tiempos_signal.emit(self.tiempo_paso, self.tiempo_total) #Emito la señal de tiempo
+                #j=0 #Reincio la variable
             while j < len(self.protocolo[i]["Pasos"]):
                 self.protocolo[i]["Pasos"][j]["Resultado"]="NC"
                 self.protocolo[i]["Pasos"][j]["Estado"]="OK"
@@ -634,20 +644,24 @@ class WorkerThread(QThread):
                 self.listaPasos.append(self.protocolo[i]["Pasos"][j]) #Esto puede salir muy mal, voy a updatear este paso
                 self.pasosUpdate.emit(self.listaPasos) #para que se grafique
                 if self.protocolo[i]["Resultado"]=="":
-                    self.protocolo[i]["Resultado"]="PASA"
+                    self.protocolo[i]["Resultado"]="PASS"
                 sleep(0.1)
                 j+=1#Incremento indice paso
-            if "PASS" in self.BLOQUE["Resultado"]:
-                self.BLOQUE["Resultado"] ="PASS" #Debo agregar que el resultado del bloque sea PASA ya que se ha completado con 
-            elif "NO PASS" in self.BLOQUE["Resultado"]:
+
+            if "NO PASS" in self.BLOQUE["Resultado"]:
                 self.BLOQUE["Resultado"] ="NO PASS"
+            elif "PASS" in self.BLOQUE["Resultado"]:
+                self.BLOQUE["Resultado"] ="PASS" #Debo agregar que el resultado del bloque sea PASA ya que se ha completado con 
             else:
                 self.BLOQUE["Resultado"] ="PASS"
             self.UpdateTablaBloque.emit()
             if not self._smva_archivo: #En caso de ser el testeo no subir nada
                 self.database.subir_paso_protocolo_y_protocolo(id_protocolo = self.protocolo[i]["ProtocoloID"],resultado_bloque = self.protocolo[i]["Resultado"],pasos = self.protocolo[i]["Pasos"]) #Se sube el archivo previo
             i+=1#Incremento indice bloque
-            
+            #n+=1
+            #self.UpdateTablaBloque.emit()
+            #self.pasosUpdate.emit(self.listaPasos) #manda la de lista
+            #self.tiempos_signal.emit(self.tiempo_paso, self.tiempo_total) #Emito la señal de tiempo
         with open("_TEMPS_/protocolo_a_ejecutar.json", "w", encoding="utf-8") as file:
             json.dump(self.protocolo,file,indent=4)
 
@@ -656,3 +670,30 @@ class WorkerThread(QThread):
         self.running = False
         
 #Grafico en otro hilo para que funcione todo mejor! lo debo pasar a otro script para que sea mas ordenado
+class GraficadorThread(QThread):
+    graficos_listos = pyqtSignal(Figure, Figure)  # Señal para devolver los gráficos
+
+    def __init__(self, tiempo_paso, tiempo_total):
+        super().__init__()
+        self.tiempo_paso = tiempo_paso
+        self.tiempo_total = tiempo_total
+
+    def run(self):
+        fig1 = self.generar_figura(self.tiempo_paso, "Tiempo entre pasos")
+        fig2 = self.generar_figura(self.tiempo_total, "Tiempo total")
+        self.graficos_listos.emit(fig1, fig2)  # Emitimos los gráficos listos
+
+    def generar_figura(self, data, titulo):
+        fig = Figure(figsize=(4, 3))
+        fig.patch.set_alpha(0)
+        ax = fig.add_subplot(111)
+        ax.set_facecolor('none')
+        X = range(len(data))
+        Y = array(data) #Lo importo desde numpy
+        ax.plot(X, Y)
+        ax.set_title(titulo)
+        ax.set_xlabel("Pasos")
+        ax.set_ylabel("Tiempo")
+        ax.grid(True)
+        fig.tight_layout()
+        return fig
